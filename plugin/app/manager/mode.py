@@ -14,6 +14,8 @@ class Modes(QObject):
 
     def load(self): pass
 
+    def getModes(self): return self.modes
+
     def addMode(self, mode):
 
         mode.setData()

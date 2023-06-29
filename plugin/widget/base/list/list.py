@@ -88,11 +88,6 @@ class ListWidget(QListWidget):
 
     def widget(self): return self.item_widget(self)
 
-    # def currentItem(self):
-    #     return super().currentItem()
-    #     # crow=self.currentRow()
-    #     # if crow: return self.item(crow)
-
     def move(self, crement=-1):
 
         self.setFocus()
@@ -131,11 +126,6 @@ class ListWidget(QListWidget):
                 if data.get(k, None)!=v: return
             self.setCurrentItem(found)
 
-    # def setCurrentRow(self, row):
-    #     if row-1>self.count(): row=self.count()-1
-    #     if row<0: row=0
-    #     super().setCurrentRow(row)
-
     def setList(self, dlist, limit=30):
 
         if dlist is None: dlist=[]
@@ -171,7 +161,6 @@ class ListWidget(QListWidget):
                     dlist=self.dlist
                 else:
                     dlist=[]
-                    tmp=self.widget()
                     for data in self.dlist:
                         if self.isin(text, data): dlist+=[data]
 

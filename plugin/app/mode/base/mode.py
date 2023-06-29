@@ -50,8 +50,8 @@ class Mode(Plugin):
 
         self.setUI()
         self.setBarData()
-
         self.app.modes.addMode(self)
+
         self.app.installEventFilter(self)
 
     def setBarData(self):
@@ -100,8 +100,10 @@ class Mode(Plugin):
         mode=ListWidget(exact_match=True, check_fields=['down'])
 
         self.ui.addWidget(mode, 'mode')
-        self.ui.mode.hideWanted.connect(self.deactivate)
+
         self.ui.mode.returnPressed.connect(self.confirm)
+        self.ui.mode.hideWanted.connect(self.deactivate)
+
         self.ui.focusGained.connect(self.activate)
         self.ui.installEventFilter(self)
 
@@ -128,89 +130,100 @@ class Mode(Plugin):
 
     def eventFilter(self, widget, event):
 
-        if event.type()==QEvent.KeyPress:
+        if self.listening and event.type()==QEvent.KeyPress:
+            
+            cond1=True 
+            if self.listen_widget:
+                if not widget in self.listen_widget: cond1=False
 
-            if self.listening:
+            cond2=True
+            if self.exclude_widget:
+                if widget in self.exclude_widget: cond2=False
 
-                cond1=True 
-                if self.listen_widget:
-                    if not widget in self.listen_widget: cond1=False
+            if cond1 and cond2:
 
-                cond2=True
-                if self.exclude_widget:
-                    if widget in self.exclude_widget: 
-                        cond2=False
+                # if self.name=='normal':
+                #     mode=self.app.modes.leaders.get(
+                #             event.text(), None)
+                #     for mode in self.app.modes.getModes():
+                #         if mode.activateCheck(event):
+                #             self.app.modes.setMode(mode.name)
+                #             event.accept()
+                #             return True 
 
-                if cond1 and cond2:
+                if event.modifiers() and self.ui.isVisible():
 
-                    mode=None
-
-                    if self.name=='normal':
-                        mode=self.app.modes.leaders.get(
-                                event.text(), None)
-
-                    if mode: 
-                        self.app.modes.setMode(mode.name)
+                    if event.key() in [Qt.Key_N, Qt.Key_J]:
+                        self.ui.mode.move(crement=1)
                         event.accept()
-                        return True 
+                        return True
 
-                    if event.key() in  [Qt.Key_Enter, Qt.Key_Return]: 
+                    elif event.key() in [Qt.Key_P, Qt.Key_K]:
+                        self.ui.mode.move(crement=-1)
+                        event.accept()
+                        return True
 
+                    elif event.key() in  [Qt.Key_M, Qt.Key_L]: 
                         self.confirm()
                         event.accept()
                         return True
-                            
-                    elif event.key()==Qt.Key_Backspace:
-
-                        self.clearKeys()
+                        
+                    elif event.key() in  [Qt.Key_Enter, Qt.Key_Return]: 
+                        self.confirm()
                         event.accept()
                         return True
 
-                    elif event.key()==Qt.Key_Escape or event.text() == self.listen_leader:
+                if event.key() in  [Qt.Key_Enter, Qt.Key_Return]: 
 
-                        if self.name!='normal':
-
-                            # self.delistenWanted.emit(self.delisten_wanted)
-                            self._onExecuteMatch()
-                            event.accept()
-                            return True
-
-                    if event.modifiers() and self.ui.isVisible():
-
-                        if event.key() in [Qt.Key_N, Qt.Key_J]:
-                            self.ui.mode.move(crement=1)
-                            event.accept()
-                            return True
-
-                        elif event.key() in [Qt.Key_P, Qt.Key_K]:
-                            self.ui.mode.move(crement=-1)
-                            event.accept()
-                            return True
-
-                        elif event.key() in  [Qt.Key_M, Qt.Key_L]: 
-                            self.confirm()
-                            event.accept()
-                            return True
-                            
-                        elif event.key() in  [Qt.Key_Enter, Qt.Key_Return]: 
-                            self.confirm()
-                            event.accept()
-                            return True
-
-                    self.addKeys(event)
+                    self.confirm()
                     event.accept()
                     return True
-                
-            else:
+                        
+                elif event.key()==Qt.Key_Backspace:
 
-                mode=self.app.modes.leaders.get(event.text(), None)
-                # if mode and mode.name in ['normal', 'command']:
-                if mode and mode.activateCheck(event): 
-                    self.app.modes.setMode(mode.name)
+                    self.clearKeys()
                     event.accept()
-                    return True 
+                    return True
+
+                elif event.key()==Qt.Key_Escape or event.text() == self.listen_leader:
+
+                    if self.name!='normal':
+
+                        self._onExecuteMatch()
+                        event.accept()
+                        return True
+
+                else:
+
+                    if not self.checkMode(event):
+
+                        self.addKeys(event)
+                        event.accept()
+                        return True
+
+                    else:
+
+                        return True
+                
+        elif event.type()==QEvent.KeyPress:
+
+            if self.checkMode(event): return True
 
         return super().eventFilter(widget, event)
+
+    def checkMode(self, event):
+
+        for mode in self.app.modes.getModes():
+            if mode.activateCheck(event):
+                self.app.modes.setMode(mode.name)
+                event.accept()
+                return True 
+
+        # mode=self.app.modes.leaders.get(event.text(), None)
+        # if mode and mode.activateCheck(event): 
+        #     self.app.modes.setMode(mode.name)
+        #     event.accept()
+        #     return True 
 
     def activateCheck(self, event):
 
@@ -226,10 +239,10 @@ class Mode(Plugin):
     def delisten(self):
 
         self.clearKeys()
-        self.listening=False
-
-        if self.ui.activated: self.ui.deactivate()
-        if self.show_statusbar: self.app.main.bar.setData()
+        if self.listening:
+            self.listening=False
+            if self.ui.activated: self.ui.deactivate()
+            if self.show_statusbar: self.app.main.bar.setData()
 
     def listen(self):
 

@@ -57,10 +57,20 @@ class StackWidget(QStackedWidget):
             widget.hideWanted.connect(self.hideWanted)
         if hasattr(widget, 'showWanted'):
             widget.showWanted.connect(self.showWanted)
-
         if self.listener: widget.installEventFilter(self.listener)
-
         return widget.sid
+
+    def removeWidget(self, widget):
+
+        setattr(self, widget.name, None)
+        if self.main==widget: setattr(self, 'main', None)
+        if hasattr(widget, 'hideWanted'):
+            widget.hideWanted.disconnect(self.hide)
+            widget.hideWanted.disconnect(self.hideWanted)
+        if hasattr(widget, 'showWanted'):
+            widget.showWanted.disconnect(self.showWanted)
+        if self.listener: widget.removeEventFilter(self.listener)
+        widget.sid=None
 
     def show(self, widget=None, focus=True):
 

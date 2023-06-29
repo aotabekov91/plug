@@ -10,24 +10,34 @@ class Manager(QObject):
 
     bufferCreated=pyqtSignal(object)
 
-    def __init__(self, app, buffer_class=Buffer):
+    def __init__(self, app, buffer=None, mode=None, plugin=None):
 
         super(Manager, self).__init__(app)
 
         self.app=app
         self.actions={}
 
-        self.app.modes=Modes(app)
-        self.app.plugins=Plugins(app)
-
-        self.setBuffer(buffer_class)
+        self.setModeManager(mode)
+        self.setBufferManager(buffer)
+        self.setPluginManager(plugin)
 
     def register(self, plugin, actions): 
 
         self.actions[plugin]=actions
         self.app.actionRegistered.emit()
 
-    def setBuffer(self, buffer_class): 
+    def setModeManager(self, mode):
 
-        self.app.buffer=buffer_class(self.app)
+        if not mode: mode=Modes
+        self.app.modes=mode(self.app)
+
+    def setPluginManager(self, plugin):
+
+        if not plugin: plugin=Plugins
+        self.app.plugins=plugin(self.app)
+
+    def setBufferManager(self, buffer): 
+
+        if not buffer: buffer=Buffer
+        self.app.buffer=buffer(self.app)
         self.app.buffer.bufferCreated.connect(self.bufferCreated)

@@ -4,12 +4,12 @@ from PyQt5.QtWidgets import *
 
 class TreeWidget(QTreeView):
 
-    itemChanged=pyqtSignal(QStandardItem)
-
     openWanted=pyqtSignal()
     hideWanted=pyqtSignal()
     returnPressed=pyqtSignal()
 
+    itemChanged=pyqtSignal(object)
+    indexChanged=pyqtSignal(object)
     keyPressEventOccurred=pyqtSignal(object)
 
     def __init__(self, *args, **kwargs): 
@@ -222,6 +222,7 @@ class TreeWidget(QTreeView):
         super().setCurrentIndex(index)
         if self.model() is None: return
         if self.currentItem() is None: return
+        self.indexChanged.emit(index)
         self.itemChanged.emit(self.currentItem())
 
     def event(self, event):

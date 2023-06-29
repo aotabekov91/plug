@@ -16,9 +16,10 @@ class Buffer(QObject):
         self.watch=QFileSystemWatcher()
         self.watch.fileChanged.connect(self.on_fileChanged)
 
-    def load(self, filePath): raise 
-
-    def watchFile(self, filePath): self.watch.addPath(os.path.realpath(filePath))
+    def load(self, filePath): pass 
 
     def on_fileChanged(self, filePath): pass
 
+    def watchFile(self, filePath): 
+
+        self.watch.addPath(os.path.realpath(filePath))

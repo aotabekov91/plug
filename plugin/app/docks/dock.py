@@ -63,6 +63,8 @@ class Dock(QDockWidget):
         widget.prev_size=self.tab.size()
         widget.adjustSize()
 
+        widget.dock.show()
+        widget.dock.tab.show()
         widget.setFocus()
         widget.focusGained.emit()
 

@@ -20,21 +20,8 @@ class BaseApp(QApplication):
         super().__init__([])
 
         self.setConfig()
-
-        self.manager=Manager(self)
-        self.stack=StackWindow(self)
-
+        self.setUI()
         self.initiate()
-
-    def initiate(self):
-
-        self.loadPlugins()
-        self.loadModes()
-        self.parse()
-
-    def loadPlugins(self): self.plugins.load()
-
-    def loadModes(self): self.modes.load()
 
     def setConfig(self):
 
@@ -44,6 +31,35 @@ class BaseApp(QApplication):
         self.config=configparser.RawConfigParser()
         self.config.optionxform=str
         self.config.read(self.configPath)
+
+    def setUI(self):
+
+        self.setManager()
+        self.setStack()
+
+    def setStack(self, display_class=None, view_class=None):
+
+        self.stack=StackWindow(self, display_class, view_class)
+
+    def setManager(self, 
+                   manager=None, 
+                   buffer=None, 
+                   plugin=None, 
+                   mode=None):
+
+        if not manager: manager=Manager
+        self.manager=manager(self, buffer, mode, plugin)
+
+    def initiate(self):
+
+        self.loadPlugins()
+        self.loadModes()
+        self.parse()
+        self.stack.show()
+
+    def loadPlugins(self): self.plugins.load()
+
+    def loadModes(self): self.modes.load()
 
     def parse(self):
 

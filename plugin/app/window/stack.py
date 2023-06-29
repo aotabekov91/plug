@@ -3,27 +3,21 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from .main import MainWindow
+from ..display import Display
 from ...widget import StackWidget
 
 class StackWindow(QMainWindow):
 
-    def __init__(self, app):
+    def __init__(self, app, display_class=None, view_class=None):
 
         super().__init__()
 
         self.app=app
         self.stack=StackWidget()
-
         self.setCentralWidget(self.stack)
+        self.setUI(display_class, view_class)
 
-        self.setUI()
-
-        self.app.main=MainWindow(self.app)
-        self.add(self.app.main, 'main', main=True)
-
-        self.show(self.app.main)
-
-    def setUI(self):
+    def setUI(self, display_class, view_class):
 
         stl='''
             QWidget {
@@ -33,11 +27,17 @@ class StackWindow(QMainWindow):
                 }
                ''' 
 
+        self.app.main=MainWindow(self.app, display_class, view_class)
+        self.add(self.app.main, 'main', main=True)
         self.setStyleSheet(stl)
 
-    def add(self, *args, **kwargs):
+    def add(self, *args, **kwargs): 
 
         self.stack.addWidget(*args, **kwargs)
+
+    def remove(self, *args, **kwargs): 
+
+        self.stack.removeWidget(*args, **kwargs)
 
     def show(self, *args, **kwargs):
 

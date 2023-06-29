@@ -23,7 +23,8 @@ class Docks(QObject):
 
         self.createDocks()
 
-        self.configure=Configure(window.app, 'Docks', self, mode_keys={'command':'d'})
+        self.configure=Configure(window.app, 'Docks', self,
+                                 mode_keys={'command':'d', 'normal':'d'})
 
     def createDocks(self):
 
@@ -62,6 +63,7 @@ class Docks(QObject):
         self.hideAll()
 
     def eventFilter(self, widget, event):
+
         if event.type()==QEvent.Resize:
             self.adjustDocks()
             return True
@@ -78,6 +80,11 @@ class Docks(QObject):
 
         w.dock=getattr(self, f'{loc}')
         w.index=w.dock.tab.addWidget(w)
+
+    def delTab(self, w): 
+
+        if self.current==w.dock: self.current.hide()
+        w.dock.tab.removeWidget(w)
 
     def toggleFullscreen(self, dock=None):
 
@@ -153,43 +160,43 @@ class Docks(QObject):
             self.current.resize(factor=factor)
             self.current.setFocus()
 
-    @register('h', modes=['command'])
+    @register('h', modes=['command', 'normal'])
     def focusLeftDock(self): 
 
         self.window.app.modes.command.delisten_wanted=None
         self.focus('left')
 
-    @register('l', modes=['command'])
+    @register('l', modes=['command', 'normal'])
     def focusRightDock(self): 
 
         self.window.app.modes.command.delisten_wanted=None
         self.focus('right')
 
-    @register('k', modes=['command'])
+    @register('k', modes=['command', 'normal'])
     def focusTopDock(self): 
 
         self.window.app.modes.command.delisten_wanted=None
         self.focus('top')
 
-    @register('j', modes=['command'])
+    @register('j', modes=['command', 'normal'])
     def focusBottomDock(self): 
 
         self.window.app.modes.command.delisten_wanted=None
         self.focus('bottom') 
 
-    @register('f', modes=['command'])
+    @register('f', modes=['command', 'normal'])
     def toggleDockFullscreen(self): 
 
         self.window.app.modes.command.delisten_wanted=None
         self.toggleFullscreen()
 
-    @register('i', modes=['command'])
+    @register('zi', modes=['command', 'normal'])
     def zoomInDock(self, digit=1): 
 
         self.window.app.modes.command.delisten_wanted=None
         self.zoom('in', digit)
 
-    @register('o', modes=['command'])
+    @register('zo', modes=['command', 'normal'])
     def zoomOutDock(self, digit=1): 
 
         self.window.app.modes.command.delisten_wanted=None

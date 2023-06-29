@@ -22,6 +22,8 @@ class InputTree (QWidget):
 
         self.setMinimumSize(400, 600)
 
+        self.input.hide()
+
     def setUI(self):
 
         style_sheet='''

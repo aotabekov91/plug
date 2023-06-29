@@ -10,7 +10,7 @@ class TreeView(QTreeView):
 
     keyPressEventOccurred=pyqtSignal(object)
     returnPressed=pyqtSignal(object, object)
-    currentItemChanged=pyqtSignal(QStandardItem)
+    itemChanged=pyqtSignal(QStandardItem)
 
     def __init__(self, app, parent, location=None, name=None, model=None):
         super().__init__(app.window)
@@ -137,7 +137,7 @@ class TreeView(QTreeView):
         super().setCurrentIndex(index)
         if self.model() is None: return
         if self.currentItem() is None: return
-        self.currentItemChanged.emit(self.currentItem())
+        self.itemChanged.emit(self.currentItem())
 
     def setModel(self, model, iconProvider=EmptyIconProvider):
         super().setModel(model)
@@ -152,6 +152,6 @@ class TreeView(QTreeView):
         if event.type()==QEvent.Enter:
             item=self.currentItem()
             if item is not None:
-                self.currentItemChanged.emit(item)
+                self.itemChanged.emit(item)
         return super().event(event)
     
