@@ -11,6 +11,7 @@ from ..utils import ZMQListener, OSListener
 class PlugQT(Plug):
 
     def __init__(self, app,
+
                  name=None, 
                  config=None, 
                  port=None, 
@@ -39,9 +40,9 @@ class PlugQT(Plug):
         if self.config.has_section('OSShortcut'):
             config=dict(self.config['OSShortcut'])
             for func_name, key in config.items():
+                print(func_name, key)
                 func=getattr(self, func_name, None)
                 if func: self.os_listener.listen(key, func)
-
 
     def addLeader(self, leader):
 

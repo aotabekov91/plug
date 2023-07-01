@@ -4,7 +4,7 @@ import ast
 import inspect
 
 # from configparser import RawConfigParser
-from configparser import RawConfigParser
+from configparser import ConfigParser
 
 class Plug:
 
@@ -36,7 +36,7 @@ class Plug:
         file_path=os.path.abspath(inspect.getfile(self.__class__))
         folder_path=os.path.dirname(file_path).replace('\\', '/')
         config_path=f'{folder_path}/config.ini'
-        config=RawConfigParser()
+        config=ConfigParser()
         config.optionxform=str
         config.read(config_path)
         return config
@@ -54,6 +54,7 @@ class Plug:
         if self.config.has_section('Settings'):
             config=dict(self.config['Settings'])
             for name, value in config.items():
+                print(name, value)
                 try:
                     value=ast.literal_eval(value)
                 except:
