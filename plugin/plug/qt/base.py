@@ -37,7 +37,6 @@ class PlugQT(Plug):
 
     def setOSShortcuts(self):
 
-        raise
         if self.config.has_section('OSShortcut'):
             config=dict(self.config['OSShortcut'])
             for func_name, key in config.items():
