@@ -4,8 +4,7 @@ A plugin system inspired by vim.
 
 ## Install
 
-pip install -r requirements
-
+pip install -r requirements .
 
 ## Usage
 
