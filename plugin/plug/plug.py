@@ -1,11 +1,9 @@
 import os
-import sys
 import zmq
 import ast
-import time
 import inspect
 
-from os.path import abspath
+# from configparser import RawConfigParser
 from configparser import RawConfigParser
 
 class Plug:
@@ -90,3 +88,4 @@ class Plug:
     def exit(self):
 
         self.running=False
+        self.os_listener.unlistenAll()

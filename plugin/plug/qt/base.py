@@ -1,20 +1,16 @@
-import os
 import sys
 import zmq
-import time
-import inspect
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from ..plug import Plug
-from ..utils import ZMQListener 
+from ..utils import ZMQListener, OSListener
 
 class PlugQT(Plug):
 
     def __init__(self, app,
-
                  name=None, 
                  config=None, 
                  port=None, 
@@ -31,10 +27,21 @@ class PlugQT(Plug):
 
         self.actions={}
         self.commandKeys={}
+        self.os_listener=OSListener(app)
 
         self.setSettings()
         self.setShortcuts()
         self.registerActions()
+        self.setOSShortcuts()
+
+    def setOSShortcuts(self):
+
+        if self.config.has_section('OSShortcut'):
+            config=dict(self.config['OSShortcut'])
+            for func_name, key in config.items():
+                func=getattr(self, func_name, None)
+                if func: self.os_listener.listen(key, func)
+
 
     def addLeader(self, leader):
 
