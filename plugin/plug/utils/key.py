@@ -37,21 +37,3 @@ class OSListener(QAbstractNativeEventFilter):
     def nativeEventFilter(self, eventType, message):
 
         return keybinder.handler(eventType, message), 0
-
-if __name__ == '__main__':
-
-    def callback(): print("hello world")
-
-    def exit_app(window): window.close()
-
-    app = QtWidgets.QApplication(sys.argv)
-    window = QtWidgets.QMainWindow()
-
-    os_listener = OSListener(app)
-    os_listener.listen("Shift+Ctrl+A", callback)
-    os_listener.listen("Shift+Ctrl+E", lambda: exit_app(window))
-
-    window.show()
-    app.exec_()
-
-    os_listener.unlistenAll()

@@ -54,7 +54,6 @@ class Plug:
         if self.config.has_section('Settings'):
             config=dict(self.config['Settings'])
             for name, value in config.items():
-                print(name, value)
                 try:
                     value=ast.literal_eval(value)
                 except:
