@@ -2,6 +2,7 @@ import os
 import zmq
 import ast
 import inspect
+from pathlib import Path
 
 # from configparser import RawConfigParser
 from configparser import ConfigParser
@@ -26,6 +27,18 @@ class Plug:
         self.setConfig()
         self.setSettings()
         self.setConnection()
+
+    def createConfig(self, config_folder=None):
+
+        if not config_folder: 
+            folder_name=self.__class__.__name__.lower()
+            config_folder=f'~/{folder_name}'
+
+        config_folder=os.path.expanduser(config_folder)
+        self.config_folder=Path(config_folder)
+
+        if not os.path.exists(config_folder): 
+            self.config_folder.mkdir(parents=True, exist_ok=True)
 
     def handle(self, request):
 
