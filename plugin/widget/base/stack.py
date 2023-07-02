@@ -105,3 +105,14 @@ class StackWidget(QStackedWidget):
         
         super().adjustSize()
         for i in range(self.count()): self.widget(i).adjustSize()
+
+
+    def setLocation(self, kind='center'):
+
+        if kind=='center':
+            frame=self.frameGeometry()
+            desktop_center=QDesktopWidget().availableGeometry().center()
+            frame.moveCenter(desktop_center)
+            point=frame.topLeft()
+            point.setY(150)
+            self.move(point)
