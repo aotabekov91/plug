@@ -228,6 +228,19 @@ class ListWidget(QListWidget):
         else:
             super().keyPressEvent(event)
 
+    def focusItem(self, row=None):
+
+        if not row: 
+            item=self.list.currentItem()
+        else:
+            for i in range(self.count()):
+                if i==row:
+                    item=self.item(i)
+                    break
+        if item: 
+            self.setCurrentRow(row)
+            self.itemWidget(item).setFocus()
+
     def adjustSize(self, width=None, height=None):
 
         if not width or not height: 

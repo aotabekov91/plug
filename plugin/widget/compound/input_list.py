@@ -29,8 +29,8 @@ class InputList (QWidget):
 
         if list_class:
             self.list=list_class(**kwargs)
-            self.list.openWanted.connect(self.focusItem)
             self.list.hideWanted.connect(self.hideWanted)
+            self.list.openWanted.connect(self.list.focusItem)
             self.list.returnPressed.connect(self.returnPressed)
             self.list.returnPressed.connect(self.listReturnPressed)
 
