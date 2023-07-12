@@ -7,8 +7,8 @@ class Command(Mode):
 
         super(Command, self).__init__(app=app, 
                                       name='command',
-                                      listen_leader='!',
-                                      show_commands=True, 
+                                      listen_leader=',',
+                                      show_commands=False, 
                                       show_statusbar=True,
                                       )
 

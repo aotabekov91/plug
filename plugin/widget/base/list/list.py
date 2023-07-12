@@ -231,7 +231,8 @@ class ListWidget(QListWidget):
     def focusItem(self, row=None):
 
         if not row: 
-            item=self.list.currentItem()
+            row=self.currentRow()
+            item=self.currentItem()
         else:
             for i in range(self.count()):
                 if i==row:
@@ -240,6 +241,15 @@ class ListWidget(QListWidget):
         if item: 
             self.setCurrentRow(row)
             self.itemWidget(item).setFocus()
+
+    def getWidget(self, row=None): 
+
+        if not row: row=self.currentRow()
+
+        for i in range(self.count()):
+            if i==row:
+                item=self.item(i)
+                return self.itemWidget(item)
 
     def adjustSize(self, width=None, height=None):
 
