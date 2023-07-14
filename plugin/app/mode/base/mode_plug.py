@@ -107,3 +107,4 @@ class AppMode(PlugApp):
             self.deactivate()
         else:
             self.activate()
+            self.setLocation('center')

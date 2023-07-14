@@ -247,9 +247,7 @@ class ListWidget(QListWidget):
         if not row: row=self.currentRow()
 
         for i in range(self.count()):
-            if i==row:
-                item=self.item(i)
-                return self.itemWidget(item)
+            if i==row: return self.itemWidget(self.item(i))
 
     def adjustSize(self, width=None, height=None):
 

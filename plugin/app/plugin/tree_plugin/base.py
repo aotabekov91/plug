@@ -105,12 +105,14 @@ class TreePlugin(Plugin):
     def find(self, item, model, parent=None):
 
         root=model.invisibleRootItem()
+
         if root.rowCount()>0: 
             if not parent: parent=model.indexFromItem(root.child(0,0))
 
             for row in range(model.rowCount(parent)):
                 index=model.index(row, 0, parent)
                 if index==model.indexFromItem(item): return index
+
             for row in range(model.rowCount(parent)):
                 index=model.index(row, 0, parent)
                 match=self.sync(item, model, index)
