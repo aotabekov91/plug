@@ -26,8 +26,8 @@ class BaseApp(QApplication):
     def setConfig(self):
 
         file_path=os.path.abspath(inspect.getfile(self.__class__))
-        mode_path=os.path.dirname(file_path).replace('\\', '/')
-        self.configPath=f'{mode_path}/config.ini'
+        self.path=os.path.dirname(file_path).replace('\\', '/')
+        self.configPath=f'{self.path}/config.ini'
         self.config=configparser.RawConfigParser()
         self.config.optionxform=str
         self.config.read(self.configPath)

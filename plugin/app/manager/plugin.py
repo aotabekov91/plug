@@ -19,15 +19,17 @@ class Plugins(QObject):
 
     def load(self):
 
-        if self.app.config.has_section('Manager'):
-            self.manager_path=self.app.config.get('Manager', 'plugins_path') 
-            sys.path.append(self.manager_path)
-            if os.path.exists(self.manager_path):
-                for p_name in os.listdir(self.manager_path):
-                    if not p_name.startswith('__'):
-                        plugin_module=importlib.import_module(p_name)
-                        if hasattr(plugin_module, 'get_plugin_class'):
-                            self.addPlugin(plugin_module.get_plugin_class())
+        # if self.app.config.has_section('Manager'):
+            # self.manager_path=self.app.config.get('Manager', 'plugins_path') 
+
+        self.plugins_path=os.path.join(self.app.path, 'plugins')
+        if os.path.exists(self.plugins_path):
+            sys.path.append(self.plugins_path)
+            for p_name in os.listdir(self.plugins_path):
+                if not p_name.startswith('__'):
+                    plugin_module=importlib.import_module(p_name)
+                    if hasattr(plugin_module, 'get_plugin_class'):
+                        self.addPlugin(plugin_module.get_plugin_class())
 
         self.app.actionRegistered.emit()
 
