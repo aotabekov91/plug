@@ -94,12 +94,16 @@ class AppMode(PlugApp):
     def deactivate(self): 
 
         self.activated=False
-        if hasattr(self, 'ui'): self.ui.hide()
+        if hasattr(self, 'ui'): 
+            self.ui.hide()
+            self.ui.setLocation('center')
 
     def activate(self): 
 
         self.activated=True
-        if hasattr(self, 'ui'): self.ui.show()
+        if hasattr(self, 'ui'): 
+            self.ui.show()
+            self.ui.setLocation('center')
 
     def toggle(self):
 
@@ -107,4 +111,3 @@ class AppMode(PlugApp):
             self.deactivate()
         else:
             self.activate()
-            self.setLocation('center')
