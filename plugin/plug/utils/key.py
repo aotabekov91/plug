@@ -1,39 +1,36 @@
-import sys
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import QAbstractNativeEventFilter, QAbstractEventDispatcher
+from pynput import keyboard
 
-from pyqtkeybind import keybinder
+class OSListener(QObject):
 
-class OSListener(QAbstractNativeEventFilter):
+    def __init__(self, parent):
 
-    def __init__(self, app):
+        super(OSListener, self).__init__()
 
-        super().__init__()
+        self.hotkeys=[]
+        self.parent = parent
 
-        self.shortcuts=[]
-        self.app_id=id(app)
-        keybinder.init()
-        self.setup()
+        self.listener=keyboard.Listener(
+                on_release=self.on_release,
+                on_press=self.on_press)
 
-    def setup(self):
+    def listen(self, key, func): 
 
-        event_dispatcher = QAbstractEventDispatcher.instance()
-        event_dispatcher.installNativeEventFilter(self)
+        self.hotkeys += [keyboard.HotKey(
+                keyboard.HotKey.parse(key), 
+                func)]
 
-    def listen(self, key, func):
+    def on_release(self, key):
 
-        self.shortcuts+=[key]
-        keybinder.register_hotkey(self.app_id, key, func)
+        for hotkey in self.hotkeys:
+            hotkey.release(self.listener.canonical(key))
 
-    def unlisten(self, key):
+    def on_press(self, key):
 
-        keybinder.unregister_hotkey(self.app_id, key)
+        for hotkey in self.hotkeys:
+            hotkey.press(self.listener.canonical(key))
 
-    def unlistenAll(self):
-
-        for key in self.shortcuts: self.unlisten(key)
-
-    def nativeEventFilter(self, eventType, message):
-
-        return keybinder.handler(eventType, message), 0
+    def loop(self): self.listener.start()

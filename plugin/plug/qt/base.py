@@ -1,3 +1,4 @@
+import re
 import sys
 import zmq
 
@@ -28,7 +29,6 @@ class PlugQT(Plug):
 
         self.actions={}
         self.commandKeys={}
-        self.os_listener=OSListener(app)
 
         self.setSettings()
         self.setShortcuts()
@@ -38,10 +38,12 @@ class PlugQT(Plug):
     def setOSShortcuts(self):
 
         if self.config.has_section('OSShortcut'):
+            self.setOSListener()
             config=dict(self.config['OSShortcut'])
             for func_name, key in config.items():
                 print(func_name, key)
                 func=getattr(self, func_name, None)
+                key=re.sub(r'(Shift|Alt|Ctrl)', r'<\1>', key).lower() 
                 if func: self.os_listener.listen(key, func)
 
     def addLeader(self, leader):
@@ -57,6 +59,14 @@ class PlugQT(Plug):
         self.listener.started.connect(self.zeromq_listener.loop)
         self.zeromq_listener.request.connect(self.handle)
         QTimer.singleShot(0, self.listener.start)
+
+    def setOSListener(self):
+
+        self.os_thread = QThread()
+        self.os_listener=OSListener(self)
+        self.os_listener.moveToThread(self.os_thread)
+        self.os_thread.started.connect(self.os_listener.loop)
+        QTimer.singleShot(0, self.os_thread.start)
 
     def setConnection(self, exit=True, kind=zmq.PULL):
 
@@ -138,7 +148,8 @@ class PlugQT(Plug):
         self.leader_pressed=None
         self.command_activated=False
         if hasattr(self, 'ui') and hasattr(self.ui, 'commands'):
-            if self.ui.current==self.ui.commands: self.ui.show(self.ui.previous)
+            if self.ui.current==self.ui.commands: 
+                self.ui.show(self.ui.previous)
 
     def activateCommandMode(self):
 

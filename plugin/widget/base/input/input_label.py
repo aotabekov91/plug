@@ -117,6 +117,8 @@ class InputLabelWidget (QWidget):
     def setFocus(self): self.m_edit.setFocus()
 
     def keyPressEvent(self, event):
-        if event.modifiers() and event.key() in [Qt.Key_BracketLeft]:
-            self.hideWanted.emit()
+
+        if event.modifiers()==Qt.ControlModifier:  
+            if event.key() in [Qt.Key_BracketLeft]:
+                return self.hideWanted.emit()
         super().keyPressEvent(event)

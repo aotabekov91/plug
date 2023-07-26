@@ -90,7 +90,7 @@ class ListWidget(QListWidget):
 
     def move(self, crement=-1):
 
-        self.setFocus()
+        # self.setFocus()
         crow = self.currentRow()
         if crow==None: return
         crow += crement
@@ -210,17 +210,13 @@ class ListWidget(QListWidget):
             self.move(crement=-1)
         elif event.key() in  [Qt.Key_M, Qt.Key_Enter]:
             self.returnPressed.emit()
-        elif event.key() in [Qt.Key_Escape, Qt.Key_BracketLeft]:
+        elif event.key() in [Qt.Key_Escape]: 
             self.hideWanted.emit()
         elif event.key() == Qt.Key_L:
             self.openWanted.emit()
-        elif event.modifiers() or self.hasFocus():
-            if event.key() in [Qt.Key_N]:
-                self.move(crement=1)
-            elif event.key() in [Qt.Key_BracketLeft]:
+        elif event.modifiers()==Qt.ControlModifier:
+            if event.key() in [Qt.Key_BracketLeft]:
                 self.hideWanted.emit()
-            elif event.key() in [Qt.Key_P]:
-                self.move(crement=-1)
             elif event.key() in  [Qt.Key_M, Qt.Key_Return, Qt.Key_Enter]:
                 self.returnPressed.emit()
             else:

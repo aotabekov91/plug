@@ -98,7 +98,4 @@ class Plug:
             answer=self.handle(request)
             if answer: self.socket.send_json(answer)
 
-    def exit(self):
-
-        self.running=False
-        self.os_listener.unlistenAll()
+    def exit(self): self.running=False
