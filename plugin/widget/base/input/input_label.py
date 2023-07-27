@@ -118,7 +118,9 @@ class InputLabelWidget (QWidget):
 
     def keyPressEvent(self, event):
 
-        if event.modifiers()==Qt.ControlModifier:  
+        if event.key()==Qt.Key_Escape:
+            self.hideWanted.emit()
+        elif event.modifiers()==Qt.ControlModifier:  
             if event.key() in [Qt.Key_BracketLeft]:
                 return self.hideWanted.emit()
         super().keyPressEvent(event)
