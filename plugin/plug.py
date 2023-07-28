@@ -1,15 +1,24 @@
 import os
+import re
 import zmq
 import ast
 import inspect
 from pathlib import Path
+from threading import Thread
 
-# from configparser import RawConfigParser
 from configparser import ConfigParser
+
+from .utils import KeyListener
 
 class Plug:
 
-    def __init__(self, name=None, config=None, port=None, argv=None):
+    def __init__(self, 
+                 name=None, 
+                 config=None, 
+                 port=None, 
+                 parent_port=None,
+                 umay_port=None,
+                 argv=None):
 
         if argv!=None:
             super(Plug, self).__init__(argv)
@@ -19,14 +28,73 @@ class Plug:
         self.name=name
         self.port=port
         self.config=config
+        self.umay_port=umay_port
+        self.parent_port=parent_port
 
+        self.intents=None
+        self.entities=None
         self.running = False
         self.activated=False
+
+        self.setup()
+
+    def setup(self):
 
         self.setName()
         self.setConfig()
         self.setSettings()
         self.setConnection()
+        self.setOSShortcuts()
+        self.registerByParent()
+        self.registerByUmay()
+
+    def setOSListener(self):
+
+        def listen(): 
+
+            self.os_listener=KeyListener(self)
+            self.os_listener.loop()
+
+        thread=Thread(target=listen)
+        thread.daemon=True
+        thread.start()
+
+    def setOSShortcuts(self):
+
+        if self.config.has_section('OSShortcut'):
+            self.setOSListener()
+            config=dict(self.config['OSShortcut'])
+            for func_name, key in config.items():
+                func=getattr(self, func_name, None)
+                key=re.sub(r'(Shift|Alt|Ctrl)', r'<\1>', key).lower() 
+                if func: self.os_listener.listen(key, func)
+
+    def registerByParent(self):
+
+        if self.parent_port:
+            self.parent_socket=zmq.Context().socket(zmq.REQ)
+            self.parent_socket.connect(
+                    f'tcp://localhost:{self.parent_port}')
+            self.parent_socket.send_json({
+                'command': 'register',
+                'mode': self.__class__.__name__,
+                'port': self.port
+                })
+            respond=self.parent_socket.recv_json()
+            print(respond)
+
+    def registerByUmay(self):
+
+        if self.umay_port:
+            self.umay_socket=zmq.Context().socket(zmq.PUSH)
+            self.umay_socket.connect(
+                    f'tcp://localhost:{self.umay_port}')
+            self.umay_socket.send_json({
+                'command': 'register',
+                'mode': self.__class__.__name__,
+                'port': self.port
+                })
+            self.umay_socket.recv_json()
 
     def createConfig(self, config_folder=None):
 
@@ -42,25 +110,58 @@ class Plug:
 
     def handle(self, request):
 
-        print(f'{self.__class__.__name__} received: {request}')
+        print(f'{self.name} received: ', request)
 
-    def readConfig(self): 
+        action=request.get('action', None)
 
-        file_path=os.path.abspath(inspect.getfile(self.__class__))
-        folder_path=os.path.dirname(file_path).replace('\\', '/')
-        config_path=f'{folder_path}/config.ini'
-        config=ConfigParser()
-        config.optionxform=str
-        config.read(config_path)
-        return config
+        func=getattr(self, action, None)
+
+        if not func and hasattr(self, 'ui'): 
+            func=getattr(self.ui, action, None)
+
+        if func:
+            prmts=inspect.signature(func).parameters
+            if len(prmts)==0:
+                func()
+            elif 'request' in prmts:
+                func(request)
+            else:
+                fp={p:request[p] for p in prmts if p in request}
+                if fp:
+                    func(**fp)
+                else:
+                    msg=f'{self.__class__.__name__}: not understood'
+
+            msg=f"{self.__class__.__name__}: handled request"
+
+        else:
+
+            msg=f'{self.__class__.__name__}: not understood'
+
+        print(msg)
 
     def setName(self):
 
-        if self.name is None: self.name=self.__class__.__name__.lower()
+        if self.name is None: self.name=self.__class__.__name__
 
     def setConfig(self):
 
-        if self.config is None: self.config=self.readConfig()
+        file_path=os.path.abspath(
+                inspect.getfile(self.__class__))
+        folder_path=os.path.dirname(
+                file_path).replace('\\', '/')
+
+        if self.config is None: 
+            self.config_path=f'{folder_path}/config.ini'
+            self.config=ConfigParser()
+            self.config.optionxform=str
+            self.config.read(self.config_path)
+
+        intents=f'{folder_path}/intents.yaml'
+        entities=f'{folder_path}/entities.yaml'
+
+        if os.path.exists(intents): self.intents=intents
+        if os.path.exists(entities): self.entities=entities
 
     def setSettings(self):
 
@@ -72,23 +173,13 @@ class Plug:
                 except:
                     pass
                 attr=getattr(self, name, None)
-                if not attr:
-                    setattr(self, name, value)
+                if not attr: setattr(self, name, value)
 
-    def setListener(self, kind=zmq.PULL):
+    def setConnection(self, kind=zmq.PULL):
 
         if self.port:
             self.socket = zmq.Context().socket(kind)
             self.socket.bind(f'tcp://*:{self.port}')
-
-    def setConnection(self):
-
-        if self.port:
-            try:
-                self.setListener()
-            except:
-                self.socket=None
-                print(f'{self.port} is busy')
 
     def run(self):
 
@@ -99,3 +190,24 @@ class Plug:
             if answer: self.socket.send_json(answer)
 
     def exit(self): self.running=False
+
+    def toggle(self):
+
+        if not self.activated:
+            self.activate()
+        else:
+            self.deactivate()
+
+    def activate(self):
+
+        if not self.activated:
+            self.activated=True
+            if hasattr(self, 'ui'):
+                self.ui.show()
+
+    def deactivate(self):
+
+        if self.activated:
+            self.activated=False
+            if hasattr(self, 'ui'):
+                self.ui.hide()

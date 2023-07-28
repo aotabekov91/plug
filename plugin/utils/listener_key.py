@@ -1,14 +1,10 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-
 from pynput import keyboard
 
-class OSListener(QObject):
+class KeyListener:
 
     def __init__(self, parent):
 
-        super(OSListener, self).__init__()
+        super(KeyListener, self).__init__()
 
         self.hotkeys=[]
         self.parent = parent
