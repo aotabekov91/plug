@@ -1,3 +1,3 @@
-from . import app
-from . import plug
-from . import widget 
+from .utils import *
+from .plug import Plug
+from .plug_qt impr PlugQt
