@@ -43,22 +43,10 @@ class Plug:
         self.setConfig()
         self.setSettings()
         self.setConnection()
-        self.setOSShortcuts()
         self.registerByParent()
         self.registerByUmay()
 
-    def setOSListener(self):
-
-        from .utils.listener import KeyListener
-
-        def listen(): 
-
-            self.os_listener=KeyListener(self)
-            self.os_listener.loop()
-
-        thread=Thread(target=listen)
-        thread.daemon=True
-        thread.start()
+    def setOSListener(self): pass
 
     def setOSShortcuts(self):
 
