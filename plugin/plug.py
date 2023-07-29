@@ -9,8 +9,6 @@ from threading import Thread
 
 from configparser import ConfigParser
 
-from .utils import KeyListener
-
 class Plug:
 
     def __init__(self, 
@@ -50,6 +48,8 @@ class Plug:
         self.registerByUmay()
 
     def setOSListener(self):
+
+        from .utils.listener import KeyListener
 
         def listen(): 
 
