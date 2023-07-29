@@ -2,6 +2,7 @@ import os
 import re
 import zmq
 import ast
+import yaml
 import inspect
 from pathlib import Path
 from threading import Thread
@@ -72,9 +73,11 @@ class Plug:
     def registerByParent(self):
 
         if self.parent_port:
+
             self.parent_socket=zmq.Context().socket(zmq.REQ)
             self.parent_socket.connect(
                     f'tcp://localhost:{self.parent_port}')
+
             self.parent_socket.send_json({
                 'command': 'register',
                 'mode': self.__class__.__name__,
@@ -86,15 +89,17 @@ class Plug:
     def registerByUmay(self):
 
         if self.umay_port:
+
             self.umay_socket=zmq.Context().socket(zmq.PUSH)
             self.umay_socket.connect(
                     f'tcp://localhost:{self.umay_port}')
+
             self.umay_socket.send_json({
-                'command': 'register',
+                'action': 'register',
                 'mode': self.__class__.__name__,
-                'port': self.port
+                'port': self.port,
+                'files': [self.intents, self.entities],
                 })
-            self.umay_socket.recv_json()
 
     def createConfig(self, config_folder=None):
 
@@ -114,10 +119,12 @@ class Plug:
 
         action=request.get('action', None)
 
-        func=getattr(self, action, None)
+        func=None
+        if action:
 
-        if not func and hasattr(self, 'ui'): 
-            func=getattr(self.ui, action, None)
+            func=getattr(self, action, None)
+            if not func and hasattr(self, 'ui'): 
+                func=getattr(self.ui, action, None)
 
         if func:
             prmts=inspect.signature(func).parameters
@@ -138,7 +145,7 @@ class Plug:
 
             msg=f'{self.__class__.__name__}: not understood'
 
-        print(msg)
+        return msg
 
     def setName(self):
 
@@ -160,8 +167,12 @@ class Plug:
         intents=f'{folder_path}/intents.yaml'
         entities=f'{folder_path}/entities.yaml'
 
-        if os.path.exists(intents): self.intents=intents
-        if os.path.exists(entities): self.entities=entities
+        if os.path.exists(intents): 
+            with open(intents, 'r') as f:
+                self.intents=list(yaml.safe_load_all(f))
+        if os.path.exists(entities): 
+            with open(entities, 'r') as f:
+                self.entities=list(yaml.safe_load_all(f))
 
     def setSettings(self):
 
@@ -181,13 +192,13 @@ class Plug:
             self.socket = zmq.Context().socket(kind)
             self.socket.bind(f'tcp://*:{self.port}')
 
-    def run(self):
+    def run(self, answer=False):
 
         self.running=True
         while self.running and self.socket:
             request=self.socket.recv_json()
-            answer=self.handle(request)
-            if answer: self.socket.send_json(answer)
+            respond=self.handle(request)
+            if answer: self.socket.send_json(respond)
 
     def exit(self): self.running=False
 

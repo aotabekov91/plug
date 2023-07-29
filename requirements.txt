@@ -1,2 +1,3 @@
+pyyaml
 pyzmq==25.0.2
 pynput==1.7.6
