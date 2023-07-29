@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name='plugin', 
+setup(name='plug', 
       version='0.0.1', 
-      description='Plugin',
+      description='Plug',
       )
