@@ -17,11 +17,3 @@ dependencies = [
 [project.optional-dependencies]
 
 listen = ['pynput']
-
-[tool.setuptools]
-
-include-package-data = true
-
-[tool.setuptools.packages.find]
-
-where = ["src"]
