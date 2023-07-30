@@ -1,2 +1,2 @@
 from .plug import Plug
-from .utils import command 
+from .utils import command, Generic
