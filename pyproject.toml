@@ -18,6 +18,10 @@ dependencies = [
 
 listen = ['pynput']
 
-[tool.setuptools.package-data]
+[tool.setuptools]
 
-plug = ["*.ini", "*.yaml"]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+
+where = ["src"]
