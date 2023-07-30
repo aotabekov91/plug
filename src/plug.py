@@ -108,6 +108,9 @@ class Plug:
         action=request.get('action', None)
 
         func=None
+        result=None
+        msg=f'{self.__class__.__name__}: not understood'
+
         if action:
 
             func=getattr(self, action, None)
@@ -117,23 +120,17 @@ class Plug:
         if func:
             prmts=inspect.signature(func).parameters
             if len(prmts)==0:
-                func()
+                result=func()
+                msg=f"{self.__class__.__name__}: handled request"
             elif 'request' in prmts:
-                func(request)
+                result=func(request)
+                msg=f"{self.__class__.__name__}: handled request"
             else:
                 fp={p:request[p] for p in prmts if p in request}
                 if fp:
-                    func(**fp)
-                else:
-                    msg=f'{self.__class__.__name__}: not understood'
-
-            msg=f"{self.__class__.__name__}: handled request"
-
-        else:
-
-            msg=f'{self.__class__.__name__}: not understood'
-
-        return msg
+                    result=func(**fp)
+                    msg=f"{self.__class__.__name__}: handled request"
+        return {'info': msg, 'result': result}
 
     def setName(self):
 
