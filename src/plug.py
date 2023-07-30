@@ -86,7 +86,7 @@ class Plug:
                 'action': 'register',
                 'mode': self.__class__.__name__,
                 'port': self.port,
-                'files': [self.intents, self.entities],
+                'paths': [self.intents, self.entities],
                 })
 
     def createConfig(self, config_folder=None):
