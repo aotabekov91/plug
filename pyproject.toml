@@ -18,10 +18,10 @@ dependencies = [
 
 listen = ['pynput']
 
-[tool.setuptools.packages.find]
+[tool.setuptools.packages]
 
-where = ["plug"]
+find = {}
 
 [tool.setuptools.package-data]
 
-umay = ["*.ini", "*.yaml"]
+plug = ["*.ini", "*.yaml"]
