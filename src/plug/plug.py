@@ -13,10 +13,11 @@ class Plug:
 
     def __init__(self, 
                  name=None, 
+                 keyword=None,
                  config=None, 
                  port=None, 
                  parent_port=None,
-                 umay_port=None,
+                 umay_port=19999,
                  argv=None):
 
         if argv!=None:
@@ -27,6 +28,7 @@ class Plug:
         self.name=name
         self.port=port
         self.config=config
+        self.keyword=keyword
         self.umay_port=umay_port
         self.parent_port=parent_port
 
@@ -45,6 +47,7 @@ class Plug:
         self.setConnection()
         self.registerByParent()
         self.registerByUmay()
+        self.setOSShortcuts()
 
     def setOSListener(self): pass
 
@@ -82,11 +85,14 @@ class Plug:
             self.umay_socket.connect(
                     f'tcp://localhost:{self.umay_port}')
 
+            paths=[self.intents, self.entities]
+
             self.umay_socket.send_json({
-                'action': 'register',
-                'mode': self.__class__.__name__,
+                'paths': paths, 
                 'port': self.port,
-                'paths': [self.intents, self.entities],
+                'action': 'register',
+                'keyword': self.keyword,
+                'mode': self.__class__.__name__,
                 })
 
     def createConfig(self, config_folder=None):
@@ -109,7 +115,8 @@ class Plug:
 
         func=None
         result=None
-        msg=f'{self.__class__.__name__}: not understood'
+
+        status='nok'
 
         if action:
 
@@ -121,20 +128,22 @@ class Plug:
             prmts=inspect.signature(func).parameters
             if len(prmts)==0:
                 result=func()
-                msg=f"{self.__class__.__name__}: handled request"
             elif 'request' in prmts:
                 result=func(request)
-                msg=f"{self.__class__.__name__}: handled request"
             else:
                 fp={p:request[p] for p in prmts if p in request}
-                if fp:
-                    result=func(**fp)
-                    msg=f"{self.__class__.__name__}: handled request"
-        return {'info': msg, 'result': result}
+                result=func(**fp)
+
+            status='ok'
+
+        return {'result': result, 'status': status}
 
     def setName(self):
 
-        if self.name is None: self.name=self.__class__.__name__
+        if self.name is None: 
+            self.name=self.__class__.__name__
+        if self.keyword is None:
+            self.keyword=self.name.lower()
 
     def setConfig(self):
 
@@ -155,6 +164,7 @@ class Plug:
         if os.path.exists(intents): 
             with open(intents, 'r') as f:
                 self.intents=list(yaml.safe_load_all(f))
+
         if os.path.exists(entities): 
             with open(entities, 'r') as f:
                 self.entities=list(yaml.safe_load_all(f))
