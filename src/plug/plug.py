@@ -18,7 +18,9 @@ class Plug:
                  port=None, 
                  parent_port=None,
                  umay_port=19999,
-                 argv=None):
+                 argv=None,
+                 **kwargs,
+                 ):
 
         if argv!=None:
             super(Plug, self).__init__(argv)
