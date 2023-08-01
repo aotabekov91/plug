@@ -5,7 +5,6 @@ import ast
 import yaml
 import inspect
 from pathlib import Path
-from threading import Thread
 
 from configparser import ConfigParser
 
@@ -13,16 +12,16 @@ class Plug:
 
     def __init__(self, 
                  name=None, 
-                 keyword=None,
-                 config=None, 
                  port=None, 
-                 parent_port=None,
+                 config=None, 
+                 keyword=None,
                  umay_port=19999,
+                 parent_port=None,
                  argv=None,
                  **kwargs,
                  ):
 
-        if argv!=None:
+        if argv!=None: 
             super(Plug, self).__init__(argv)
         else:
             super(Plug, self).__init__()
