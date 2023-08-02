@@ -78,7 +78,8 @@ class Plug:
                 key=re.sub(r'(Shift|Alt|Ctrl)', r'<\1>', key).lower() 
                 if func: self.os_listener.listen(key, func)
 
-    def setActions(self):
+    def setActions(self, obj=None):
+
 
         if self.config.has_section('Keys'):
             config=dict(self.config['Keys'])
@@ -94,11 +95,14 @@ class Plug:
                     self.actions[d]=m 
                     self.commandKeys[m.key]=m
 
+        if not obj: obj=self
+
         cnd=[MethodType, BuiltinFunctionType]
-        for f in self.__dir__():
-            m=getattr(self, f)
+        for f in obj.__dir__():
+            m=getattr(obj, f)
             if type(m) in cnd and hasattr(m, 'modes'):
-                d=(self.name, m.name)
+                name=getattr(obj, 'name', obj.__class__.__name__)
+                d=(name, m.name)
                 if not d in self.actions:
                     self.actions[d]=m 
                     if type(m.key)==str:
@@ -106,6 +110,7 @@ class Plug:
                     elif type(m.key)==list:
                         for k in m.key: 
                             self.commandKeys[k]=m
+
 
     def registerByParent(self):
 
