@@ -6,8 +6,8 @@ import yaml
 import inspect
 import argparse
 from pathlib import Path
-
 from configparser import ConfigParser
+from types import MethodType, BuiltinFunctionType
 
 class Plug:
 
@@ -19,6 +19,7 @@ class Plug:
                  umay_port=19999,
                  parent_port=None,
                  listen_port=True,
+                 respond_port=False,
                  argv=None,
                  **kwargs,
                  ):
@@ -33,8 +34,13 @@ class Plug:
         self.config=config
         self.keyword=keyword
         self.umay_port=umay_port
-        self.listen_port=listen_port
         self.parent_port=parent_port
+
+        self.listen_port=listen_port
+        self.respond_port=respond_port
+
+        self.actions={}
+        self.commandKeys={}
 
         self.socket=None
         self.intents=None
@@ -54,8 +60,11 @@ class Plug:
         self.registerByParent()
         self.registerByUmay()
         self.setOSShortcuts()
+        self.setActions()
 
-    def setParser(self): self.parser = argparse.ArgumentParser()
+    def setParser(self): 
+
+        self.parser = argparse.ArgumentParser()
 
     def setOSListener(self): pass
 
@@ -68,6 +77,35 @@ class Plug:
                 func=getattr(self, func_name, None)
                 key=re.sub(r'(Shift|Alt|Ctrl)', r'<\1>', key).lower() 
                 if func: self.os_listener.listen(key, func)
+
+    def setActions(self):
+
+        if self.config.has_section('Keys'):
+            config=dict(self.config['Keys'])
+            for f, key in config.items():
+                m=getattr(self, f, None)
+                if m and hasattr(m, '__func__'):
+                    setattr(m.__func__, 'key', f'{key}')
+                    f=getattr(m, 'name', m.__func__.__name__)
+                    modes=getattr(m, 'modes', ['command'])
+                    setattr(m.__func__, 'name', f)
+                    setattr(m.__func__, 'modes', modes)
+                    d=(self.__class__.__name__, m.name)
+                    self.actions[d]=m 
+                    self.commandKeys[m.key]=m
+
+        cnd=[MethodType, BuiltinFunctionType]
+        for f in self.__dir__():
+            m=getattr(self, f)
+            if type(m) in cnd and hasattr(m, 'modes'):
+                d=(self.name, m.name)
+                if not d in self.actions:
+                    self.actions[d]=m 
+                    if type(m.key)==str:
+                        self.commandKeys[m.key]=m
+                    elif type(m.key)==list:
+                        for k in m.key: 
+                            self.commandKeys[k]=m
 
     def registerByParent(self):
 
@@ -113,7 +151,9 @@ class Plug:
         self.config_folder=Path(config_folder)
 
         if not os.path.exists(config_folder): 
-            self.config_folder.mkdir(parents=True, exist_ok=True)
+            self.config_folder.mkdir(
+                    parents=True, 
+                    exist_ok=True)
 
     def handle(self, request):
 
@@ -123,7 +163,6 @@ class Plug:
 
         func=None
         result=None
-
         status='nok'
 
         if action:
@@ -134,12 +173,20 @@ class Plug:
 
         if func:
             prmts=inspect.signature(func).parameters
+
             if len(prmts)==0:
-                result=func()
+                if action=='quit' and self.respond_port:
+                    msg={'status':'ok', 'info':'quitting'}
+                    self.socket.send_json(msg)
+                    func()
+                else:
+                    result=func()
             elif 'request' in prmts:
                 result=func(request)
             else:
-                fp={p:request[p] for p in prmts if p in request}
+                fp={}
+                for p in prmts:
+                    if p in request: fp[p]=request[p] 
                 result=func(**fp)
 
             status='ok'
@@ -198,13 +245,14 @@ class Plug:
                 self.port=self.socket.bind_to_random_port(
                         'tcp://*')
 
-    def run(self, answer=False):
+    def run(self):
 
         self.running=True
         while self.running and self.socket:
             request=self.socket.recv_json()
             respond=self.handle(request)
-            if answer: self.socket.send_json(respond)
+            if self.respond_port: 
+                self.socket.send_json(respond)
 
     def exit(self): self.running=False
 
