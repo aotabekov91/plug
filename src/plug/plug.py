@@ -4,6 +4,7 @@ import zmq
 import ast
 import yaml
 import inspect
+import argparse
 from pathlib import Path
 
 from configparser import ConfigParser
@@ -17,6 +18,7 @@ class Plug:
                  keyword=None,
                  umay_port=19999,
                  parent_port=None,
+                 listen_port=True,
                  argv=None,
                  **kwargs,
                  ):
@@ -31,8 +33,10 @@ class Plug:
         self.config=config
         self.keyword=keyword
         self.umay_port=umay_port
+        self.listen_port=listen_port
         self.parent_port=parent_port
 
+        self.socket=None
         self.intents=None
         self.entities=None
         self.running = False
@@ -44,11 +48,14 @@ class Plug:
 
         self.setName()
         self.setConfig()
+        self.setParser()
         self.setSettings()
         self.setConnection()
         self.registerByParent()
         self.registerByUmay()
         self.setOSShortcuts()
+
+    def setParser(self): self.parser = argparse.ArgumentParser()
 
     def setOSListener(self): pass
 
@@ -80,7 +87,7 @@ class Plug:
 
     def registerByUmay(self):
 
-        if self.umay_port:
+        if self.umay_port and self.listen_port:
 
             self.umay_socket=zmq.Context().socket(zmq.PUSH)
             self.umay_socket.connect(
@@ -150,17 +157,16 @@ class Plug:
 
         file_path=os.path.abspath(
                 inspect.getfile(self.__class__))
-        folder_path=os.path.dirname(
+        self.path=os.path.dirname(
                 file_path).replace('\\', '/')
 
-        if self.config is None: 
-            self.config_path=f'{folder_path}/config.ini'
-            self.config=ConfigParser()
-            self.config.optionxform=str
-            self.config.read(self.config_path)
+        self.config_path=f'{self.path}/config.ini'
+        self.config=ConfigParser()
+        self.config.optionxform=str
+        self.config.read(self.config_path)
 
-        intents=f'{folder_path}/intents.yaml'
-        entities=f'{folder_path}/entities.yaml'
+        intents=f'{self.path}/intents.yaml'
+        entities=f'{self.path}/entities.yaml'
 
         if os.path.exists(intents): 
             with open(intents, 'r') as f:
@@ -184,9 +190,13 @@ class Plug:
 
     def setConnection(self, kind=zmq.PULL):
 
-        if self.port:
+        if self.port or self.listen_port:
             self.socket = zmq.Context().socket(kind)
-            self.socket.bind(f'tcp://*:{self.port}')
+            if self.port:
+                self.socket.bind(f'tcp://*:{self.port}')
+            else: 
+                self.port=self.socket.bind_to_random_port(
+                        'tcp://*')
 
     def run(self, answer=False):
 
