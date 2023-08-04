@@ -80,7 +80,6 @@ class Plug:
 
     def setActions(self, obj=None):
 
-
         if self.config.has_section('Keys'):
             config=dict(self.config['Keys'])
             for f, key in config.items():
