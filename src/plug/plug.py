@@ -131,7 +131,8 @@ class Plug:
                     self.parent_socket,
                     flags=zmq.POLLIN)
 
-            if poller.poll(timeout=300):
+            poller=zmq.Poller()
+            if poller.poll(timeout=2000):
                 respond=self.parent_socket.recv_json()
             else:
                 self.parent_socket.setsockopt(zmq.LINGER, 1)
@@ -146,7 +147,7 @@ class Plug:
 
         if self.umay_port and self.listen_port:
 
-            self.umay_socket = self.getConnection(kind='PUSH')
+            self.umay_socket = self.getConnection(kind='REQ')
             self.umay_socket.connect(
                     f'tcp://localhost:{self.umay_port}')
 
@@ -159,6 +160,15 @@ class Plug:
                 'keyword': self.keyword,
                 'mode': self.__class__.__name__,
                 })
+
+            if poller.poll(timeout=2000):
+                respond=self.umay_socket.recv_json()
+            else:
+                self.umay_socket.setsockopt(zmq.LINGER, 1)
+                respond={'status':'nok',
+                         'info': 'No umay response'}
+            print(respond)
+            return respond
 
     def createConfig(self, config_folder=None):
 
