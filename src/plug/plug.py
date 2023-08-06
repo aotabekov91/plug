@@ -5,6 +5,7 @@ import ast
 import yaml
 import inspect
 import argparse
+
 from pathlib import Path
 from configparser import ConfigParser
 from types import MethodType, BuiltinFunctionType
@@ -76,7 +77,8 @@ class Plug:
             for func_name, key in config.items():
                 func=getattr(self, func_name, None)
                 key=re.sub(r'(Shift|Alt|Ctrl)', r'<\1>', key).lower() 
-                if func: self.os_listener.listen(key, func)
+                if func: 
+                    self.os_listener.listen(key, func)
 
     def setActions(self, obj=None):
 
@@ -110,12 +112,11 @@ class Plug:
                         for k in m.key: 
                             self.commandKeys[k]=m
 
-
     def registerByParent(self):
 
         if self.parent_port:
 
-            self.parent_socket=zmq.Context().socket(zmq.REQ)
+            self.parent_socket = self.getConnection(kind='REQ')
             self.parent_socket.connect(
                     f'tcp://localhost:{self.parent_port}')
 
@@ -124,14 +125,28 @@ class Plug:
                 'mode': self.__class__.__name__,
                 'port': self.port
                 })
-            respond=self.parent_socket.recv_json()
+
+            poller=zmq.Poller()
+            poller.register(
+                    self.parent_socket,
+                    flags=zmq.POLLIN)
+
+            if poller.poll(timeout=300):
+                respond=self.parent_socket.recv_json()
+            else:
+                self.parent_socket.setsockopt(zmq.LINGER, 1)
+                respond={'status':'nok',
+                         'info': 'No parent response'}
             print(respond)
+            return respond
+
+    def register(self, request): pass
 
     def registerByUmay(self):
 
         if self.umay_port and self.listen_port:
 
-            self.umay_socket=zmq.Context().socket(zmq.PUSH)
+            self.umay_socket = self.getConnection(kind='PUSH')
             self.umay_socket.connect(
                     f'tcp://localhost:{self.umay_port}')
 
@@ -239,10 +254,16 @@ class Plug:
                 attr=getattr(self, name, None)
                 if not attr: setattr(self, name, value)
 
-    def setConnection(self, kind=zmq.PULL):
+    def getConnection(self, kind):
+
+        kind=getattr(zmq, kind)
+        socket=zmq.Context().socket(kind)
+        return socket
+
+    def setConnection(self, kind='PULL'):
 
         if self.port or self.listen_port:
-            self.socket = zmq.Context().socket(kind)
+            self.socket = self.getConnection(kind)
             if self.port:
                 self.socket.bind(f'tcp://*:{self.port}')
             else: 
