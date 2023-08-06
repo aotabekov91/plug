@@ -131,7 +131,6 @@ class Plug:
                     self.parent_socket,
                     flags=zmq.POLLIN)
 
-            poller=zmq.Poller()
             if poller.poll(timeout=2000):
                 respond=self.parent_socket.recv_json()
             else:
@@ -160,6 +159,11 @@ class Plug:
                 'keyword': self.keyword,
                 'mode': self.__class__.__name__,
                 })
+
+            poller=zmq.Poller()
+            poller.register(
+                    self.umay_socket,
+                    flags=zmq.POLLIN)
 
             if poller.poll(timeout=2000):
                 respond=self.umay_socket.recv_json()
