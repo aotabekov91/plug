@@ -112,7 +112,7 @@ class Plug:
                         for k in m.key: 
                             self.commandKeys[k]=m
 
-    def registerByParent(self):
+    def registerByParent(self, kind='PUSH'):
 
         if self.parent_port:
 
@@ -123,7 +123,8 @@ class Plug:
             self.parent_socket.send_json({
                 'command': 'register',
                 'mode': self.__class__.__name__,
-                'port': self.port
+                'port': self.port,
+                'kind': kind,
                 })
 
             poller=zmq.Poller()
@@ -142,7 +143,7 @@ class Plug:
 
     def register(self, request): pass
 
-    def registerByUmay(self):
+    def registerByUmay(self, paths=None, kind='PUSH'):
 
         if self.umay_port and self.listen_port:
 
@@ -150,7 +151,7 @@ class Plug:
             self.umay_socket.connect(
                     f'tcp://localhost:{self.umay_port}')
 
-            paths=[self.intents, self.entities]
+            if not paths: paths=[self.intents, self.entities]
 
             self.umay_socket.send_json({
                 'paths': paths, 
@@ -158,6 +159,7 @@ class Plug:
                 'action': 'register',
                 'keyword': self.keyword,
                 'mode': self.__class__.__name__,
+                'kind': kind,
                 })
 
             poller=zmq.Poller()
