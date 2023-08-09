@@ -7,6 +7,8 @@ import inspect
 import argparse
 
 from pathlib import Path
+from threading import Thread
+
 from configparser import ConfigParser
 from types import MethodType, BuiltinFunctionType
 
@@ -114,67 +116,79 @@ class Plug:
 
     def registerByParent(self, kind='PUSH'):
 
-        if self.parent_port:
+        def register(kind):
 
-            self.parent_socket = self.getConnection(kind='REQ')
-            self.parent_socket.connect(
-                    f'tcp://localhost:{self.parent_port}')
+            if self.parent_port:
 
-            self.parent_socket.send_json({
-                'command': 'register',
-                'mode': self.__class__.__name__,
-                'port': self.port,
-                'kind': kind,
-                })
+                self.parent_socket = self.getConnection(kind='REQ')
+                self.parent_socket.connect(
+                        f'tcp://localhost:{self.parent_port}')
 
-            poller=zmq.Poller()
-            poller.register(
-                    self.parent_socket,
-                    flags=zmq.POLLIN)
+                self.parent_socket.send_json({
+                    'command': 'register',
+                    'mode': self.__class__.__name__,
+                    'port': self.port,
+                    'kind': kind,
+                    })
 
-            if poller.poll(timeout=2000):
-                respond=self.parent_socket.recv_json()
-            else:
-                self.parent_socket.setsockopt(zmq.LINGER, 1)
-                respond={'status':'nok',
-                         'info': 'No parent response'}
-            print(respond)
-            return respond
+                poller=zmq.Poller()
+                poller.register(
+                        self.parent_socket,
+                        flags=zmq.POLLIN)
+
+                if poller.poll(timeout=1000):
+                    respond=self.parent_socket.recv_json()
+                else:
+                    self.parent_socket.setsockopt(zmq.LINGER, 1)
+                    respond={'status':'nok',
+                             'info': 'No parent response'}
+                print(respond)
+                return respond
+
+        thread=Thread(target=register, args=[kind])
+        thread.deamon=True
+        thread.start()
 
     def register(self, request): pass
 
     def registerByUmay(self, paths=None, kind='PUSH'):
 
-        if self.umay_port and self.listen_port:
+        def register(paths, kind):
 
-            self.umay_socket = self.getConnection(kind='REQ')
-            self.umay_socket.connect(
-                    f'tcp://localhost:{self.umay_port}')
+            if self.umay_port and self.listen_port:
 
-            if not paths: paths=[self.intents, self.entities]
+                self.umay_socket = self.getConnection(kind='REQ')
+                self.umay_socket.connect(
+                        f'tcp://localhost:{self.umay_port}')
 
-            self.umay_socket.send_json({
-                'paths': paths, 
-                'port': self.port,
-                'action': 'register',
-                'keyword': self.keyword,
-                'mode': self.__class__.__name__,
-                'kind': kind,
-                })
+                if not paths: paths=[self.intents, self.entities]
 
-            poller=zmq.Poller()
-            poller.register(
-                    self.umay_socket,
-                    flags=zmq.POLLIN)
+                self.umay_socket.send_json({
+                    'paths': paths, 
+                    'port': self.port,
+                    'action': 'register',
+                    'keyword': self.keyword,
+                    'mode': self.__class__.__name__,
+                    'kind': kind,
+                    })
 
-            if poller.poll(timeout=2000):
-                respond=self.umay_socket.recv_json()
-            else:
-                self.umay_socket.setsockopt(zmq.LINGER, 1)
-                respond={'status':'nok',
-                         'info': 'No umay response'}
-            print(respond)
-            return respond
+                poller=zmq.Poller()
+                poller.register(
+                        self.umay_socket,
+                        flags=zmq.POLLIN)
+
+                if poller.poll(timeout=1000):
+                    respond=self.umay_socket.recv_json()
+                else:
+                    self.umay_socket.setsockopt(zmq.LINGER, 1)
+                    respond={'status':'nok',
+                             'info': 'No umay response'}
+                print(respond)
+                return respond
+
+        thread=Thread(target=register, args=[paths, kind])
+        thread.deamon=True
+        thread.start()
 
     def createConfig(self, config_folder=None):
 
