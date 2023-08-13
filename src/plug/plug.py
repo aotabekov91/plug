@@ -137,7 +137,7 @@ class Plug:
                         self.parent_socket,
                         flags=zmq.POLLIN)
 
-                if poller.poll(timeout=1000):
+                if poller.poll(timeout=500):
                     respond=self.parent_socket.recv_json()
                 else:
                     self.parent_socket.setsockopt(zmq.LINGER, 1)
@@ -178,7 +178,7 @@ class Plug:
                         self.umay_socket,
                         flags=zmq.POLLIN)
 
-                if poller.poll(timeout=1000):
+                if poller.poll(timeout=500):
                     respond=self.umay_socket.recv_json()
                 else:
                     self.umay_socket.setsockopt(zmq.LINGER, 1)
