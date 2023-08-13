@@ -1,10 +1,10 @@
 import sys
-
 from PyQt5 import QtWidgets
 
+from gizmo.ui import StackWindow
+
 from .base import Plug
-from ..core.ui import StackWindow
-from ..core.manager import Manager
+from .manager import Manager
 
 class PlugApp(Plug, QtWidgets.QApplication):
 

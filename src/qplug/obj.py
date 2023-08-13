@@ -1,7 +1,8 @@
 from PyQt5 import QtWidgets, QtCore
 
+from gizmo.widget import CommandStack 
+
 from .base import Plug
-from ..widget import CommandStack 
 
 class PlugObj(Plug, QtCore.QObject):
 
@@ -16,14 +17,13 @@ class PlugObj(Plug, QtCore.QObject):
     def __init__(self,
                  position=None,
                  listen_port=False, 
-                 listen_leader=None,
                  follow_mouse=True,
                  **kwargs):
 
+        self.bar_data={}
         self.listening=False
         self.position=position
         self.follow_mouse=follow_mouse
-        self.listen_leader=self.setKey(listen_leader)
 
         super(PlugObj, self).__init__(
                 listen_port=listen_port,
@@ -36,15 +36,19 @@ class PlugObj(Plug, QtCore.QObject):
         super().setup()
         if self.app: 
             self.app.modes.addMode(self)
-            self.app.installEventFilter(self)
+            self.setFilter()
+
+    def setFilter(self):
+
+        self.app.installEventFilter(self)
 
     def setUI(self): 
 
         self.ui=CommandStack()
+
         self.ui.hideWanted.connect(self.on_uiHideWanted)
         self.ui.focusGained.connect(self.on_uiFocusGained)
 
-        self.ui.keyPressed
         self.locateUI()
 
     def locateUI(self):
@@ -73,17 +77,23 @@ class PlugObj(Plug, QtCore.QObject):
         self.delocateUI()
         self.locateUI()
 
+    def checkMode(self, widget, event):
+
+        mode=self.checkListen(event)
+        if mode:
+            if mode==self:
+                self.delistenWanted.emit()
+            else:
+                self.modeWanted.emit(mode)
+            return True
+        return False
+
     def eventFilter(self, widget, event):
 
         c1=event.type()==QtCore.QEvent.KeyPress
         if self.listening and c1: 
 
-            mode=self.checkListen(event)
-            if mode:
-                if mode==self:
-                    self.delistenWanted.emit()
-                else:
-                    self.modeWanted.emit(mode)
+            if self.checkMode(widget, event):
                 event.accept()
                 return True
             return super().eventFilter(widget, event)
@@ -92,7 +102,7 @@ class PlugObj(Plug, QtCore.QObject):
     def checkListen(self, event):
 
         for mode in self.app.modes.getModes():
-            if mode.checkKey(event, mode.listen_leader): 
+            if mode.checkKey(event): 
                 return mode
 
     def on_uiFocusGained(self):
@@ -116,11 +126,12 @@ class PlugObj(Plug, QtCore.QObject):
 
         self.activated=True
         self.listenWanted.emit(self)
+
         if hasattr(self, 'ui'): 
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.activate(self.ui)
             elif self.position=='window':
-                pass
+                self.app.stack.show(self.ui)
             elif self.position=='overlay':
                 self.ui.show()
 
@@ -131,32 +142,9 @@ class PlugObj(Plug, QtCore.QObject):
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.deactivate(self.ui)
             elif self.position=='window':
-                pass
+                self.app.stack.show(self.app.main)
             elif self.position=='overlay':
                 self.ui.hide()
-
-    def setShortcuts(self):
-
-        if self.config.has_section('Shortcuts'):
-            shortcuts=dict(self.config['Shortcuts'])
-            for func_name, key in shortcuts.items():
-                func=getattr(self, func_name, None)
-                if func and hasattr(func, 'widget'): 
-                    if func.widget=='window':
-                        widget=self.app.main
-                    elif func.widget=='display':
-                        widget=self.app.main.display
-                    else:
-                        setattr(func, 'key', key)
-                        continue
-                    context=getattr(
-                            func, 
-                            'context', 
-                            QtCore.Qt.WidgetWithChildrenShortcut)
-                    shortcut=QtWidgets.QShortcut(widget)
-                    shortcut.setKey(key)
-                    shortcut.setContext(context)
-                    shortcut.activated.connect(func)
 
     def register(self):
 

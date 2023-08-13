@@ -16,4 +16,17 @@ dependencies = [
 
 [project.optional-dependencies]
 
-listen = ['pynput']
+qplug=[
+	"gizmo==0.0.1",
+	"pynput==1.7.6",
+	"PyQt5==5.15.9",
+	"PyQtWebEngine==5.15.6",
+	]
+
+[tools.setuptools.package-data]
+
+"*"=["*"]
+
+[tools.setuptools.packages.find]
+
+where=["src"]
