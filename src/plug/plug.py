@@ -1,7 +1,6 @@
 import os
 import re
 import zmq
-import ast
 import yaml
 import inspect
 import argparse
@@ -17,7 +16,7 @@ class Plug:
     def __init__(self, 
                  name=None, 
                  port=None, 
-                 config=None, 
+                 config={}, 
                  keyword=None,
                  umay_port=19999,
                  parent_port=None,
@@ -56,6 +55,9 @@ class Plug:
     def setup(self):
 
         self.setName()
+        self.setMPath()
+        self.setIntents()
+
         self.setConfig()
         self.setParser()
         self.setSettings()
@@ -73,20 +75,19 @@ class Plug:
 
     def setOSShortcuts(self):
 
-        if self.config.has_section('OSShortcut'):
+        if self.config.get('System'):
             self.setOSListener()
-            config=dict(self.config['OSShortcut'])
-            for func_name, key in config.items():
+            shortcuts=self.config['System']
+            for func_name, key in shortcuts.items():
                 func=getattr(self, func_name, None)
                 key=re.sub(r'(Shift|Alt|Ctrl)', r'<\1>', key).lower() 
-                if func: 
-                    self.os_listener.listen(key, func)
+                if func: self.os_listener.listen(key, func)
 
     def setActions(self, obj=None):
 
-        if self.config.has_section('Keys'):
-            config=dict(self.config['Keys'])
-            for f, key in config.items():
+        if self.config.get('Keys'):
+            keys=self.config['Keys']
+            for f, key in keys.items():
                 m=getattr(self, f, None)
                 if m and hasattr(m, '__func__'):
                     setattr(m.__func__, 'key', f'{key}')
@@ -190,17 +191,17 @@ class Plug:
         thread.deamon=True
         thread.start()
 
-    def createConfig(self, config_folder=None):
+    def createFolder(self, folder=None):
 
-        if not config_folder: 
-            folder_name=self.__class__.__name__.lower()
-            config_folder=f'~/{folder_name}'
+        if not folder: 
+            name=self.__class__.__name__.lower()
+            folder=f'~/{name}'
 
-        config_folder=os.path.expanduser(config_folder)
-        self.config_folder=Path(config_folder)
+        folder=os.path.expanduser(folder)
+        self.folder=Path(folder)
 
-        if not os.path.exists(config_folder): 
-            self.config_folder.mkdir(
+        if not os.path.exists(folder): 
+            self.folder.mkdir(
                     parents=True, 
                     exist_ok=True)
 
@@ -249,17 +250,23 @@ class Plug:
         if self.keyword is None:
             self.keyword=self.name.lower()
 
-    def setConfig(self):
+    def setMPath(self):
 
         file_path=os.path.abspath(
                 inspect.getfile(self.__class__))
         self.path=os.path.dirname(
                 file_path).replace('\\', '/')
 
-        self.config_path=f'{self.path}/config.ini'
-        self.config=ConfigParser()
-        self.config.optionxform=str
-        self.config.read(self.config_path)
+    def setConfig(self):
+
+        path=f'{self.path}/config.yaml'
+        if os.path.exists(path):
+            with open(path, 'r') as config:
+                loader=yaml.loader.SafeLoader
+                self.config=yaml.load(
+                        config, Loader=loader)
+
+    def setIntents(self):
 
         intents=f'{self.path}/intents.yaml'
         entities=f'{self.path}/entities.yaml'
@@ -274,15 +281,10 @@ class Plug:
 
     def setSettings(self):
 
-        if self.config.has_section('Settings'):
-            config=dict(self.config['Settings'])
-            for name, value in config.items():
-                try:
-                    value=ast.literal_eval(value)
-                except:
-                    pass
-                attr=getattr(self, name, None)
-                if not attr: setattr(self, name, value)
+        if self.config.get('Settings', None):
+            settings=self.config['Settings']
+            for name, value in settings.items():
+                setattr(self, name, value)
 
     def getConnection(self, kind):
 
