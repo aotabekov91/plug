@@ -143,12 +143,12 @@ class Plug:
                     self.parent_socket.setsockopt(zmq.LINGER, 1)
                     respond={'status':'nok',
                              'info': 'No parent response'}
-                print(respond)
                 return respond
 
-        thread=Thread(target=register, args=[kind])
-        thread.deamon=True
-        thread.start()
+        # thread=Thread(target=register, args=[kind])
+        # thread.deamon=True
+        # thread.start()
+        register(kind)
 
     def register(self, request): pass
 
@@ -184,26 +184,26 @@ class Plug:
                     self.umay_socket.setsockopt(zmq.LINGER, 1)
                     respond={'status':'nok',
                              'info': 'No umay response'}
-                print(respond)
                 return respond
 
-        thread=Thread(target=register, args=[paths, kind])
-        thread.deamon=True
-        thread.start()
+        # thread=Thread(target=register, args=[paths, kind])
+        # thread.deamon=True
+        # thread.start()
+        register(paths, kind)
 
-    def createFolder(self, folder=None):
+    def createFolder(self, folder=None, attr_name='folder'):
 
         if not folder: 
             name=self.__class__.__name__.lower()
             folder=f'~/{name}'
 
         folder=os.path.expanduser(folder)
-        self.folder=Path(folder)
+
+        attr=Path(folder)
+        setattr(self, attr_name, attr)
 
         if not os.path.exists(folder): 
-            self.folder.mkdir(
-                    parents=True, 
-                    exist_ok=True)
+            attr.mkdir(parents=True, exist_ok=True)
 
     def handle(self, request):
 
@@ -322,14 +322,14 @@ class Plug:
 
     def activate(self):
 
-        if not self.activated:
-            self.activated=True
-            if hasattr(self, 'ui'):
-                self.ui.show()
+        # if not self.activated:
+
+        self.activated=True
+        if hasattr(self, 'ui'): self.ui.show()
 
     def deactivate(self):
 
-        if self.activated:
-            self.activated=False
-            if hasattr(self, 'ui'):
-                self.ui.hide()
+        # if self.activated:
+
+        self.activated=False
+        if hasattr(self, 'ui'): self.ui.hide()

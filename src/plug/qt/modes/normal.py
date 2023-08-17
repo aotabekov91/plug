@@ -1,5 +1,5 @@
 from .base import Mode
-from qplug.utils  import register
+from plug.qt.utils  import register
 
 class Normal(Mode):
 

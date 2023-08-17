@@ -1,8 +1,8 @@
 from PyQt5 import QtCore 
 from inspect import signature
 
-from qplug import PlugObj
-from qplug.utils import register
+from plug.qt import PlugObj
+from plug.qt.utils import register
 
 class Mode(PlugObj):
 

@@ -16,7 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 
-qplug=[
+qt=[
 	"gizmo==0.0.1",
 	"pynput==1.7.6",
 	"PyQt5==5.15.9",
