@@ -36,5 +36,4 @@ class StatusWidget(QtWidgets.QWidget):
         self.edit.hide()
         self.detail.hide()
 
-        self.setSizeGripEnabled(False)
         self.setStyleSheet(self.style_sheet)
