@@ -8,7 +8,13 @@ class Powerline(PlugObj):
 
         super().__init__(**kwargs)
 
+        self.app.plugman.modeChanged.connect(self.on_modeChanged)
+
         self.setUI()
+
+    def on_modeChanged(self):
+        raise
+
 
     def setUI(self):
 
