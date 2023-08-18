@@ -25,12 +25,12 @@ class StatusWidget(QtWidgets.QWidget):
 
         self.setFixedHeight(25)
 
-        self.layout.addWidget(self.mode, 1)
-        self.layout.addWidget(self.info, 100)
-        self.layout.addWidget(self.edit, 100)
-        self.layout.addWidget(self.detail)
-        self.layout.addWidget(self.model)
-        self.layout.addWidget(self.page, 0)
+        layout.addWidget(self.mode, 1)
+        layout.addWidget(self.info, 100)
+        layout.addWidget(self.edit, 100)
+        layout.addWidget(self.detail)
+        layout.addWidget(self.model)
+        layout.addWidget(self.page, 0)
 
         self.info.hide()
         self.edit.hide()
