@@ -1,4 +1,4 @@
-from ..base import Mode 
+from plug.qt.modes.base import Mode
 
 class Visual(Mode):
 

@@ -1,7 +1,6 @@
 from plug.qt.utils import register
+from plug.qt.modes.base import Mode
 from gizmo.widget import ListWidget, Item
-
-from ..base import Mode
 
 class Search(Mode):
 

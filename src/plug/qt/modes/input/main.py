@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 
-from ..base import Mode
+from plug.qt.modes.base import Mode
+
 from .widget import InputWidget
 
 class Input(Mode):

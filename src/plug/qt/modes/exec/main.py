@@ -1,8 +1,7 @@
 from PyQt5 import QtCore
 
+from plug.qt.modes.base import Mode
 from gizmo.widget import ListWidget, Item
-
-from ..base import Mode
 
 class Exec(Mode):
 
