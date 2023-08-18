@@ -4,7 +4,6 @@ from PyQt5 import QtWidgets
 from gizmo.ui import StackWindow
 
 from .base import Plug
-from .manager import Manager
 
 class PlugApp(Plug, QtWidgets.QApplication):
 
@@ -14,43 +13,13 @@ class PlugApp(Plug, QtWidgets.QApplication):
                  **kwargs):
 
         super(PlugApp, self).__init__(argv=argv, **kwargs)
-        if initiate_stack: self.initiate()
 
-    def initiate(self):
-
-        self.setManager()
-        self.setStack()
-
-        self.loadPlugs()
-        self.loadModes()
-
-        self.parse()
-
-    def setStack(self, 
-                 display_class=None, 
-                 view_class=None):
+    def setGUI(self, display_class=None, view_class=None):
 
         self.stack=StackWindow(
                 self, 
                 display_class, 
                 view_class)
-
-    def setManager(self, 
-                   manager=None, 
-                   buffer=None, 
-                   plug=None, 
-                   mode=None):
-
-        if not manager: manager=Manager
-        self.manager=manager(self, buffer, mode, plug)
-
-    def loadModes(self): 
-
-        if hasattr(self, 'modes'): self.modes.load()
-
-    def loadPlugs(self): 
-
-        if hasattr(self, 'plugs'): self.plugs.load()
 
     def parse(self): 
 
@@ -63,6 +32,7 @@ class PlugApp(Plug, QtWidgets.QApplication):
 
     def run(self):
 
+        self.parse()
         self.running=True
         if hasattr(self, 'stack'): self.stack.show()
         sys.exit(self.exec_())

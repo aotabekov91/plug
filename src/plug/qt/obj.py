@@ -35,7 +35,7 @@ class PlugObj(Plug, QtCore.QObject):
 
         super().setup()
         if self.app: 
-            self.app.modes.addMode(self)
+            self.app.plugman.add(self, 'plug')
             self.setFilter()
 
     def setFilter(self):
@@ -101,7 +101,7 @@ class PlugObj(Plug, QtCore.QObject):
 
     def checkListen(self, event):
 
-        for mode in self.app.modes.getModes():
+        for name, mode in self.app.plugman.getModes().items():
             if mode.checkKey(event): 
                 return mode
 
@@ -149,4 +149,4 @@ class PlugObj(Plug, QtCore.QObject):
     def register(self):
 
         if self.app: 
-            self.app.manager.register(self, self.actions)
+            self.app.plugman.register(self, self.actions)

@@ -11,6 +11,8 @@ from threading import Thread
 from configparser import ConfigParser
 from types import MethodType, BuiltinFunctionType
 
+from plug.utils import Plugman
+
 class Plug:
 
     def __init__(self, 
@@ -31,6 +33,7 @@ class Plug:
         else:
             super(Plug, self).__init__()
 
+        self.yamls={}
         self.name=name
         self.port=port
         self.config=config
@@ -55,28 +58,23 @@ class Plug:
     def setup(self):
 
         self.setName()
-        self.setMPath()
-        self.setIntents()
-
-        self.setConfig()
-        self.setParser()
+        self.setBasePath()
+        self.setFiles()
         self.setSettings()
         self.setConnection()
         self.registerByParent()
         self.registerByUmay()
-        self.setOSShortcuts()
+        self.setSystemShortcut()
         self.setActions()
 
-    def setParser(self): 
+    def setPlugman(self): self.plugman=Plugman(self)
 
-        self.parser = argparse.ArgumentParser()
+    def setParser(self): self.parser = argparse.ArgumentParser()
 
-    def setOSListener(self): pass
-
-    def setOSShortcuts(self):
+    def setSystemShortcut(self):
 
         if self.config.get('System'):
-            self.setOSListener()
+            self.setSystemListener()
             shortcuts=self.config['System']
             for func_name, key in shortcuts.items():
                 func=getattr(self, func_name, None)
@@ -250,34 +248,26 @@ class Plug:
         if self.keyword is None:
             self.keyword=self.name.lower()
 
-    def setMPath(self):
+    def setBasePath(self):
 
         file_path=os.path.abspath(
                 inspect.getfile(self.__class__))
         self.path=os.path.dirname(
                 file_path).replace('\\', '/')
 
-    def setConfig(self):
+    def setFiles(self):
 
-        path=f'{self.path}/config.yaml'
-        if os.path.exists(path):
-            with open(path, 'r') as config:
-                loader=yaml.loader.SafeLoader
-                self.config=yaml.load(
-                        config, Loader=loader)
+        for f in os.listdir(self.path):
 
-    def setIntents(self):
-
-        intents=f'{self.path}/intents.yaml'
-        entities=f'{self.path}/entities.yaml'
-
-        if os.path.exists(intents): 
-            with open(intents, 'r') as f:
-                self.intents=list(yaml.safe_load_all(f))
-
-        if os.path.exists(entities): 
-            with open(entities, 'r') as f:
-                self.entities=list(yaml.safe_load_all(f))
+            if f.endswith('yaml'):
+                name=f.rsplit('.', 1)[0]
+                path=f'{self.path}/{f}'
+                with open(path, 'r') as y:
+                    if f=='config.yaml':
+                        l=yaml.loader.SafeLoader
+                        self.config=yaml.load(y, Loader=l)
+                    else:
+                        self.yamls[name]=list(yaml.safe_load_all(f))
 
     def setSettings(self):
 
@@ -322,14 +312,10 @@ class Plug:
 
     def activate(self):
 
-        # if not self.activated:
-
         self.activated=True
         if hasattr(self, 'ui'): self.ui.show()
 
     def deactivate(self):
-
-        # if self.activated:
 
         self.activated=False
         if hasattr(self, 'ui'): self.ui.hide()

@@ -2,7 +2,7 @@ import os
 
 from PyQt5 import QtCore
 
-class Buffman(QtCore.QObject):
+class Buffer(QtCore.QObject):
 
     bufferCreated=QtCore.pyqtSignal(object)
 

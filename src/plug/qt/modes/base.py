@@ -48,10 +48,10 @@ class Mode(PlugObj):
                     if hasattr(m, 'key'): 
                         self.saveCommands(plug, m)
 
-        for plug, actions in self.app.manager.actions.items():
+        for plug, actions in self.app.plugman.actions.items():
             setData(plug, actions, self.name)
 
-        own_actions=self.app.manager.actions.get(self)
+        own_actions=self.app.plugman.actions.get(self)
         if own_actions: setData(self, own_actions)
 
     def eventFilter(self, widget, event):
