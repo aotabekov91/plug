@@ -18,7 +18,6 @@ class StatusWidget(QtWidgets.QWidget):
 
         self.mode=QtWidgets.QLabel()
         self.info=QtWidgets.QLabel()
-        self.edit=QtWidgets.QLineEdit(self)
         self.detail=QtWidgets.QLabel()
         self.model=QtWidgets.QLabel()
         self.page=QtWidgets.QLabel()
@@ -27,13 +26,11 @@ class StatusWidget(QtWidgets.QWidget):
 
         layout.addWidget(self.mode, 1)
         layout.addWidget(self.info, 100)
-        layout.addWidget(self.edit, 100)
         layout.addWidget(self.detail)
         layout.addWidget(self.model)
         layout.addWidget(self.page, 0)
 
         self.info.hide()
-        self.edit.hide()
         self.detail.hide()
 
         self.setStyleSheet(self.style_sheet)

@@ -9,6 +9,7 @@ class Powerline(PlugObj):
         super().__init__(**kwargs)
 
         self.app.plugman.modeChanged.connect(self.on_modeChanged)
+        self.app.main.display.viewChanged.connect(self.on_viewChanged)
 
         self.setUI()
 
@@ -29,4 +30,4 @@ class Powerline(PlugObj):
 
         cpage=view.currentPage()
         pages=view.totalPages()
-        self.ui.setText(f'{cpage}/{pages}')
+        self.ui.page.setText(f'{cpage}/{pages}')
