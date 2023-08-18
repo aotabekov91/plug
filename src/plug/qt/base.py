@@ -1,5 +1,6 @@
 from threading import Thread
 from PyQt5 import QtCore, QtWidgets
+
 from plug import Plug as BasePlug
 
 from .utils import ZMQListener, KeyListener
