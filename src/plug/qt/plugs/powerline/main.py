@@ -12,8 +12,9 @@ class Powerline(PlugObj):
 
         self.setUI()
 
-    def on_modeChanged(self):
-        raise
+    def on_modeChanged(self, mode):
+
+        self.ui.mode.setText(mode.name)
 
     def setUI(self):
 
