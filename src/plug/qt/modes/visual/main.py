@@ -1,4 +1,4 @@
-from .base import Mode 
+from ..base import Mode 
 
 class Visual(Mode):
 

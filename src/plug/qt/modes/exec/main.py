@@ -2,7 +2,7 @@ from PyQt5 import QtCore
 
 from gizmo.widget import ListWidget, Item
 
-from .base import Mode
+from ..base import Mode
 
 class Exec(Mode):
 
