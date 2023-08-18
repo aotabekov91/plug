@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets
 from gizmo.ui import StackWindow
 
 from .base import Plug
+from .utils import Plugman
 
 class PlugApp(Plug, QtWidgets.QApplication):
 
@@ -20,6 +21,8 @@ class PlugApp(Plug, QtWidgets.QApplication):
                 self, 
                 display_class, 
                 view_class)
+
+    def setPlugman(self): self.plugman=Plugman(self)
 
     def parse(self): 
 

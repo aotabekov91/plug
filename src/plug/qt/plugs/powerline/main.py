@@ -15,7 +15,6 @@ class Powerline(PlugObj):
     def on_modeChanged(self):
         raise
 
-
     def setUI(self):
 
         self.ui=StatusWidget()
