@@ -42,6 +42,27 @@ class Exec(Mode):
         self.ui=ListWidget(item_widget=Item)
         self.ui.setParent(self.app.window)
 
+        style_sheet=self.ui.styleSheet()
+        style_sheet+='''
+            QListWidget{
+                border-width: 0px;
+                border-color: transparent;
+                background-color: transparent;
+            }
+            QListWidget::item{
+                border-width: 0px;
+                border-radius: 0px;
+            }
+            QListWidget::item:selected{
+                border-width: 0px;
+                background-color: gray;
+                border-color: transparent;
+            }
+        '''
+
+        self.ui.setStyleSheet(style_sheet)
+        self.ui.setSpacing(0)
+
         data=[{'up': n} for n in self.commands.keys()]
 
         self.ui.setList(data)
@@ -53,14 +74,30 @@ class Exec(Mode):
     def delisten(self):
 
         super().delisten()
-        self.app.window.bar.hide()
+        self.app.window.bar.bottom.hide()
+        self.app.window.bar.edit.textChanged.disconnect(
+                self.on_textChanged)
+
+        self.app.window.bar.edit.clear()
+        self.ui.unfilter()
 
     def listen(self):
 
         super().listen()
+
         self.app.window.bar.show()
-        self.app.window.bar.edit.show()
+        self.app.window.bar.bottom.show()
         self.app.window.bar.edit.setFocus()
+
+        self.app.window.bar.edit.textChanged.connect(
+                self.on_textChanged)
+
+        self.ui.show()
+
+    def on_textChanged(self):
+
+        text=self.app.window.bar.edit.text()
+        if text: self.ui.filter(text)
 
     def showList(self, text=None): 
 
@@ -94,7 +131,6 @@ class Exec(Mode):
             name=cmd[0]
             if name in self.commands:
                 method=self.commands[name]
-                print(method, self.commands)
                 method()
 
         self.ui.hide()

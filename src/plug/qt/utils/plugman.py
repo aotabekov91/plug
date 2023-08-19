@@ -16,7 +16,6 @@ class Plugman(Base, QtCore.QObject):
         for f in funcs:
             d=(self.__class__.__name__, f)
             m=getattr(self, f)
-            print(m)
             func=lambda *args, **kwargs: m(*args, **kwargs)
             func.name=f
             func.modes=['exec']

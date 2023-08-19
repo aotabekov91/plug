@@ -26,7 +26,9 @@ class Powerline(PlugObj):
 
     def on_keysChanged(self, pressed):
 
-        self.ui.detail.setText(pressed)
+        if pressed:
+            self.ui.detail.show()
+            self.ui.detail.setText(pressed)
 
     def on_modeChanged(self, mode):
 
@@ -35,23 +37,31 @@ class Powerline(PlugObj):
     def setUI(self):
 
         self.ui=StatusWidget()
-        self.app.window.main.main_layout.addWidget(self.ui)
+        self.app.window.bar.container_layout.insertWidget(
+                0, self.ui)
+        self.app.window.bar.show()
 
     def on_hashChanged(self, model):
 
         dhash=model.hash()
-        self.ui.model.setText(dhash)
+        if dhash:
+            self.ui.model.show()
+            self.ui.model.setText(dhash)
 
     def on_viewChanged(self, view): 
 
         name=view.name()
-        self.ui.model.setText(name)
+        if name:
+            self.ui.model.show()
+            self.ui.model.setText(name)
 
     def on_itemChanged(self, view, item=None): 
 
         cpage=view.currentPage()
         pages=view.totalPages()
-        self.ui.page.setText(f'{cpage}/{pages}')
+        if pages:
+            self.ui.page.show()
+            self.ui.page.setText(f'{cpage}/{pages}')
 
     @register('t', modes=['command'])
     def toggle(self): super().toggle()

@@ -29,6 +29,6 @@ class StatusWidget(QtWidgets.QWidget):
         layout.addWidget(self.page, QtCore.Qt.AlignRight)
 
         self.info.hide()
-        # self.detail.hide()
-
-        # self.setStyleSheet(self.style_sheet)
+        self.page.hide()
+        self.model.hide()
+        self.detail.hide()
