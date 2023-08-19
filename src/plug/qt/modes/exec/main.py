@@ -40,21 +40,27 @@ class Exec(Mode):
     def setUI(self):
 
         self.ui=ListWidget(item_widget=Item)
-        self.ui.setParent(self.app.stack)
+        self.ui.setParent(self.app.window)
 
         data=[{'up': n} for n in self.commands.keys()]
 
         self.ui.setList(data)
         self.ui.hide()
 
-    def saveCommands(self, plug, method):
+    def saveCommands(self, plug, method, key):
         self.commands[method.name]=method
+
+    def delisten(self):
+
+        super().delisten()
+        self.app.window.bar.hide()
 
     def listen(self):
 
         super().listen()
-        self.app.main.bar.edit.show()
-        self.app.main.bar.edit.setFocus()
+        self.app.window.bar.show()
+        self.app.window.bar.edit.show()
+        self.app.window.bar.edit.setFocus()
 
     def showList(self, text=None): 
 
@@ -70,24 +76,25 @@ class Exec(Mode):
 
         if len(suited)==1:
             name=suited[0]['up']
-            self.app.main.bar.edit.setText(name)
+            self.app.window.bar.edit.setText(name)
             self.ui.hide()
         else:
             self.ui.show()
 
     def on_tabPressed(self): 
 
-        text=self.app.main.bar.edit.text()
+        text=self.app.window.bar.edit.text()
         self.showList(text)
 
     def on_returnPressed(self): 
 
-        text=self.app.main.bar.edit.text()
+        text=self.app.window.bar.edit.text()
         if text:
             cmd=text.split(' ', 1)
             name=cmd[0]
             if name in self.commands:
                 method=self.commands[name]
+                print(method, self.commands)
                 method()
 
         self.ui.hide()

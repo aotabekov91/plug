@@ -1,4 +1,5 @@
 from plug.qt import PlugObj
+from plug.qt.utils import register
 
 from .widget import StatusWidget
 
@@ -8,26 +9,49 @@ class Powerline(PlugObj):
 
         super().__init__(**kwargs)
 
-        self.app.plugman.modeChanged.connect(self.on_modeChanged)
-        self.app.main.display.viewChanged.connect(self.on_viewChanged)
+        self.app.plugman.modeChanged.connect(
+                self.on_modeChanged)
+        self.app.plugman.keysChanged.connect(
+                self.on_keysChanged)
+        self.app.window.main.display.itemChanged.connect(
+                self.on_itemChanged)
+        self.app.window.main.display.viewChanged.connect(
+                self.on_viewChanged)
+        if hasattr(self.app, 'buffer'):
+            self.app.buffer.hashChanged.connect(
+                    self.on_hashChanged)
 
         self.setUI()
+        self.activate()
+
+    def on_keysChanged(self, pressed):
+
+        self.ui.detail.setText(pressed)
 
     def on_modeChanged(self, mode):
 
-        self.ui.mode.setText(mode.name)
+        self.ui.mode.setText(mode.name.title())
 
     def setUI(self):
 
         self.ui=StatusWidget()
-        self.app.main.main_layout.addWidget(self.ui)
+        self.app.window.main.main_layout.addWidget(self.ui)
+
+    def on_hashChanged(self, model):
+
+        dhash=model.hash()
+        self.ui.model.setText(dhash)
 
     def on_viewChanged(self, view): 
 
-        self.on_itemChanged(view) 
+        name=view.name()
+        self.ui.model.setText(name)
 
     def on_itemChanged(self, view, item=None): 
 
         cpage=view.currentPage()
         pages=view.totalPages()
         self.ui.page.setText(f'{cpage}/{pages}')
+
+    @register('t', modes=['command'])
+    def toggle(self): super().toggle()

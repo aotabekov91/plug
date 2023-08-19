@@ -6,31 +6,29 @@ class StatusWidget(QtWidgets.QWidget):
 
         super().__init__()
 
-        self.style_sheet='''
-            QLabel{
-                background-color: red;
-                }
-                '''
-
         layout=QtWidgets.QHBoxLayout()
         layout.setContentsMargins(0,0,0,0)
         self.setLayout(layout)
 
-        self.mode=QtWidgets.QLabel()
+        self.mode=QtWidgets.QLabel(objectName='modeLabel')
         self.info=QtWidgets.QLabel()
         self.detail=QtWidgets.QLabel()
         self.model=QtWidgets.QLabel()
-        self.page=QtWidgets.QLabel()
+        self.page=QtWidgets.QLabel(objectName='pageLabel')
 
-        self.setFixedHeight(25)
+        self.setFixedHeight(20)
 
-        layout.addWidget(self.mode, 1)
-        layout.addWidget(self.info, 100)
+        layout.addWidget(self.mode, QtCore.Qt.AlignLeft)
+        layout.addStretch(1)
+        layout.addWidget(self.info, QtCore.Qt.AlignLeft)
+        layout.addStretch(1)
         layout.addWidget(self.detail)
-        layout.addWidget(self.model)
-        layout.addWidget(self.page, 0)
+        layout.addStretch(1)
+        layout.addWidget(self.model, QtCore.Qt.AlignRight)
+        layout.addStretch(1)
+        layout.addWidget(self.page, QtCore.Qt.AlignRight)
 
         self.info.hide()
-        self.detail.hide()
+        # self.detail.hide()
 
-        self.setStyleSheet(self.style_sheet)
+        # self.setStyleSheet(self.style_sheet)

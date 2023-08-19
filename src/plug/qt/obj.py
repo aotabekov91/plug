@@ -57,19 +57,19 @@ class PlugObj(Plug, QtCore.QObject):
 
             dock=['left', 'right', 'top', 'bottom']
             if self.position=='window':
-                self.app.stack.add(self.ui, self.name) 
+                self.app.window.add(self.ui, self.name) 
             elif self.position=='overlay':
                 pass
             elif self.position in dock:
-                self.app.main.docks.setTab(
+                self.app.window.docks.setTab(
                         self.ui, self.position)
 
     def delocateUI(self):
 
         if self.position=='window':
-            self.app.stack.remove(self.ui)
+            self.app.window.remove(self.ui)
         if self.position=='dock':
-            self.app.main.docks.delTab(self.ui)
+            self.app.window.docks.delTab(self.ui)
 
     def relocateUI(self, position):
 
@@ -131,7 +131,7 @@ class PlugObj(Plug, QtCore.QObject):
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.activate(self.ui)
             elif self.position=='window':
-                self.app.stack.show(self.ui)
+                self.app.window.show(self.ui)
             elif self.position=='overlay':
                 self.ui.show()
 
@@ -142,7 +142,7 @@ class PlugObj(Plug, QtCore.QObject):
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.deactivate(self.ui)
             elif self.position=='window':
-                self.app.stack.show(self.app.main)
+                self.app.window.show(self.app.window.main)
             elif self.position=='overlay':
                 self.ui.hide()
 

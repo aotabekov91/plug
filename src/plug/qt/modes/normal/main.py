@@ -21,7 +21,7 @@ class Normal(Mode):
     def listen(self):
 
         super().listen()
-        self.app.main.setFocus()
+        self.app.window.main.setFocus()
 
     def incrementUp(self, digit=1): 
 
@@ -46,134 +46,134 @@ class Normal(Mode):
     @register(key='G')
     def gotoEnd(self):
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: view.gotoEnd()
 
     @register(key='gg')
     def gotoBegin(self):
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: view.gotoBegin()
 
     @register(key=']')
     def next(self, digit=1): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: 
             for d in range(digit): view.next()
     
     @register(key='[')
     def prev(self, digit=1): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view:
             for d in range(digit): view.prev()
 
     @register(key='k')
     def up(self, digit=1): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: 
             for d in range(digit): view.up()
 
     @register(key='j')
     def down(self, digit=1): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: 
             for d in range(digit): view.down()
 
     @register(key='h')
     def left(self, digit=1): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: 
             for d in range(digit): view.left()
 
     @register(key='l')
     def right(self, digit=1): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: 
             for d in range(digit): view.right()
 
     @register(key='zi')
     def zoomIn(self, digit=1): 
         
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view:
             for d in range(digit): view.zoomIn()
 
     @register(key='zo')
     def zoomOut(self, digit=1): 
         
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view:
             for d in range(digit): view.zoomOut()
 
     @register(key='g')
     def gotoPage(self, digit=1):
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: view.goto(digit)
 
     @register(key='K')
     def pageUp(self, digit=1): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view:
             for d in range(digit): view.pageUp()
 
     @register(key='J')
     def pageDown(self, digit=1): 
         
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view:
             for d in range(digit): view.pageDown()
 
     @register(key='r')
     def readjust(self): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: view.readjust()
 
     @register(key='S')
     def save(self): 
 
-        view=self.app.main.display.view
+        view=self.app.window.main.display.view
         if view: view.save()
 
     @register('fc')
     def focusCurrentView(self): 
 
-        self.app.main.display.focusCurrentView()
+        self.app.window.main.display.focusCurrentView()
 
     @register(key='fx')
     def closeCurrentView(self): 
 
-        self.app.main.display.closeView()
+        self.app.window.main.display.closeView()
 
     @register('fk')
     def focusUpView(self): 
 
-        self.app.main.display.focus(-1)
+        self.app.window.main.display.focus(-1)
 
     @register('fj')
     def focusDownView(self): 
 
-        self.app.main.display.focus(+1)
+        self.app.window.main.display.focus(+1)
 
     @register('fi')
     def incrementFold(self): 
 
-        self.app.main.display.incrementFold()
+        self.app.window.main.display.incrementFold()
 
     @register('fd')
     def decrementFold(self): 
 
-        self.app.main.display.decrementFold()
+        self.app.window.main.display.decrementFold()
 
     @register(key='tc', modes=['normal', 'command'])
     def toggleCursor(self): 
 
-        self.app.main.display.toggleCursor()
+        self.app.window.main.display.toggleCursor()

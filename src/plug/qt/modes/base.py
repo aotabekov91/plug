@@ -6,10 +6,11 @@ from plug.qt.utils import register
 
 class Mode(PlugObj):
 
+    keysChanged=QtCore.pyqtSignal(str)
+
     def __init__(self, 
                  wait_run=2,
                  wait_time=100,
-                 report_keys=True,
                  delisten_on_exec=True,
                  mode_on_exit='normal',
                  **kwargs):
@@ -18,7 +19,6 @@ class Mode(PlugObj):
         self.keys_pressed=[]
         self.wait_run=wait_run
         self.wait_time=wait_time
-        self.report_keys=report_keys
         self.mode_on_exit=mode_on_exit
 
         self.delisten_on_exec=delisten_on_exec
@@ -33,10 +33,10 @@ class Mode(PlugObj):
         self.timer=QtCore.QTimer()
         self.timer.timeout.connect(self.deactivate)
 
-    def saveCommands(self, plug, method):
+    def saveCommands(self, plug, method, key):
 
         prefix=plug.modeKey(self.name)
-        key=f'{prefix}{method.key}'
+        key=f'{prefix}{key}'
         self.commands[key]=method
 
     def setPlugData(self):
@@ -46,7 +46,10 @@ class Mode(PlugObj):
             for (pname, fname), m in actions.items():
                 if not mname or  mname in m.modes:
                     if hasattr(m, 'key'): 
-                        self.saveCommands(plug, m)
+                        key=m.key
+                    else:
+                        key=None
+                    self.saveCommands(plug, m, key)
 
         for plug, actions in self.app.plugman.actions.items():
             setData(plug, actions, self.name)
@@ -139,11 +142,8 @@ class Mode(PlugObj):
         if text: 
             self.keys_pressed+=[text]
 
-            if self.report_keys:
-                self.bar_data={
-                        'detail': ''.join(self.keys_pressed)}
-            else:
-                self.bar_data={}
+            pressed=''.join(self.keys_pressed)
+            self.keysChanged.emit(pressed)
 
         return text
 
@@ -215,6 +215,7 @@ class Mode(PlugObj):
     def _onExecuteMatch(self): 
 
         if self.delisten_on_exec: 
+            self.keysChanged.emit('')
             self.modeWanted.emit(self.mode_on_exit)
 
     @register('q')

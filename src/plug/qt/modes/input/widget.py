@@ -7,7 +7,7 @@ class InputWidget(QtWidgets.QWidget):
     def __init__(self, parent):
 
         self.app=parent
-        super().__init__(self.app.main)
+        super().__init__(self.app.window.main)
 
         self.setStyleSheet('''
             QWidget{
@@ -33,7 +33,7 @@ class InputWidget(QtWidgets.QWidget):
         self.nvim=NVim()
 
         self.label=QtWidgets.QLabel()
-        self.field=Editor(self.nvim, self.app.main.bar)
+        self.field=Editor(self.nvim, self.app.window.bar)
 
         layout=QtWidgets.QVBoxLayout()
         layout.setSpacing(5)

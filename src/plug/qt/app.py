@@ -17,7 +17,7 @@ class PlugApp(Plug, QtWidgets.QApplication):
 
     def setGUI(self, display_class=None, view_class=None):
 
-        self.stack=StackWindow(
+        self.window=StackWindow(
                 self, 
                 display_class, 
                 view_class)
@@ -37,7 +37,7 @@ class PlugApp(Plug, QtWidgets.QApplication):
 
         self.parse()
         self.running=True
-        if hasattr(self, 'stack'): self.stack.show()
+        if hasattr(self, 'window'): self.window.show()
         sys.exit(self.exec_())
 
     def exit(self): 

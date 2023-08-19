@@ -13,7 +13,7 @@ class dotdict(dict):
 
 class Plugman:
 
-    def __init__(self, app=None, path=None):
+    def __init__(self, app=None):
 
         super(Plugman, self).__init__()
 
@@ -32,7 +32,13 @@ class Plugman:
                 self.folder,
                 self.base)
 
-        self.picky.install()
+        self.installPicks()
+
+    def installPicks(self): self.picky.install()
+
+    def updatePicks(self): self.picky.update()
+
+    def cleanupPicks(self): self.picky.cleanup()
 
     def setup(self):
 

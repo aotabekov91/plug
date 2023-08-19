@@ -38,5 +38,5 @@ class FileBrowser(TreePlug):
                 self.ui.main.tree.expand(
                         self.ui.main.tree.currentIndex())
             else:
-                self.app.main.open(path, how=how, focus=focus)
+                self.app.window.main.open(path, how=how, focus=focus)
             super().open(how, focus)

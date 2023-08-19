@@ -27,10 +27,10 @@ class Visual(Mode):
         super().delisten()
         self.hints=False
         if self.hinting:
-            self.app.main.display.view.update()
+            self.app.window.main.display.view.update()
         self.hinting=False
 
     def listen(self):
 
         super().listen()
-        self.app.main.setFocus()
+        self.app.window.main.setFocus()
