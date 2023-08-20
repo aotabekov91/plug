@@ -67,11 +67,19 @@ class Plugman:
 
     def loadPlugs(self, plugs):
 
-        for p in plugs: self.add(p(app=self.app), 'plug')
+        for p in plugs: 
+            name=p.__name__
+            config=self.app.config.get(name, {})
+            plug=p(app=self.app, config=config)
+            self.add(plug, 'plug')
 
     def loadModes(self, modes):
 
-        for m in modes: self.add(m(app=self.app), 'mode')
+        for m in modes: 
+            name=m.__name__
+            config=self.app.config.get(name, {})
+            mode=m(app=self.app, config=config)
+            self.add(mode, 'mode')
 
     def add(self, picked, kind):
 

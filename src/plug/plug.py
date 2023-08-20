@@ -88,9 +88,14 @@ class Plug:
             for f, key in keys.items():
                 m=getattr(self, f, None)
                 if m and hasattr(m, '__func__'):
-                    setattr(m.__func__, 'key', f'{key}')
+                    if type(key)==str:
+                        modes=getattr(m, 'modes', ['command'])
+                        setattr(m.__func__, 'key', f'{key}')
+                    elif 'key' in key:
+                        modes=getattr(m, 'modes', ['command'])
+                        modes=key.get('modes', modes)
+                        key=key.get('key')
                     f=getattr(m, 'name', m.__func__.__name__)
-                    modes=getattr(m, 'modes', ['command'])
                     setattr(m.__func__, 'name', f)
                     setattr(m.__func__, 'modes', modes)
                     d=(self.__class__.__name__, m.name)
@@ -265,7 +270,9 @@ class Plug:
                 with open(path, 'r') as y:
                     if f=='config.yaml':
                         l=yaml.loader.SafeLoader
-                        self.config=yaml.load(y, Loader=l)
+                        config=yaml.load(y, Loader=l)
+                        config.update(self.config)
+                        self.config=config
                     else:
                         self.yamls[name]=list(yaml.safe_load_all(f))
 

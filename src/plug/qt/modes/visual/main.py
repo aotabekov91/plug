@@ -11,6 +11,9 @@ class Visual(Mode):
                  **kwargs,
                  ):
 
+        self.hints=None
+        self.hinting=False
+
         super().__init__(app=app, 
                          name=name,
                          listen_leader=listen_leader,
@@ -18,9 +21,6 @@ class Visual(Mode):
                          delisten_on_exec=delisten_on_exec, 
                          **kwargs,
                          )
-
-        self.hints=None
-        self.hinting=False
 
     def delisten(self):
 
