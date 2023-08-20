@@ -185,7 +185,7 @@ class Plug(BasePlug):
             mod+=['Alt']
         if (mdf & QtCore.Qt.ControlModifier):
             mod+=['Ctrl']
-        if (mdf & QtCore.Qt.ShiftModifier):
+        if mod and (mdf & QtCore.Qt.ShiftModifier):
             mod+=['Shift']
 
         if kind=='listen_leader':
