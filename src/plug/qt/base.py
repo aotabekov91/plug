@@ -1,4 +1,6 @@
-from threading import Thread
+import os
+import re
+import threading
 from PyQt5 import QtCore, QtWidgets
 
 from plug import Plug as BasePlug
@@ -18,6 +20,8 @@ class Plug(BasePlug):
                  ):
 
         self.app=app
+        self.css={}
+        self.css_style=''
         self.mode_keys=mode_keys
         self.command_activated=False
 
@@ -30,6 +34,21 @@ class Plug(BasePlug):
 
         self.setShortcuts()
         self.setLeaders()
+
+    def setFiles(self):
+
+        super().setFiles()
+        for f in os.listdir(self.path):
+
+            if f.endswith('css'):
+                path=f'{self.path}/{f}'
+                with open(path, 'r') as y:
+                    lines=' '.join(y.readlines())
+                    lines=re.sub(r'[\n\t]', ' ', lines)
+                    if f=='style.css':
+                        self.css_style=lines
+                    else:
+                        self.css[path]=lines
 
     def modeKey(self, mode): 
         return self.mode_keys.get(mode, '')
@@ -135,7 +154,7 @@ class Plug(BasePlug):
             self.command_leader=cval
             self.command_modifiers=cmode
 
-        t=Thread(target=set)
+        t=threading.Thread(target=set)
         t.start()
 
     def checkKey(self, event, kind='listen_leader'):

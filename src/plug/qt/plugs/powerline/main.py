@@ -27,12 +27,11 @@ class Powerline(PlugObj):
     def on_keysChanged(self, pressed):
 
         if pressed:
-            self.ui.detail.show()
-            self.ui.detail.setText(pressed)
+            self.ui.setText('keys', pressed)
 
     def on_modeChanged(self, mode):
 
-        self.ui.mode.setText(mode.name.title())
+        self.ui.setText('mode', mode.name.title())
 
     def setUI(self):
 
@@ -45,23 +44,20 @@ class Powerline(PlugObj):
 
         dhash=model.hash()
         if dhash:
-            self.ui.model.show()
-            self.ui.model.setText(dhash)
+            self.ui.setText('model', dhash)
 
     def on_viewChanged(self, view): 
 
         name=view.name()
         if name:
-            self.ui.model.show()
-            self.ui.model.setText(name)
+            self.ui.setText('model', name)
 
     def on_itemChanged(self, view, item=None): 
 
         cpage=view.currentPage()
         pages=view.totalPages()
         if pages:
-            self.ui.page.show()
-            self.ui.page.setText(f'{cpage}/{pages}')
+            self.ui.setText('page', f'{cpage}/{pages}')
 
     @register('t', modes=['command'])
     def toggle(self): super().toggle()

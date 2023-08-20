@@ -15,6 +15,9 @@ class PlugApp(Plug, QtWidgets.QApplication):
 
         super(PlugApp, self).__init__(argv=argv, **kwargs)
 
+        if self.css_style:
+            self.setStyleSheet(self.css_style)
+
     def setGUI(self, display_class=None, view_class=None):
 
         self.window=StackWindow(

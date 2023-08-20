@@ -1,6 +1,5 @@
 from PyQt5 import QtCore
 
-from plug.qt.utils import register as reg
 from plug.utils import Plugman as Base
 
 class Plugman(Base, QtCore.QObject):
@@ -31,7 +30,6 @@ class Plugman(Base, QtCore.QObject):
     def add(self, picked, kind):
 
         super().add(picked, kind)
-
         if hasattr(picked, 'modeWanted'):
             picked.modeWanted.connect(self.set)
         if hasattr(picked, 'forceDelisten'):

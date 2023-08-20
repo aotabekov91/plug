@@ -11,7 +11,6 @@ class Exec(Mode):
                  app=None, 
                  name='exec',
                  listen_leader='Ctrl+e',  
-                 delisten_on_exec=False,
                  **kwargs
                  ):
 
@@ -23,50 +22,32 @@ class Exec(Mode):
                 )
 
         self.setUI()
+        self.setData()
 
     def checkSpecialCharacters(self, event):
 
         r=super().checkSpecialCharacters(event)
-        accept=['tab',
-                'return', 
-                'carriage', 
-                'escape', 
-                'escape_bracket']
-        if r in accept:
-            return r
-        else:
-            return False
+        accept=['tab', 'return', 'carriage', 
+                'escape', 'escape_bracket']
+        if r in accept: return r
+        return False
 
     def setUI(self):
 
-        self.ui=ListWidget(item_widget=Item)
+        self.ui=ListWidget(
+                item_widget=Item,
+                objectName='ExecMode_List',
+                set_base_style=False,
+                )
+
         self.ui.setParent(self.app.window)
-
-        style_sheet=self.ui.styleSheet()
-        style_sheet+='''
-            QListWidget{
-                border-width: 0px;
-                border-color: transparent;
-                background-color: transparent;
-            }
-            QListWidget::item{
-                border-width: 0px;
-                border-radius: 0px;
-            }
-            QListWidget::item:selected{
-                border-width: 0px;
-                background-color: gray;
-                border-color: transparent;
-            }
-        '''
-
-        self.ui.setStyleSheet(style_sheet)
         self.ui.setSpacing(0)
+        self.ui.hide()
+
+    def setData(self):
 
         data=[{'up': n} for n in self.commands.keys()]
-
         self.ui.setList(data)
-        self.ui.hide()
 
     def saveCommands(self, plug, method, key):
         self.commands[method.name]=method
@@ -77,21 +58,17 @@ class Exec(Mode):
         self.app.window.bar.bottom.hide()
         self.app.window.bar.edit.textChanged.disconnect(
                 self.on_textChanged)
-
         self.app.window.bar.edit.clear()
         self.ui.unfilter()
 
     def listen(self):
 
         super().listen()
-
         self.app.window.bar.show()
         self.app.window.bar.bottom.show()
         self.app.window.bar.edit.setFocus()
-
         self.app.window.bar.edit.textChanged.connect(
                 self.on_textChanged)
-
         self.ui.show()
 
     def on_textChanged(self):
@@ -103,7 +80,6 @@ class Exec(Mode):
 
         if text:
             self.ui.filter(text)
-
             suited=[]
             for name in self.commands.keys():
                 if text==name[:len(text)]:
@@ -112,8 +88,9 @@ class Exec(Mode):
             suited=self.commands
 
         if len(suited)==1:
-            name=suited[0]['up']
-            self.app.window.bar.edit.setText(name)
+            name=suited[0].get('up')
+            if name:
+                self.app.window.bar.edit.setText(name)
             self.ui.hide()
         else:
             self.ui.show()
@@ -132,7 +109,6 @@ class Exec(Mode):
             if name in self.commands:
                 method=self.commands[name]
                 method()
-
         self.ui.hide()
         self.on_escapePressed()
 
