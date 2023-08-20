@@ -13,17 +13,17 @@ class StatusWidget(QtWidgets.QWidget):
         layout.setContentsMargins(0,0,0,0)
 
         self.mode=QtWidgets.QLabel(
-                objectName='Powerline_mode')
+                objectName='mode')
         self.info=QtWidgets.QLabel(
-                objectName='Powerline_mnfo')
+                objectName='info')
         self.detail=QtWidgets.QLabel(
-                objectName='Powerline_detail')
+                objectName='detail')
         self.model=QtWidgets.QLabel(
-                objectName='Powerline_model')
+                objectName='model')
         self.keys=QtWidgets.QLabel(
-                objectName='Powerline_keys')
+                objectName='keys')
         self.page=QtWidgets.QLabel(
-                objectName='Powerline_page')
+                objectName='page')
 
         layout.addWidget(self.mode, QtCore.Qt.AlignLeft)
         layout.addStretch(1)

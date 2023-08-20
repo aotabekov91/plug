@@ -35,6 +35,22 @@ class Plug(BasePlug):
         self.setShortcuts()
         self.setLeaders()
 
+    def setCustomStyleSheet(self):
+
+        if self.css_style:
+
+            if self.app and self.app.css_style:
+                style_sheet=self.css_style+self.app.css_style
+            else:
+                style_sheet=self.css_style
+
+            if hasattr(self, 'setStyleSheet'):
+                style_sheet=self.styleSheet()+style_sheet
+                self.setStyleSheet(style_sheet)
+            elif hasattr(self, 'ui'):
+                style_sheet=self.ui.styleSheet()+style_sheet
+                self.ui.setStyleSheet(style_sheet)
+
     def setFiles(self):
 
         super().setFiles()

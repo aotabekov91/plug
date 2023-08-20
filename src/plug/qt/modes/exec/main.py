@@ -36,11 +36,11 @@ class Exec(Mode):
 
         self.ui=ListWidget(
                 item_widget=Item,
+                parent=self.app.window,
                 objectName='ExecMode_List',
                 set_base_style=False,
                 )
 
-        self.ui.setParent(self.app.window)
         self.ui.setSpacing(0)
         self.ui.hide()
 
@@ -69,6 +69,8 @@ class Exec(Mode):
         self.app.window.bar.edit.setFocus()
         self.app.window.bar.edit.textChanged.connect(
                 self.on_textChanged)
+
+        self.ui.adjustSize()
         self.ui.show()
 
     def on_textChanged(self):
@@ -106,9 +108,12 @@ class Exec(Mode):
         if text:
             cmd=text.split(' ', 1)
             name=cmd[0]
-            if name in self.commands:
-                method=self.commands[name]
-                method()
+            item=self.ui.currentItem()
+            if item:
+                name=item.itemData['up']
+                if name in self.commands:
+                    method=self.commands[name]
+                    method()
         self.ui.hide()
         self.on_escapePressed()
 
