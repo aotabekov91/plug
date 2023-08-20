@@ -142,10 +142,8 @@ class Mode(PlugObj):
         text=event.text()
         if text: 
             self.keys_pressed+=[text]
-
             pressed=''.join(self.keys_pressed)
             self.keysChanged.emit(pressed)
-
         return text
 
     def runMatches(self, matches, partial, key, digit):

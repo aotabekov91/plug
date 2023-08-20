@@ -10,7 +10,7 @@ class Exec(Mode):
     def __init__(self, 
                  app=None, 
                  name='exec',
-                 listen_leader='Ctrl+e',  
+                 listen_leader='Ctrl+Shift+e',
                  **kwargs
                  ):
 
@@ -60,6 +60,7 @@ class Exec(Mode):
                 self.on_textChanged)
         self.app.window.bar.edit.clear()
         self.ui.unfilter()
+        self.ui.hide()
 
     def listen(self):
 

@@ -92,7 +92,6 @@ class PlugObj(Plug, QtCore.QObject):
 
         c1=event.type()==QtCore.QEvent.KeyPress
         if self.listening and c1: 
-
             if self.checkMode(widget, event):
                 event.accept()
                 return True
@@ -101,9 +100,9 @@ class PlugObj(Plug, QtCore.QObject):
 
     def checkListen(self, event):
 
-        for name, mode in self.app.plugman.getModes().items():
-            if mode.checkKey(event): 
-                return mode
+        modes=self.app.plugman.getModes().items()
+        for name, mode in modes:
+            if mode.checkKey(event): return mode
 
     def on_uiFocusGained(self):
 

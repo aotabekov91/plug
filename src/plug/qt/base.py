@@ -135,16 +135,20 @@ class Plug(BasePlug):
 
         def _set(leader):
 
-            mapping={',': 'Comma',
-                     ';': 'Semicolon', 
-                     '.': 'Period'}
+            mapping={
+                    ',': 'Comma', 
+                    ';': 'Semicolon', 
+                    '.': 'Period'
+                    }
 
             modifiers, key_values = [], []
 
             if leader:
+
                 set_key=leader.split('+')
+
                 for i, k in enumerate(set_key):
-                    if k in ['Ctrl', 'Alt', 'Shift']:
+                    if k in ['Alt', 'Ctrl', 'Shift']:
                         modifiers+=[k]
                     else:
                         break
@@ -177,11 +181,11 @@ class Plug(BasePlug):
 
         mod=[]
         mdf=event.modifiers()
-        if mdf==QtCore.Qt.AltModifier:
+        if (mdf & QtCore.Qt.AltModifier):
             mod+=['Alt']
-        if mdf==QtCore.Qt.ControlModifier:
+        if (mdf & QtCore.Qt.ControlModifier):
             mod+=['Ctrl']
-        if mdf==QtCore.Qt.ShiftModifier:
+        if (mdf & QtCore.Qt.ShiftModifier):
             mod+=['Shift']
 
         if kind=='listen_leader':
