@@ -1,7 +1,7 @@
 from plug.qt import PlugObj
 from plug.qt.utils import register
 
-from .widget import StatusWidget
+from .widget import PowerlineWidget
 
 class Powerline(PlugObj):
 
@@ -35,7 +35,7 @@ class Powerline(PlugObj):
 
     def setUI(self):
 
-        self.ui=StatusWidget()
+        self.ui=PowerlineWidget()
         self.app.window.bar.container_layout.insertWidget(
                 0, self.ui)
         self.app.window.bar.show()

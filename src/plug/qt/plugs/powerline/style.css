@@ -14,7 +14,7 @@ QWidget#Powerline QLabel#mode {
 	color: black;
 	padding: 0 5px 0 5px;
 	qproperty-alignment: AlignCenter;
-	background-color: yellow;
+	background-color: blue;
 }
 
 QWidget#Powerline QLabel#keys {

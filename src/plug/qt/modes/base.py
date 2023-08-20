@@ -35,8 +35,9 @@ class Mode(PlugObj):
 
     def saveCommands(self, plug, method, key):
 
-        prefix=plug.modeKey(self.name)
-        key=f'{prefix}{key}'
+        if hasattr(plug, 'modeKey'):
+            prefix=plug.modeKey(self.name)
+            key=f'{prefix}{key}'
         self.commands[key]=method
 
     def setPlugData(self):

@@ -11,15 +11,12 @@ class Plugman(Base, QtCore.QObject):
     def setup(self):
 
         super().setup()
-        funcs=['installPicks', 'updatePicks', 'cleanupPicks']
+        funcs=['installPicks', 
+               'updatePicks', 
+               'cleanupPicks']
         actions={}
         for f in funcs:
-            d=(self.__class__.__name__, f)
-            m=getattr(self, f)
-            # func=lambda *args, **kwargs: m(*args, **kwargs)
-            # func.name=f
-            # func.modes=['exec']
-            actions[d]=m
+            actions[('Plugman', f)]=getattr(self, f)
         self.register(self, actions)
 
     @register(modes=['exec'])
@@ -28,8 +25,10 @@ class Plugman(Base, QtCore.QObject):
     @register(modes=['exec'])
     def updatePicks(self): super().updatePicks()
 
-    @register(modes=['exec'])
-    def cleanupPicks(self): super().cleanupPicks()
+    @register('pc', modes=['normal', 'exec'])
+    def cleanupPicks(self): 
+        print('cleaning up')
+        super().cleanupPicks()
 
     def add(self, picked, kind):
 

@@ -2,14 +2,8 @@ import os
 import sys
 import importlib
 
-from picky import Picky
-
-class dotdict(dict):
-
-    """dot.notation access to dictionary attributes"""
-    __getattr__ = dict.get
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
+from .picky import Picky
+from .miscel import dotdict
 
 class Plugman:
 
