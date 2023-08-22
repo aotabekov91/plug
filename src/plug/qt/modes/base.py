@@ -73,7 +73,6 @@ class Mode(PlugObj):
                     self.addKeys(event, widget)
                     event.accept()
                     return True
-
         return super().eventFilter(widget, event)
 
     def checkSpecialCharacters(self, event):
@@ -152,6 +151,7 @@ class Mode(PlugObj):
         self.timer.timeout.connect(
                 lambda: self.executeMatch(
                     matches, partial, digit))
+
         if len(matches)==1 and not partial:
             self.timer.start(self.wait_run)
         else:
