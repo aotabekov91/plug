@@ -14,18 +14,21 @@ class Picky:
 
     def install(self):
 
-        for gid in self.picks:
+        for data in self.picks:
 
-            if type(gid)==str:
-                name, folder= self.installDirect(gid)
-                self.rtp[name]=folder
-            else:
-                for repo, v in gid.items():
-                    subdirs=v.get('subdir', [])
-                    for subdir in subdirs: 
-                        url=f"{repo}/{subdir}"
-                        name, path, folder=self.getInfo(url)
-                        self.rtp[name]=folder
+            repo = data.get('pick', None)
+            subdirs = data.get('subdir', [])
+
+            if repo:
+
+                name, folder = self.installDirect(repo)
+                self.rtp[name] = folder
+
+                for subdir in subdirs: 
+                    url=f"{repo}/{subdir}"
+                    name, path, folder=self.getInfo(url)
+                    self.rtp[name]=folder
+
                 self.installDirect(repo)
 
     def cleanup(self):

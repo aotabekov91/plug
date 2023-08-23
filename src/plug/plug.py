@@ -2,13 +2,11 @@ import os
 import re
 import zmq
 import yaml
+import tomli
 import inspect
 import argparse
 
 from pathlib import Path
-from threading import Thread
-
-from configparser import ConfigParser
 from types import MethodType, BuiltinFunctionType
 
 from plug.utils import Plugman
@@ -34,6 +32,7 @@ class Plug:
             super(Plug, self).__init__()
 
         self.yamls={}
+        self.tomls={}
         self.name=name
         self.port=port
         self.config=config
@@ -264,9 +263,10 @@ class Plug:
 
         for f in os.listdir(self.path):
 
+            name=f.rsplit('.', 1)[0]
+            path=f'{self.path}/{f}'
+
             if f.endswith('yaml'):
-                name=f.rsplit('.', 1)[0]
-                path=f'{self.path}/{f}'
                 with open(path, 'r') as y:
                     if f=='config.yaml':
                         l=yaml.loader.SafeLoader
@@ -274,7 +274,15 @@ class Plug:
                         config.update(self.config)
                         self.config=config
                     else:
-                        self.yamls[name]=list(yaml.safe_load_all(f))
+                        self.yamls[name]=list(
+                                yaml.safe_load_all(f))
+            elif f.endswith('toml'):
+                with open(path, 'rb') as y:
+                    toml_data=tomli.load(y)
+                    self.tomls[name]=toml_data
+                    if f=='config.toml':
+                        toml_data.update(self.config)
+                        self.config=toml_data
 
     def setSettings(self):
 
