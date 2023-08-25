@@ -66,9 +66,11 @@ class Plug:
         self.setSystemShortcut()
         self.setActions()
 
-    def setPlugman(self): self.plugman=Plugman(self)
+    def setPlugman(self): 
+        self.plugman=Plugman(self)
 
-    def setParser(self): self.parser = argparse.ArgumentParser()
+    def setParser(self): 
+        self.parser = argparse.ArgumentParser()
 
     def setSystemShortcut(self):
 
@@ -77,8 +79,11 @@ class Plug:
             shortcuts=self.config['System']
             for func_name, key in shortcuts.items():
                 func=getattr(self, func_name, None)
-                key=re.sub(r'(Shift|Alt|Ctrl)', r'<\1>', key).lower() 
-                if func: self.os_listener.listen(key, func)
+                key=re.sub(r'(Shift|Alt|Ctrl)', 
+                           r'<\1>', 
+                           key).lower() 
+                if func: 
+                    self.os_listener.listen(key, func)
 
     def setActions(self, obj=None):
 

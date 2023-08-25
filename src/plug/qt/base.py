@@ -73,20 +73,16 @@ class Plug(BasePlug):
 
         self.listener = QtCore.QThread()
         self.zeromq_listener=ZMQListener(self)
-        self.zeromq_listener.moveToThread(self.listener)
+        self.zeromq_listener.moveToThread(
+                self.listener)
         self.listener.started.connect(
                 self.zeromq_listener.loop)
-        self.zeromq_listener.request.connect(self.act)
-        QtCore.QTimer.singleShot(0, self.listener.start)
+        self.zeromq_listener.request.connect(
+                self.act)
+        QtCore.QTimer.singleShot(
+                0, self.listener.start)
 
-    def act(self, request):
-
-        response=self.handle(request)
-        if self.respond_port:
-            self.socket.send_json(response)
-        self.zeromq_listener.acted=True
-
-    def setOSListener(self):
+    def setSystemListener(self):
 
         self.os_thread = QtCore.QThread()
         self.os_listener=KeyListener(self)
@@ -94,6 +90,13 @@ class Plug(BasePlug):
         self.os_thread.started.connect(
                 self.os_listener.loop)
         QtCore.QTimer.singleShot(0, self.os_thread.start)
+
+    def act(self, request):
+
+        response=self.handle(request)
+        if self.respond_port:
+            self.socket.send_json(response)
+        self.zeromq_listener.acted=True
 
     def setConnection(self, kind='PULL'):
 

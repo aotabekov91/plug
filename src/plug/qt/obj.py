@@ -10,7 +10,6 @@ class PlugObj(Plug, QtCore.QObject):
     delistenWanted=QtCore.pyqtSignal()
     modeWanted=QtCore.pyqtSignal(object)
     listenWanted=QtCore.pyqtSignal(object)
-
     returnPressed=QtCore.pyqtSignal()
     keyPressed=QtCore.pyqtSignal(object, object)
 
@@ -45,16 +44,13 @@ class PlugObj(Plug, QtCore.QObject):
     def setUI(self): 
 
         self.ui=CommandStack()
-
         self.ui.hideWanted.connect(self.on_uiHideWanted)
         self.ui.focusGained.connect(self.on_uiFocusGained)
-
         self.locateUI()
 
     def locateUI(self):
 
         if hasattr(self, 'ui'):
-
             dock=['left', 'right', 'top', 'bottom']
             if self.position=='window':
                 self.app.window.add(self.ui, self.name) 
@@ -77,6 +73,12 @@ class PlugObj(Plug, QtCore.QObject):
         self.delocateUI()
         self.locateUI()
 
+    def checkListen(self, event):
+
+        modes=self.app.plugman.getModes().items()
+        for name, mode in modes:
+            if mode.checkKey(event): return mode
+
     def checkMode(self, widget, event):
 
         mode=self.checkListen(event)
@@ -98,12 +100,6 @@ class PlugObj(Plug, QtCore.QObject):
             return super().eventFilter(widget, event)
         return False
 
-    def checkListen(self, event):
-
-        modes=self.app.plugman.getModes().items()
-        for name, mode in modes:
-            if mode.checkKey(event): return mode
-
     def on_uiFocusGained(self):
 
         if self.follow_mouse: self.modeWanted.emit(self)
@@ -119,7 +115,9 @@ class PlugObj(Plug, QtCore.QObject):
         if hasattr(self, 'ui') and self.activated: 
             self.ui.setFocus()
 
-    def delisten(self): self.listening=False
+    def delisten(self): 
+
+        self.listening=False
 
     def activate(self):
 

@@ -20,7 +20,6 @@ class Mode(PlugObj):
         self.wait_run=wait_run
         self.wait_time=wait_time
         self.mode_on_exit=mode_on_exit
-
         self.delisten_on_exec=delisten_on_exec
 
         super(Mode, self).__init__(
