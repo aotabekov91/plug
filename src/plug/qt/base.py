@@ -5,7 +5,7 @@ from PyQt5 import QtCore, QtWidgets
 
 from plug import Plug as BasePlug
 
-from .utils import ZMQListener, KeyListener
+from .utils import ZMQListener, KeyListener, EventListener
 
 class Plug(BasePlug):
 
@@ -19,21 +19,19 @@ class Plug(BasePlug):
                  **kwargs,
                  ):
 
-        self.app=app
         self.css={}
+        self.app=app
         self.css_style=''
         self.mode_keys=mode_keys
         self.command_activated=False
 
-        self.listen_modifiers=[]
-        self.command_modifiers=[]
         self.listen_leader=listen_leader
         self.command_leader=command_leader
 
         super(Plug, self).__init__(**kwargs)
 
         self.setShortcuts()
-        self.setLeaders()
+        self.setEventListener()
 
     def setCustomStyleSheet(self):
 
@@ -66,8 +64,11 @@ class Plug(BasePlug):
                     else:
                         self.css[path]=lines
 
-    def modeKey(self, mode): 
-        return self.mode_keys.get(mode, '')
+    def setEventListener(self):
+
+        self.event_listener=EventListener(
+                obj=self,
+                app=self.app)
 
     def setListener(self):
 
@@ -115,98 +116,12 @@ class Plug(BasePlug):
                     shortcut.activated.connect(func)
                     self.action[(key, name)]=func
 
-    def eventFilter(self, widget, event):
+    def toggleCommandMode(self):
 
-        if event.type()==QtCore.QEvent.KeyPress:
-
-            if self.command_leader:
-                c=hasattr(self, 'ui') 
-                c=c and hasattr(self.ui, 'commands')
-                if c:
-                    c1=self.checkKey(event, 'command_leader')
-                    if c1:
-                        if self.command_activated:
-                            self.deactivateCommandMode()
-                        else:
-                            self.activateCommandMode()
-                        event.accept()
-                        return True
-
-        return super().eventFilter(widget, event)
-
-    def setLeaders(self):
-
-        def _set(leader):
-
-            mapping={
-                    ',': 'Comma', 
-                    ';': 'Semicolon', 
-                    '.': 'Period'
-                    }
-
-            modifiers, key_values = [], []
-
-            if leader:
-
-                set_key=leader.split('+')
-
-                for i, k in enumerate(set_key):
-                    if k in ['Alt', 'Ctrl', 'Shift']:
-                        modifiers+=[k]
-                    else:
-                        break
-
-                if modifiers:
-                    for k in set_key[i:]:
-                        k=mapping.get(k, k.upper())
-                        v=getattr(QtCore.Qt, f"Key_{k}", k)
-                        key_values+=[v]
-                else:
-                    key_values=set_key[i:]
-
-            return modifiers, key_values
-
-        def set():
-
-            lmode, lval=_set(self.listen_leader)
-            cmode, cval=_set(self.command_leader)
-
-            self.listen_leader=lval
-            self.listen_modifiers=lmode
-
-            self.command_leader=cval
-            self.command_modifiers=cmode
-
-        t=threading.Thread(target=set)
-        t.start()
-
-    def checkKey(self, event, kind='listen_leader'):
-
-        mod=[]
-        mdf=event.modifiers()
-        if (mdf & QtCore.Qt.AltModifier):
-            mod+=['Alt']
-        if (mdf & QtCore.Qt.ControlModifier):
-            mod+=['Ctrl']
-        if mod and (mdf & QtCore.Qt.ShiftModifier):
-            mod+=['Shift']
-
-        if kind=='listen_leader':
-
-            cval=self.listen_leader
-            cmode=self.listen_modifiers
-
-        elif kind=='command_leader':
-
-            cval=self.command_leader
-            cmode=self.command_modifiers
-
-        if mod==cmode:
-            if cmode:
-                return cval==[event.key()]
-            else:
-                return cval==[event.text()]
-        return False
+        if self.command_activated:
+            self.deactivateCommandMode()
+        else:
+            self.activateCommandMode()
 
     def deactivateCommandMode(self):
 

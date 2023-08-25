@@ -26,17 +26,11 @@ class Mode(PlugObj):
                 command_leader=[], 
                 **kwargs)
 
-    def setup(self):
-
-        super().setup()
-        self.timer=QtCore.QTimer()
-        self.timer.timeout.connect(self.deactivate)
-
     def saveCommands(self, plug, method, key):
 
-        if hasattr(plug, 'modeKey'):
-            prefix=plug.modeKey(self.name)
-            key=f'{prefix}{key}'
+        if hasattr(plug, 'mode_key'):
+            prefix=plug.mode_key.get(self.name, None)
+            if prefix: key=f'{prefix} {key}'
         self.commands[key]=method
 
     def setPlugData(self):
@@ -74,57 +68,6 @@ class Mode(PlugObj):
                     return True
         return super().eventFilter(widget, event)
 
-    def checkSpecialCharacters(self, event):
-
-        enter=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return]
-
-        if event.key() in enter: 
-
-            self.on_returnPressed()
-            return 'return'
-                
-        elif event.key()==QtCore.Qt.Key_Backspace:
-
-            self.on_backspacePressed()
-            return 'backspace'
-
-        elif event.key()==QtCore.Qt.Key_Escape:
-
-            self.on_escapePressed()
-            return 'escape'
-
-        elif event.key()==QtCore.Qt.Key_Tab:
-
-            self.on_tabPressed()
-            return 'tab'
-
-        elif event.modifiers()==QtCore.Qt.ControlModifier:
-
-            if event.key()==QtCore.Qt.Key_BracketLeft:
-                self.on_escapePressed()
-                return 'escape_bracket'
-
-            elif event.key()==QtCore.Qt.Key_M:
-                self.on_carriagePressed()
-                return 'carriage'
-
-        return False
-
-    def clearKeys(self):
-
-        self.timer.stop()
-        self.keys_pressed=[]
-
-    def listen(self):
-
-        super().listen()
-        self.clearKeys()
-
-    def delisten(self):
-
-        super().delisten()
-        self.timer.stop()
-        self.clearKeys()
 
     def addKeys(self, event, widget=None):
 
@@ -215,21 +158,3 @@ class Mode(PlugObj):
         if self.delisten_on_exec: 
             self.keysChanged.emit('')
             self.modeWanted.emit(self.mode_on_exit)
-
-    @register('q')
-    def exit(self): self.app.exit()
-
-    def on_carriagePressed(self): pass
-
-    def on_tabPressed(self): pass
-
-    def on_escapePressed(self): 
-
-        if self.delisten_on_exec: 
-            self.modeWanted.emit(self.mode_on_exit)
-        else:
-            self.delistenWanted.emit()
-
-    def on_returnPressed(self): self.returnPressed.emit()
-
-    def on_backspacePressed(self): self.clearKeys()

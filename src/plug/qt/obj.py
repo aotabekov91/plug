@@ -28,18 +28,12 @@ class PlugObj(Plug, QtCore.QObject):
                 listen_port=listen_port,
                 **kwargs)
 
-        self.register()
-
     def setup(self):
 
         super().setup()
         if self.app: 
             self.app.plugman.add(self, 'plug')
-            self.setFilter()
-
-    def setFilter(self):
-
-        self.app.installEventFilter(self)
+            self.app.plugman.register(self, self.actions)
 
     def setUI(self): 
 
@@ -73,33 +67,6 @@ class PlugObj(Plug, QtCore.QObject):
         self.delocateUI()
         self.locateUI()
 
-    def checkListen(self, event):
-
-        modes=self.app.plugman.getModes().items()
-        for name, mode in modes:
-            if mode.checkKey(event): return mode
-
-    def checkMode(self, widget, event):
-
-        mode=self.checkListen(event)
-        if mode:
-            if mode==self:
-                self.delistenWanted.emit()
-            else:
-                self.modeWanted.emit(mode)
-            return True
-        return False
-
-    def eventFilter(self, widget, event):
-
-        c1=event.type()==QtCore.QEvent.KeyPress
-        if self.listening and c1: 
-            if self.checkMode(widget, event):
-                event.accept()
-                return True
-            return super().eventFilter(widget, event)
-        return False
-
     def on_uiFocusGained(self):
 
         if self.follow_mouse: self.modeWanted.emit(self)
@@ -111,13 +78,13 @@ class PlugObj(Plug, QtCore.QObject):
 
     def listen(self): 
 
-        self.listening=True
+        self.event_listener.listen()
         if hasattr(self, 'ui') and self.activated: 
             self.ui.setFocus()
 
     def delisten(self): 
 
-        self.listening=False
+        self.event_listener.delisten()
 
     def activate(self):
 
@@ -142,8 +109,3 @@ class PlugObj(Plug, QtCore.QObject):
                 self.app.window.show(self.app.window.main)
             elif self.position=='overlay':
                 self.ui.hide()
-
-    def register(self):
-
-        if self.app: 
-            self.app.plugman.register(self, self.actions)
