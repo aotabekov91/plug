@@ -14,7 +14,7 @@ class Exec(PlugObj):
                  app=None, 
                  name='exec',
                  special=special,
-                 listen_leader='Ctrl+Shift+e',
+                 listen_leader='Ctrl+e',
                  **kwargs
                  ):
 
@@ -33,8 +33,6 @@ class Exec(PlugObj):
 
         super().delisten()
         self.app.window.bar.bottom.hide()
-        self.app.window.bar.edit.textChanged.disconnect(
-                self.on_textChanged)
         self.app.window.bar.edit.clear()
 
     def listen(self):
@@ -43,8 +41,6 @@ class Exec(PlugObj):
         self.app.window.bar.show()
         self.app.window.bar.bottom.show()
         self.app.window.bar.edit.setFocus()
-        self.app.window.bar.edit.textChanged.connect(
-                self.on_textChanged)
 
     def on_returnPressed(self): 
 

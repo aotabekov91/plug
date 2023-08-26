@@ -1,3 +1,4 @@
+import re
 from PyQt5 import QtCore
 from inspect import signature
 
@@ -156,7 +157,7 @@ class EventListener(QtCore.QObject):
         if self.registerKey(event):
             key, digit = self.getKeys()
             self.keyPressed.emit(digit, key)
-            matches, partial=self.getMatches(tuple(key), digit)
+            matches, partial=self.getMatches(key, digit)
             self.runMatches(matches, partial, key, digit)
 
         if matches or partial:
@@ -193,7 +194,7 @@ class EventListener(QtCore.QObject):
 
         text, pressed=self.getPressed(event)
         if pressed and event.text():
-            self.keys_pressed+=pressed
+            self.keys_pressed+=[pressed]
             self.pressed_text+=text
             self.keysChanged.emit(self.pressed_text)
         return pressed
@@ -202,8 +203,8 @@ class EventListener(QtCore.QObject):
 
         key, digit = [], ''
         for i, k in enumerate(self.keys_pressed):
-            if type(k)==str:
-                digit+=k
+            if type(k[0])==str:
+                digit+=k[0]
             else:
                 key=self.keys_pressed[i:]
                 break
@@ -211,7 +212,7 @@ class EventListener(QtCore.QObject):
             digit=int(digit)
         else:
             digit=None
-        return key, digit
+        return tuple(key), digit
 
     def getMatches(self, key, digit):
 
@@ -293,8 +294,8 @@ class EventListener(QtCore.QObject):
 
     def parseKey(self, key):
 
-        match=[]
-        if not key: return match 
+        parsed=[]
+        if not key: return parsed 
 
         mapping={
                 ',': 'Comma', 
@@ -302,22 +303,33 @@ class EventListener(QtCore.QObject):
                 '.': 'Period'
                 }
 
-        for i in key.split('+'):
-            if i=='Ctrl':
-                match+=[getattr(
-                    QtCore.Qt,'ControlModifier')]
-            elif i=='Alt':
-                match+=[getattr(
-                    QtCore.Qt,'AltModifier')]
-            elif i=='Shift':
-                match+=[getattr(
-                    QtCore.Qt,'ShiftModifier')]
-            else:
-                for n in i:
-                    k=mapping.get(n, n.upper())
-                    v=getattr(QtCore.Qt, f"Key_{k}", k)
-                    match+=[v]
-        return (tuple(match), key)
+        p=r'(?P<group>(<[acAC]-[a-zA-Z0-9]>)*)(?P<tail>(.)*)'
+        match=re.match(p, key)
+        groups=match.group('group')
+        if groups:
+            groups=re.findall('<([^>]*)>', groups)
+            for g in groups:
+                unit=[]
+                t=g.split('-')
+                m, l = t[0], t[1]
+                if m in 'cC':
+                    unit+=[getattr(QtCore.Qt,'ControlModifier')]
+                elif m in 'aA':
+                    unit+=[getattr(QtCore.Qt,'AltModifier')]
+                if l.isupper():
+                    unit+=[getattr(QtCore.Qt,'ShiftModifier')]
+                unit+=[l]
+                parsed+=[tuple(unit)]
+        tails=match.group('tail')
+        if tails:
+            for t in list(tails):
+                unit=[]
+                if t.isupper(): 
+                    unit+=[getattr(QtCore.Qt,'ShiftModifier')]
+                k=mapping.get(t, t.upper())
+                unit+=[getattr(QtCore.Qt, f"Key_{k}", k)]
+                parsed+=[tuple(unit)]
+        return (tuple(parsed), key)
     
     def checkLeader(self, event, kind='listen_leader'):
 
