@@ -10,7 +10,9 @@ class PlugObj(Plug, QtCore.QObject):
     delistenWanted=QtCore.pyqtSignal()
     modeWanted=QtCore.pyqtSignal(object)
     listenWanted=QtCore.pyqtSignal(object)
+    escapePressed=QtCore.pyqtSignal()
     returnPressed=QtCore.pyqtSignal()
+    keysChanged=QtCore.pyqtSignal(str)
     keyPressed=QtCore.pyqtSignal(object, object)
 
     def __init__(self,
@@ -19,8 +21,6 @@ class PlugObj(Plug, QtCore.QObject):
                  follow_mouse=True,
                  **kwargs):
 
-        self.bar_data={}
-        self.listening=False
         self.position=position
         self.follow_mouse=follow_mouse
 
@@ -32,8 +32,7 @@ class PlugObj(Plug, QtCore.QObject):
 
         super().setup()
         if self.app: 
-            self.app.plugman.add(self, 'plug')
-            self.app.plugman.register(self, self.actions)
+            self.app.plugman.add(self)
 
     def setUI(self): 
 
@@ -69,22 +68,13 @@ class PlugObj(Plug, QtCore.QObject):
 
     def on_uiFocusGained(self):
 
-        if self.follow_mouse: self.modeWanted.emit(self)
+        if self.follow_mouse: 
+            self.modeWanted.emit(self)
 
     def on_uiHideWanted(self):
 
         self.delistenWanted.emit()
         self.deactivate()
-
-    def listen(self): 
-
-        self.event_listener.listen()
-        if hasattr(self, 'ui') and self.activated: 
-            self.ui.setFocus()
-
-    def delisten(self): 
-
-        self.event_listener.delisten()
 
     def activate(self):
 

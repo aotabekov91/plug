@@ -17,7 +17,6 @@ class Plugman:
         self.actions={}
         self.all_actions={}
         self.plugs=dotdict()
-        self.modes=dotdict()
 
         self.setup()
 
@@ -46,7 +45,6 @@ class Plugman:
     def load(self):
 
         plugs=[]
-        modes=[]
 
         for name, folder in self.picky.rtp.items():
 
@@ -55,15 +53,10 @@ class Plugman:
             m=importlib.import_module(name)
             if hasattr(m, 'get_plug_class'):
                 plugs+=[m.get_plug_class()]
-            elif hasattr(m, 'get_mode_class'):
-                modes+=[m.get_mode_class()]
 
         self.loadPlugs(plugs)
-        self.loadModes(modes)
 
         self.set('normal')
-
-    def getModes(self): return self.modes
 
     def loadPlugs(self, plugs):
 
@@ -71,33 +64,16 @@ class Plugman:
             name=p.__name__
             config=self.app.config.get(name, {})
             plug=p(app=self.app, config=config)
-            self.add(plug, 'plug')
+            self.add(plug)
 
-    def loadModes(self, modes):
+    def add(self, plug):
 
-        for m in modes: 
-            name=m.__name__
-            config=self.app.config.get(name, {})
-            mode=m(app=self.app, config=config)
-            self.add(mode, 'mode')
+        self.plugs[plug.name]=plug
 
-    def add(self, picked, kind):
-
-        if kind=='mode':
-            self.modes[picked.name]=picked
-        elif kind=='plug':
-            self.plugs[picked.name]=picked
-
-        if hasattr(picked, 'setPlugData'):
-            picked.setPlugData()
-
-    def set(self, listener='normal', kind='mode'):
+    def set(self, listener='normal'):
 
         if type(listener)==str:
-            if kind=='mode':
-                listener=self.modes.get(listener, 'normal')
-            elif kind=='plug':
-                listener=self.plugs.get(listener)
+            listener=self.plugs.get(listener)
 
         if self.current!=listener:
 

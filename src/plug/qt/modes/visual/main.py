@@ -1,6 +1,6 @@
-from plug.qt.modes.base import Mode
+from plug.qt import PlugObj
 
-class Visual(Mode):
+class Visual(PlugObj):
 
     def __init__(self, 
                  app=None,

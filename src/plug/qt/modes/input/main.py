@@ -1,10 +1,10 @@
 from PyQt5 import QtCore, QtWidgets
 
-from plug.qt.modes.base import Mode
+from plug.qt import PlugObj
 
 from .widget import InputWidget
 
-class Input(Mode):
+class Input(PlugObj):
 
     escapePressed=QtCore.pyqtSignal()
 

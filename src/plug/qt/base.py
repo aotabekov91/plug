@@ -1,37 +1,31 @@
 import os
 import re
-import threading
 from PyQt5 import QtCore, QtWidgets
 
 from plug import Plug as BasePlug
-
-from .utils import ZMQListener, KeyListener, EventListener
+from plug.qt.utils import (ZMQListener, 
+                           KeyListener, 
+                           EventListener)
 
 class Plug(BasePlug):
 
     respond=QtCore.pyqtSignal(dict)
 
-    def __init__(self, 
-                 app=None, 
-                 mode_keys={},
-                 listen_leader=None,
-                 command_leader='Ctrl+.',
-                 **kwargs,
-                 ):
+    def __init__(self, app=None, **kwargs):
 
         self.css={}
         self.app=app
+        self.kwargs=kwargs
         self.css_style=''
-        self.mode_keys=mode_keys
         self.command_activated=False
-
-        self.listen_leader=listen_leader
-        self.command_leader=command_leader
 
         super(Plug, self).__init__(**kwargs)
 
-        self.setShortcuts()
-        self.setEventListener()
+    def setup(self):
+
+        super().setup()
+        self.setEventListener(**self.kwargs)
+        self.setActions()
 
     def setCustomStyleSheet(self):
 
@@ -64,11 +58,10 @@ class Plug(BasePlug):
                     else:
                         self.css[path]=lines
 
-    def setEventListener(self):
+    def setEventListener(self, **kwargs):
 
         self.event_listener=EventListener(
-                obj=self,
-                app=self.app)
+                obj=self, app=self.app, **kwargs)
 
     def setListener(self):
 
@@ -105,17 +98,6 @@ class Plug(BasePlug):
         if self.port or self.listen_port:
             self.setListener()
 
-    def setShortcuts(self):
-
-        if self.config.get('Shortcuts'):
-            shortcuts=self.config['Shortcuts']
-            for name, key in shortcuts.items():
-                func=getattr(self, name, None)
-                if func:
-                    shortcut=QtWidgets.QShortcut(key)
-                    shortcut.activated.connect(func)
-                    self.action[(key, name)]=func
-
     def toggleCommandMode(self):
 
         if self.command_activated:
@@ -133,3 +115,18 @@ class Plug(BasePlug):
 
         self.command_activated=True
         self.ui.show(self.ui.commands)
+
+    def listen(self): 
+
+        self.event_listener.listen()
+        if hasattr(self, 'ui') and self.activated: 
+            self.ui.setFocus()
+
+    def delisten(self): 
+
+        self.event_listener.delisten()
+
+    def checkLeader(self, event):
+
+        return self.event_listener.checkLeader(
+                event, kind='listen_leader')

@@ -1,7 +1,7 @@
 from plug.qt.utils import register
-from plug.qt.modes.base import Mode
+from plug.qt import PlugObj
 
-class Normal(Mode):
+class Normal(PlugObj):
 
     def __init__(self, 
                  app=None,

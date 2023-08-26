@@ -1,3 +1,3 @@
 from .main import Command
 
-def get_mode_class(): return Command
+def get_plug_class(): return Command

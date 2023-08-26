@@ -1,6 +1,7 @@
-from plug.qt.modes.base import Mode
+from plug.qt import PlugObj
+from plug.qt.utils import register
 
-class Command(Mode):
+class Command(PlugObj):
 
     def __init__(self, 
                  app, 
@@ -17,3 +18,8 @@ class Command(Mode):
                 show_statusbar=show_statusbar, 
                 **kwargs,
                 )
+
+    @register('q', modes=['command', 'normal'])
+    def exit(self):
+
+        if self.app: self.app.exit()

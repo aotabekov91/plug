@@ -7,6 +7,7 @@ class Plugman(Base, QtCore.QObject):
 
     keysChanged=QtCore.pyqtSignal(str)
     modeChanged=QtCore.pyqtSignal(object)
+    actionsRegistered=QtCore.pyqtSignal()
 
     def setup(self):
 
@@ -30,9 +31,9 @@ class Plugman(Base, QtCore.QObject):
         print('cleaning up')
         super().cleanupPicks()
 
-    def add(self, picked, kind):
+    def add(self, picked):
 
-        super().add(picked, kind)
+        super().add(picked)
         if hasattr(picked, 'modeWanted'):
             picked.modeWanted.connect(self.set)
         if hasattr(picked, 'forceDelisten'):
@@ -42,7 +43,14 @@ class Plugman(Base, QtCore.QObject):
         if hasattr(picked, 'keysChanged'):
             picked.keysChanged.connect(self.keysChanged)
 
-    def set(self, listener='normal', kind='mode'):
+        self.register(picked, picked.actions)
 
-        super().set(listener, kind)
+    def set(self, listener='normal'):
+
+        super().set(listener)
         self.modeChanged.emit(self.current)
+
+    def register(self, plug, actions):
+
+        super().register(plug, actions)
+        self.actionsRegistered.emit()

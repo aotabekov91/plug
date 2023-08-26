@@ -5,9 +5,13 @@ from .widget import PowerlineWidget
 
 class Powerline(PlugObj):
 
-    def __init__(self, **kwargs):
+    def __init__(self, 
+                 mode_keys={'command': 'p'},
+                 **kwargs):
 
-        super().__init__(**kwargs)
+        super().__init__(
+                mode_keys=mode_keys,
+                **kwargs)
 
         self.app.plugman.modeChanged.connect(
                 self.on_modeChanged)

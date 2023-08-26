@@ -175,12 +175,12 @@ getModes	src/plug/utils/dotdict.py	/^    def getModes(self): return self.modes$/
 getModes	src/plug/utils/plugman.py	/^    def getModes(self): return self.modes$/;"	m	class:Plugman
 getPath	src/plug/qt/plugs/trees/file.py	/^    def getPath(self, index=None):$/;"	m	class:FileBrowser
 getPlugs	src/plug/utils/dotdict.py	/^    def getPlugs(self): return self.plugs$/;"	m	class:Plugman
-get_mode_class	src/plug/qt/modes/command/__init__.py	/^def get_mode_class(): return Command$/;"	f
-get_mode_class	src/plug/qt/modes/exec/__init__.py	/^def get_mode_class(): return Exec$/;"	f
-get_mode_class	src/plug/qt/modes/input/__init__.py	/^def get_mode_class(): return Input$/;"	f
-get_mode_class	src/plug/qt/modes/normal/__init__.py	/^def get_mode_class(): return Normal$/;"	f
-get_mode_class	src/plug/qt/modes/search/__init__.py	/^def get_mode_class(): return Search$/;"	f
-get_mode_class	src/plug/qt/modes/visual/__init__.py	/^def get_mode_class(): return Visual$/;"	f
+get_plug_class	src/plug/qt/modes/command/__init__.py	/^def get_plug_class(): return Command$/;"	f
+get_plug_class	src/plug/qt/modes/exec/__init__.py	/^def get_plug_class(): return Exec$/;"	f
+get_plug_class	src/plug/qt/modes/input/__init__.py	/^def get_plug_class(): return Input$/;"	f
+get_plug_class	src/plug/qt/modes/normal/__init__.py	/^def get_plug_class(): return Normal$/;"	f
+get_plug_class	src/plug/qt/modes/search/__init__.py	/^def get_plug_class(): return Search$/;"	f
+get_plug_class	src/plug/qt/modes/visual/__init__.py	/^def get_plug_class(): return Visual$/;"	f
 get_plug_class	src/plug/qt/plugs/powerline/__init__.py	/^def get_plug_class(): return Powerline$/;"	f
 gotoBegin	src/plug/qt/modes/normal/main.py	/^    def gotoBegin(self):$/;"	m	class:Normal
 gotoEnd	src/plug/qt/modes/normal/main.py	/^    def gotoEnd(self):$/;"	m	class:Normal
