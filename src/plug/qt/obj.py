@@ -28,6 +28,7 @@ class PlugObj(Plug, QtCore.QObject):
                 listen_port=listen_port,
                 **kwargs)
 
+
     def setup(self):
 
         super().setup()
@@ -37,8 +38,29 @@ class PlugObj(Plug, QtCore.QObject):
     def setUI(self): 
 
         self.ui=CommandStack()
-        self.ui.hideWanted.connect(self.on_uiHideWanted)
-        self.ui.focusGained.connect(self.on_uiFocusGained)
+
+        if hasattr(self.ui, 'hideWanted'):
+            self.ui.hideWanted.connect(
+                    self.on_uiHideWanted)
+        if hasattr(self.ui, 'focusGained'):
+            self.ui.focusGained.connect(
+                    self.on_uiFocusGained)
+        if hasattr(self.ui, 'keyPressed'):
+            self.ui.keyPressed.connect(
+                    self.keyPressed)
+        if hasattr(self.ui, 'keysChanged'):
+            self.ui.keysChanged.connect(
+                    self.keysChanged)
+        if hasattr(self.ui, 'modeWanted'):
+            self.ui.modeWanted.connect(
+                    self.modeWanted)
+        if hasattr(self.ui, 'delistenWanted'):
+            self.ui.delistenWanted.connect(
+                    self.delistenWanted)
+        if hasattr(self.ui, 'forceDelisten'):
+            self.ui.forceDelisten.connect(
+                    self.forceDelisten)
+
         self.locateUI()
 
     def locateUI(self):

@@ -5,8 +5,8 @@ from gizmo.widget import InputTree
 class TreePlug(PlugObj):
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
 
+        super().__init__(**kwargs)
         self.setUI()
         self.m_follow_index=True
 
@@ -14,8 +14,8 @@ class TreePlug(PlugObj):
 
         super().setUI()
 
-        self.ui.addWidget(InputTree(), 'main', main=True)
-
+        self.ui.addWidget(
+                InputTree(), 'main', main=True)
         self.ui.main.tree.clicked.connect(
                 self.on_outlineClicked)
         self.ui.main.tree.itemChanged.connect(
@@ -54,7 +54,9 @@ class TreePlug(PlugObj):
         self.ui.show()
 
     @register('O')
-    def openResetFocus(self): self.open(how='reset', focus=True)
+    def openResetFocus(self): 
+
+        self.open(how='reset', focus=True)
     
     @register('L')
     def openAndDeactivate(self): 

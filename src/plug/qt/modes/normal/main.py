@@ -6,7 +6,7 @@ class Normal(PlugObj):
     def __init__(self, 
                  app=None,
                  name='normal',
-                 listen_leader='@',
+                 listen_leader='<c-n>',
                  delisten_on_exec=False,
                  **kwargs,
                  ):

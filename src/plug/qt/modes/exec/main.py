@@ -14,7 +14,7 @@ class Exec(PlugObj):
                  app=None, 
                  name='exec',
                  special=special,
-                 listen_leader='Ctrl+e',
+                 listen_leader='<c-e>',
                  **kwargs
                  ):
 
@@ -25,7 +25,6 @@ class Exec(PlugObj):
                 listen_leader=listen_leader, 
                 **kwargs
                 )
-
         self.event_listener.returnPressed.connect(
                 self.on_returnPressed)
 

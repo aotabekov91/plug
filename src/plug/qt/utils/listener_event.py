@@ -1,130 +1,19 @@
-import re
 from PyQt5 import QtCore
-from inspect import signature
 
-class EventListener(QtCore.QObject):
+from gizmo.utils import EventListener as Base
 
-    tabPressed=QtCore.pyqtSignal()
-    escapePressed=QtCore.pyqtSignal()
-    returnPressed=QtCore.pyqtSignal()
-    backspacePressed=QtCore.pyqtSignal()
-    carriageReturnPressed=QtCore.pyqtSignal()
-
-    keysChanged=QtCore.pyqtSignal(str)
-
-    forceDelisten=QtCore.pyqtSignal()
-    delistenWanted=QtCore.pyqtSignal()
-    modeWanted=QtCore.pyqtSignal(object)
-    listenWanted=QtCore.pyqtSignal(object)
-    keyPressed=QtCore.pyqtSignal(object, object)
+class EventListener(Base):
 
     def __init__(
             self, 
-            app=None, 
-            obj=None, 
-            config={},
             special=[],
-            wait_run=10,
-            mode_keys={},
-            wait_time=100,
-            listen_leader=None, 
-            command_leader=None,
-            mode_on_exit='normal',
-            delisten_on_exec=False,
             **kwargs,
             ):
 
-        super().__init__(obj)
+        super().__init__(**kwargs)
 
-        self.obj=obj
-        self.app=app
-        self.commands={}
-        self.config=config
-        self.pressed_text=''
-        self.keys_pressed=[]
         self.listening=False
         self.special=special
-        self.wait_run=wait_run
-        self.wait_time=wait_time
-        self.mode_keys=mode_keys
-        self.timer=QtCore.QTimer()
-        self.mode_on_exit=mode_on_exit
-        self.delisten_on_exec=delisten_on_exec
-
-        self.listen_leader=self.parseKey(listen_leader)
-        self.command_leader=self.parseKey(command_leader)
-
-        self.setup()
-
-    def setObj(self):
-
-        if hasattr(self.obj, 'keyPressed'):
-            self.keyPressed.connect(
-                    self.obj.keyPressed)
-        if hasattr(self.obj, 'tabPressed'):
-            self.tabPressed.connect(
-                    self.obj.tabPressed)
-        if hasattr(self.obj, 'keysChanged'):
-            self.keysChanged.connect(
-                    self.obj.keysChanged)
-        if hasattr(self.obj, 'returnPressed'):
-            self.returnPressed.connect(
-                    self.obj.returnPressed)
-        if hasattr(self.obj, 'backspacePressed'):
-            self.backspacePressed.connect(
-                    self.obj.backspacePressed)
-        if hasattr(self.obj, 'carriageReturnPressed'):
-            self.carriageReturnPressed.connect(
-                    self.obj.carriageReturnPressed)
-        if hasattr(self.obj, 'forceDelisten'):
-            self.forceDelisten.connect(
-                    self.obj.forceDelisten)
-        if hasattr(self.obj, 'delistenWanted'):
-            self.delistenWanted.connect(
-                    self.obj.delistenWanted)
-        if hasattr(self.obj, 'modeWanted'):
-            self.modeWanted.connect(
-                    self.obj.modeWanted)
-        if hasattr(self.obj, 'listenWanted'):
-            self.listenWanted.connect(
-                    self.obj.listenWanted)
-
-        obj=self.obj
-        if self.app: 
-            obj=self.app
-            plugman=getattr(self.app, 'plugman', None)
-            if plugman:
-                plugman.actionsRegistered.connect(
-                        self.savePlugKeys)
-
-
-        obj.installEventFilter(self)
-
-    def setup(self):
-
-        self.setObj()
-        self.saveKeys()
-
-        self.timer.timeout.connect(
-                lambda: self.executeMatch(
-                    [], [], 0))
-        # self.timer.timeout.connect(self.obj.deactivate)
-
-        self.backspacePressed.connect(self.clearKeys)
-        self.escapePressed.connect(self.on_escapePressed)
-
-    def on_escapePressed(self): 
-
-        if self.delisten_on_exec: 
-            self.modeWanted.emit(self.mode_on_exit)
-        else:
-            self.delistenWanted.emit()
-
-    def clearKeys(self):
-
-        self.timer.stop()
-        self.pressed_text=''
-        self.keys_pressed=[]
 
     def eventFilter(self, widget, event):
 
@@ -138,217 +27,7 @@ class EventListener(QtCore.QObject):
         elif self.checkSpecialCharacters(event):
             event.accept()
             return True
-        elif self.command_leader:
-            c=hasattr(self, 'ui') 
-            c=c and hasattr(self.ui, 'commands')
-            if c:
-                c1=self.checkLeader(
-                        event, 'command_leader')
-                if c1:
-                    self.obj.toggleCommandMode()
-                    event.accept()
-                    return True
-        return self.addKeys(event)
-
-    def addKeys(self, event):
-
-        self.timer.stop()
-        matches, partial = [], []
-        if self.registerKey(event):
-            key, digit = self.getKeys()
-            self.keyPressed.emit(digit, key)
-            matches, partial=self.getMatches(key, digit)
-            self.runMatches(matches, partial, key, digit)
-
-        if matches or partial:
-            return True
-        else:
-            self.clearKeys()
-            return False
-
-    def getPressed(self, event):
-
-        text=[]
-        pressed=[]
-        mdf=event.modifiers()
-
-        if (mdf & QtCore.Qt.AltModifier):
-            pressed+=[QtCore.Qt.AltModifier]
-            text+=['Alt']
-        if (mdf & QtCore.Qt.ControlModifier):
-            pressed+=[QtCore.Qt.ControlModifier]
-            text+=['Ctrl']
-        if mdf & QtCore.Qt.ShiftModifier:
-            pressed+=[QtCore.Qt.ShiftModifier]
-            text+=['Shift']
-        t=event.text()
-        text+=[t]
-        if t and t.isnumeric():
-            pressed+=[t]
-        else:
-            pressed+=[event.key()]
-        text='+'.join(text)
-        return text, tuple(pressed)
-
-    def registerKey(self, event):
-
-        text, pressed=self.getPressed(event)
-        if pressed and event.text():
-            self.keys_pressed+=[pressed]
-            self.pressed_text+=text
-            self.keysChanged.emit(self.pressed_text)
-        return pressed
-
-    def getKeys(self):
-
-        key, digit = [], ''
-        for i, k in enumerate(self.keys_pressed):
-            if type(k[0])==str:
-                digit+=k[0]
-            else:
-                key=self.keys_pressed[i:]
-                break
-        if digit: 
-            digit=int(digit)
-        else:
-            digit=None
-        return tuple(key), digit
-
-    def getMatches(self, key, digit):
-
-        m, p = [], []
-        for (k, text), f in self.commands.items():
-            if key==k[:len(key)]: 
-                if digit:
-                    t=getattr(f, '__wrapped__', f)
-                    c1='digit' in signature(t).parameters
-                    if not c1: continue
-                if key==k: 
-                    m+=[f]
-                elif key==k[:len(key)]: 
-                    p+=[f]
-        return m, p
-
-    def runMatches(self, matches, partial, key, digit):
-
-        self.timer.timeout.disconnect()
-        self.timer.timeout.connect(
-                lambda: self.executeMatch(
-                    matches, partial, digit))
-        if len(matches)==1 and not partial:
-            self.timer.start(self.wait_run)
-        else:
-            if self.wait_time: 
-                self.timer.start(self.wait_time)
-
-    def executeMatch(self, matches, partial, digit):
-
-        if not partial:
-            if len(matches)<2: 
-                self.clearKeys()
-            if len(matches)==1:
-                self.on_executeMatch()
-                m=matches[0]
-                f=getattr(m, '__wrapped__', m)
-                c1='digit' in signature(f).parameters
-
-                if digit and c1: 
-                    m(digit=digit)
-                else:
-                    m()
-
-    def on_executeMatch(self): 
-
-        if self.delisten_on_exec: 
-            self.keysChanged.emit('')
-            self.modeWanted.emit(self.mode_on_exit)
-
-    def saveKeys(self):
-
-        for f in self.obj.__dir__():
-            method=getattr(self.obj, f)
-            if hasattr(method, 'key'):
-                self.setKey(self.obj, method)
-
-    def setKey(self, obj, method):
-
-        key=getattr(method, 'key')
-        if key:
-            mode_keys=getattr(obj, 'mode_keys', {})
-            prefix=mode_keys.get(self.obj.name, '')
-            key=f'{prefix}{key}'
-            match=self.parseKey(key)
-            self.commands[match]=method
-
-    def savePlugKeys(self):
-
-        actions=self.app.plugman.actions
-        for plug, actions in actions.items():
-            for (pname, fname), m in actions.items():
-                own_m=plug==self.obj
-                any_m='any' in m.modes
-                in_m=self.obj.name in m.modes
-
-                if own_m or any_m or in_m:
-                    self.setKey(plug, m)
-
-    def parseKey(self, key):
-
-        parsed=[]
-        if not key: return parsed 
-
-        mapping={
-                ',': 'Comma', 
-                ';': 'Semicolon', 
-                '.': 'Period'
-                }
-
-        p=r'(?P<group>(<[acAC]-[a-zA-Z0-9]>)*)(?P<tail>(.)*)'
-        match=re.match(p, key)
-        groups=match.group('group')
-        if groups:
-            groups=re.findall('<([^>]*)>', groups)
-            for g in groups:
-                unit=[]
-                t=g.split('-')
-                m, l = t[0], t[1]
-                if m in 'cC':
-                    unit+=[getattr(QtCore.Qt,'ControlModifier')]
-                elif m in 'aA':
-                    unit+=[getattr(QtCore.Qt,'AltModifier')]
-                if l.isupper():
-                    unit+=[getattr(QtCore.Qt,'ShiftModifier')]
-                unit+=[l]
-                parsed+=[tuple(unit)]
-        tails=match.group('tail')
-        if tails:
-            for t in list(tails):
-                unit=[]
-                if t.isupper(): 
-                    unit+=[getattr(QtCore.Qt,'ShiftModifier')]
-                k=mapping.get(t, t.upper())
-                unit+=[getattr(QtCore.Qt, f"Key_{k}", k)]
-                parsed+=[tuple(unit)]
-        return (tuple(parsed), key)
-    
-    def checkLeader(self, event, kind='listen_leader'):
-
-        text, pressed=self.getPressed(event)
-
-        if kind=='listen_leader':
-            if not self.listen_leader:
-                return False
-            check_val, key=self.listen_leader
-        elif kind=='command_leader':
-            if not self.command_leader:
-                return False
-            check_val, key=self.command_leader
-
-        if pressed==check_val: 
-            self.keysChanged.emit(key)
-            return True
-        else:
-            return False
+        return super().eventFilter(widget, event)
 
     def checkMode(self, event):
 
@@ -362,17 +41,6 @@ class EventListener(QtCore.QObject):
                         self.modeWanted.emit(m)
                     return True
         return False
-
-    def listen(self):
-
-        self.listening=True
-        self.clearKeys()
-
-    def delisten(self):
-
-        self.listening=False
-        self.timer.stop()
-        self.clearKeys()
 
     def checkSpecialCharacters(self, event):
 
@@ -401,3 +69,14 @@ class EventListener(QtCore.QObject):
             return True
         else:
             return False
+
+    def listen(self):
+
+        self.listening=True
+        self.clearKeys()
+
+    def delisten(self):
+
+        self.listening=False
+        self.timer.stop()
+        self.clearKeys()

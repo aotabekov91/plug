@@ -7,7 +7,7 @@ class Command(PlugObj):
                  app, 
                  name='command',
                  show_statusbar=True, 
-                 listen_leader='Ctrl+,',
+                 listen_leader='<c-,>',
                  **kwargs,
                  ):
 
