@@ -36,35 +36,35 @@ class TreePlug(PlugObj):
     @register('t', modes=['command'])
     def toggle(self): super().toggle()
 
-    @register('i')
+    @register('<leader>ob')
     def openBelow(self): 
 
         self.open(how='below', focus=False)
         self.ui.show()
 
-    @register('I')
+    @register('<leader>oB')
     def openBelowFocus(self): 
 
         self.open(how='below', focus=True)
 
-    @register('o')
+    @register('<leader>o')
     def openReset(self): 
 
         self.open(how='reset', focus=False)
         self.ui.show()
 
-    @register('O')
+    @register('<leader>O')
     def openResetFocus(self): 
 
         self.open(how='reset', focus=True)
     
-    @register('L')
+    @register('<leader>oD')
     def openAndDeactivate(self): 
 
         self.open(how='reset', focus=True)
         self.deactivate()
 
-    @register('s')
+    @register('<leader>s')
     def center(self):
 
         if not self.m_follow_index:

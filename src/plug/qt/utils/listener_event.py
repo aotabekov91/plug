@@ -6,12 +6,14 @@ class EventListener(Base):
 
     def __init__(
             self, 
+            leader='.',
             special=[],
             **kwargs,
             ):
 
-        super().__init__(**kwargs)
-
+        super().__init__(
+                leader=leader,
+                **kwargs)
         self.listening=False
         self.special=special
 
