@@ -6,7 +6,7 @@ class Normal(PlugObj):
     def __init__(self, 
                  app=None,
                  name='normal',
-                 listen_leader='<c-N>',
+                 listen_leader='@',
                  delisten_on_exec=False,
                  **kwargs,
                  ):
@@ -69,14 +69,14 @@ class Normal(PlugObj):
         if view:
             for d in range(digit): view.prev()
 
-    @register(key='k')
+    @register(key=['k'])
     def up(self, digit=1): 
 
         view=self.app.window.main.display.view
         if view: 
             for d in range(digit): view.up()
 
-    @register(key='j')
+    @register(key=['j'])
     def down(self, digit=1): 
 
         view=self.app.window.main.display.view
