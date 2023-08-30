@@ -1,3 +1,4 @@
+from PyQt5 import QtGui, QtWidgets
 from plug.qt import PlugObj
 from plug.qt.utils import register
 from gizmo.widget import InputTree
@@ -14,8 +15,13 @@ class TreePlug(PlugObj):
 
         super().setUI()
 
+        input_tree=InputTree(set_base_style=False)
+
+        input_tree.tree.setSelectionBehavior(
+                QtWidgets.QAbstractItemView.SelectRows)
+
         self.ui.addWidget(
-                InputTree(), 'main', main=True)
+                input_tree, 'main', main=True)
         self.ui.main.tree.clicked.connect(
                 self.on_outlineClicked)
         self.ui.main.tree.itemChanged.connect(
@@ -47,7 +53,7 @@ class TreePlug(PlugObj):
 
         self.open(how='below', focus=True)
 
-    @register('<leader>o')
+    @register('o')
     def openReset(self): 
 
         self.open(how='reset', focus=False)

@@ -8,7 +8,7 @@ class Buffer(QtCore.QObject):
 
     def __init__(self, app):
 
-        super().__init__()
+        super().__init__(app)
 
         self.app=app
         self.buffers={}

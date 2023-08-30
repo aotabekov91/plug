@@ -38,6 +38,7 @@ class PlugObj(Plug, QtCore.QObject):
     def setUI(self): 
 
         self.ui=CommandStack()
+        self.ui.setObjectName(self.name)
 
         if hasattr(self.ui, 'hideWanted'):
             self.ui.hideWanted.connect(
