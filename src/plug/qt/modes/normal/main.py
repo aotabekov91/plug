@@ -76,7 +76,7 @@ class Normal(PlugObj):
         if view: 
             for d in range(digit): view.up()
 
-    @register(key=['j'])
+    @register(key='j')
     def down(self, digit=1): 
 
         view=self.app.window.main.display.view
@@ -153,12 +153,12 @@ class Normal(PlugObj):
 
         self.app.window.main.display.closeView()
 
-    @register('fk')
+    @register('<c-w><c-k>')
     def focusUpView(self): 
 
         self.app.window.main.display.focus(-1)
 
-    @register('fj')
+    @register('<c-w><c-j>')
     def focusDownView(self): 
 
         self.app.window.main.display.focus(+1)

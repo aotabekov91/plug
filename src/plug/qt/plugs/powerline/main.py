@@ -53,9 +53,10 @@ class Powerline(PlugObj):
 
     def on_viewChanged(self, view): 
 
-        name=view.name()
+        name=view.model().hash()
         if name:
             self.ui.setText('model', name)
+        self.on_itemChanged(view)
 
     def on_itemChanged(self, view, item=None): 
 

@@ -1,8 +1,8 @@
-QLabel#Statusbar_colon {
+#Statusbar QLabel#Colon {
 	color: white;
 }
 
-QLineEdit#Statusbar_edit {
+#Statusbar QLabel#Edit{
 	color: white;
 	border-width: 0px;
 	border-radius: 0px;
@@ -10,20 +10,26 @@ QLineEdit#Statusbar_edit {
 	background-color: transparent;
 }
 
-QWidget#Powerline QLabel#mode {
+#Powerline QLabel{
+	color: white;
+	padding: 0 5px 0 5px;
+	qproperty-alignment: AlignCenter;
+}
+
+#Powerline QLabel#Mode {
 	color: black;
 	padding: 0 5px 0 5px;
 	qproperty-alignment: AlignCenter;
 	background-color: yellow;
 }
 
-QWidget#Powerline QLabel#keys {
+#Powerline QLabel#Keys {
 	color: white;
 	padding: 0 5px 0 5px;
 	qproperty-alignment: AlignCenter;
 }
 
-QWidget#Powerline QLabel#page {
+#Powerline QLabel#Page {
 	color: black;
 	padding: 0 5px 0 5px;
 	qproperty-alignment: AlignCenter;

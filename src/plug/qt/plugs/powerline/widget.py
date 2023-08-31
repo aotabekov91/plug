@@ -13,28 +13,28 @@ class PowerlineWidget(QtWidgets.QWidget):
         layout.setContentsMargins(0,0,0,0)
 
         self.mode=QtWidgets.QLabel(
-                objectName='mode')
+                objectName='Mode')
         self.info=QtWidgets.QLabel(
-                objectName='info')
+                objectName='Info')
         self.detail=QtWidgets.QLabel(
-                objectName='detail')
+                objectName='Detail')
         self.model=QtWidgets.QLabel(
-                objectName='model')
+                objectName='Model')
         self.keys=QtWidgets.QLabel(
-                objectName='keys')
+                objectName='Keys')
         self.page=QtWidgets.QLabel(
-                objectName='page')
+                objectName='Page')
 
         layout.addWidget(self.mode, QtCore.Qt.AlignLeft)
         layout.addStretch(1)
         layout.addWidget(self.info, QtCore.Qt.AlignLeft)
         layout.addStretch(1)
         layout.addWidget(self.detail)
-        layout.addStretch(10)
-        layout.addWidget(self.model, QtCore.Qt.AlignRight)
-        layout.addStretch(1)
+        layout.addStretch(100)
         layout.addWidget(self.keys, QtCore.Qt.AlignRight)
-        layout.addStretch(1)
+        # layout.addStretch(1)
+        layout.addWidget(self.model, QtCore.Qt.AlignRight)
+        # layout.addStretch(1)
         layout.addWidget(self.page)
 
         self.setFixedHeight(20)

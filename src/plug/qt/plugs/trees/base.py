@@ -14,12 +14,9 @@ class TreePlug(PlugObj):
     def setUI(self):
 
         super().setUI()
-
         input_tree=InputTree(set_base_style=False)
-
         input_tree.tree.setSelectionBehavior(
                 QtWidgets.QAbstractItemView.SelectRows)
-
         self.ui.addWidget(
                 input_tree, 'main', main=True)
         self.ui.main.tree.clicked.connect(
@@ -36,7 +33,6 @@ class TreePlug(PlugObj):
                 self.on_outlineCollapsed)
         self.ui.main.tree.returnPressed.connect(
                 self.on_outlineClicked)
-
         self.ui.installEventFilter(self)
 
     @register('t', modes=['command'])
