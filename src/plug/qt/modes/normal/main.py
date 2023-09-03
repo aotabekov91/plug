@@ -153,16 +153,6 @@ class Normal(PlugObj):
 
         self.app.window.main.display.closeView()
 
-    @register('<c-w><c-k>')
-    def focusUpView(self): 
-
-        self.app.window.main.display.focus(-1)
-
-    @register('<c-w><c-j>')
-    def focusDownView(self): 
-
-        self.app.window.main.display.focus(+1)
-
     @register('fi')
     def incrementFold(self): 
 
@@ -177,3 +167,55 @@ class Normal(PlugObj):
     def toggleCursor(self): 
 
         self.app.window.main.display.toggleCursor()
+
+    @register(key='<c-w>sv', modes=['normal', 'command'])
+    def splitVertical(self): 
+
+        display=self.app.window.main.display
+        if display.view: display.split(False)
+
+    @register(key='<c-w>sh', modes=['normal', 'command'])
+    def splitHorizontal(self):
+
+        display=self.app.window.main.display
+        if display.view: display.split(True)
+
+    @register('<c-w>k')
+    def focusUpView(self): 
+
+        self.app.window.main.display.focus('up')
+
+    @register('<c-w>j')
+    def focusDownView(self): 
+
+        self.app.window.main.display.focus('down')
+
+    @register('<c-w>l')
+    def focusLeftView(self): 
+
+        self.app.window.main.display.focus('right')
+
+    @register('<c-w>h')
+    def focusRightView(self): 
+
+        self.app.window.main.display.focus('left')
+
+    @register('<c-w>gg')
+    def focusFirstView(self): 
+
+        self.app.window.main.display.focus('first')
+
+    @register('<c-w>G')
+    def focusLastView(self): 
+
+        self.app.window.main.display.focus('last')
+
+    @register('<c-w>n')
+    def focusNextView(self): 
+
+        self.app.window.main.display.focus('next')
+
+    @register('<c-w>p')
+    def focusPrevView(self): 
+
+        self.app.window.main.display.focus('prev')

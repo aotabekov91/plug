@@ -6,7 +6,7 @@ class Visual(PlugObj):
                  app=None,
                  name='visual',
                  show_statusbar=True,
-                 listen_leader='Ctrl+v',
+                 listen_leader='<c-v>',
                  delisten_on_exec=False,
                  **kwargs,
                  ):

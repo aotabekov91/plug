@@ -103,6 +103,9 @@ class PlugObj(Plug, QtCore.QObject):
 
         self.activated=True
         self.listenWanted.emit(self)
+        self.activateUI()
+
+    def activateUI(self): 
 
         if hasattr(self, 'ui'): 
             if hasattr(self.ui, 'dock'):
@@ -115,6 +118,10 @@ class PlugObj(Plug, QtCore.QObject):
     def deactivate(self):
 
         self.activated=False
+        self.deactivateUI()
+
+    def deactivateUI(self):
+
         if hasattr(self, 'ui'): 
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.deactivate(self.ui)
