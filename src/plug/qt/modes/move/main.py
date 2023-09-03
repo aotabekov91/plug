@@ -1,23 +1,23 @@
 from plug.qt import PlugObj
 from plug.qt.utils import register
 
-class Resize(PlugObj):
+class Move(PlugObj):
 
     def __init__(self, 
                  app, 
-                 name='resize',
-                 listen_leader='<c-r>',
+                 name='move',
+                 listen_leader='<c-m>',
                  **kwargs,
                  ):
 
-        super(Resize, self).__init__(
+        super(Move, self).__init__(
                 app=app, 
                 name=name, 
                 listen_leader=listen_leader,
                 **kwargs,
                 )
 
-    def crement(self, direction, kind):
+    def move(self, direction, kind):
 
         prev=self.app.plugman.prev
         # Todo add dock resizing here also
@@ -25,52 +25,53 @@ class Resize(PlugObj):
         display=self.app.window.main.display
 
         if prev.name=='normal':
-            display.resize(direction, kind)
+            if kind=='move':
+                display.move(direction)
 
     @register('h')
-    def incrementLeft(self, digit=1):
+    def moveLeft(self, digit=1):
 
         for d in range(digit):
-            self.crement('left', 'increment')
+            self.move('left', 'move')
 
     @register('l')
-    def incrementRight(self, digit=1):
+    def moveRight(self, digit=1):
         
         for d in range(digit):
-            self.crement('right', 'increment')
+            self.move('right', 'move')
 
     @register('k')
-    def incrementUp(self, digit=1):
+    def moveUp(self, digit=1):
 
         for d in range(digit):
-            self.crement('up', 'increment')
+            self.move('up', 'move')
 
     @register('j')
-    def incrementDown(self, digit=1):
+    def moveDown(self, digit=1):
 
         for d in range(digit):
-            self.crement('down', 'increment')
+            self.move('down', 'move')
 
     @register('H')
-    def decrmentLeft(self, digit=1):
+    def repositionLeft(self, digit=1):
 
         for d in range(digit):
-            self.crement('left', 'decrment')
+            self.move('left', 'reposition')
 
     @register('L')
-    def decrmentRight(self, digit=1):
+    def repositionRight(self, digit=1):
         
         for d in range(digit):
-            self.crement('right', 'decrment')
+            self.move('right', 'reposition')
 
     @register('K')
-    def decrmentUp(self, digit=1):
+    def repositionUp(self, digit=1):
 
         for d in range(digit):
-            self.crement('up', 'decrment')
+            self.move('up', 'reposition')
 
     @register('J')
-    def decrmentDown(self, digit=1):
+    def repositionDown(self, digit=1):
 
         for d in range(digit):
-            self.crement('down', 'decrment')
+            self.move('down', 'reposition')
