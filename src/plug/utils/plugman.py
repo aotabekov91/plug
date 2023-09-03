@@ -10,21 +10,17 @@ class Plugman:
     def __init__(self, app=None):
 
         super(Plugman, self).__init__()
-
         self.app=app
+        self.prev=None
         self.current=None
-        
         self.actions={}
         self.all_actions={}
         self.plugs=dotdict()
-
         self.setup()
-
         self.picky=Picky(
                 self.picky,
                 self.folder,
                 self.base)
-
         self.installPicks()
 
     def installPicks(self): self.picky.install()
@@ -80,6 +76,7 @@ class Plugman:
             if self.current: 
                 self.current.delisten()
 
+            self.prev=self.current
             self.current=listener
             self.current.listen()
 
