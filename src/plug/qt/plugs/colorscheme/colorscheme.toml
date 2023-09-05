@@ -1,0 +1,6 @@
+['#Powerline QLabel#Mode']
+
+color = "black"
+padding = "0 5px 0 5px"
+qproperty-alignment = "AlignCenter"
+background-color = "green"

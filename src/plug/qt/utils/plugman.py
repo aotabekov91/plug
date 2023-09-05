@@ -7,6 +7,7 @@ class Plugman(Base, QtCore.QObject):
 
     keysChanged=QtCore.pyqtSignal(str)
     modeChanged=QtCore.pyqtSignal(object)
+    plugLoaded=QtCore.pyqtSignal(object)
     plugsLoaded=QtCore.pyqtSignal(object)
     actionsRegistered=QtCore.pyqtSignal()
 
@@ -49,6 +50,7 @@ class Plugman(Base, QtCore.QObject):
                     self.keysChanged)
 
         self.register(picked, picked.actions)
+        self.plugLoaded.emit(picked)
 
     def loadPlugs(self, plugs):
 
