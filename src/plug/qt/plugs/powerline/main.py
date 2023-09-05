@@ -51,7 +51,7 @@ class Powerline(PlugObj):
         if dhash:
             self.ui.setText('model', dhash)
 
-    def on_viewChanged(self, view): 
+    def on_viewChanged(self, view, prev): 
 
         name=view.model().hash()
         if name:

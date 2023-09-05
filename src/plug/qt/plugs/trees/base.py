@@ -97,7 +97,7 @@ class TreePlug(PlugObj):
 
     def on_itemChanged(self, item): pass
 
-    def on_viewChanged(self, view): self.setData()
+    def on_viewChanged(self, view, prev): self.setData()
 
     def find(self, item, model, parent=None):
 
