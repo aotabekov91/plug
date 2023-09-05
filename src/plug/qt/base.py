@@ -13,10 +13,8 @@ class Plug(BasePlug):
 
     def __init__(self, app=None, **kwargs):
 
-        self.css={}
         self.app=app
         self.kwargs=kwargs
-        self.css_style=''
         self.command_activated=False
 
         super(Plug, self).__init__(**kwargs)
@@ -26,37 +24,6 @@ class Plug(BasePlug):
         super().setup()
         self.setEventListener(**self.kwargs)
         self.setActions()
-
-    def setCustomStyleSheet(self):
-
-        if self.css_style:
-
-            if self.app and self.app.css_style:
-                style_sheet=self.css_style+self.app.css_style
-            else:
-                style_sheet=self.css_style
-
-            if hasattr(self, 'setStyleSheet'):
-                style_sheet=self.styleSheet()+style_sheet
-                self.setStyleSheet(style_sheet)
-            elif hasattr(self, 'ui'):
-                style_sheet=self.ui.styleSheet()+style_sheet
-                self.ui.setStyleSheet(style_sheet)
-
-    def setFiles(self):
-
-        super().setFiles()
-        for f in os.listdir(self.path):
-
-            if f.endswith('css'):
-                path=f'{self.path}/{f}'
-                with open(path, 'r') as y:
-                    lines=' '.join(y.readlines())
-                    lines=re.sub(r'[\n\t]', ' ', lines)
-                    if f=='style.css':
-                        self.css_style=lines
-                    else:
-                        self.css[path]=lines
 
     def setEventListener(self, **kwargs):
 

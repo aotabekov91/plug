@@ -14,9 +14,6 @@ class PlugApp(Plug, QtWidgets.QApplication):
                 argv=argv, 
                 **kwargs)
 
-        if self.css_style:
-            self.setStyleSheet(self.css_style)
-
     def setGUI(self, 
                display_class=None, 
                view_class=None):

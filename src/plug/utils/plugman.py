@@ -31,12 +31,15 @@ class Plugman:
 
     def setup(self):
 
-        c=dotdict(self.app.config.get('Plugman', {}))
+        c=dotdict(self.app.config.get(
+            'Plugman', {}))
 
         self.picky=c.Picky
         self.base=c.Settings.get('base')
-        self.folder=os.path.expanduser(c.Settings.get('folder'))
-        self.app.createFolder(self.folder, 'plugman_folder')
+        self.folder=os.path.expanduser(
+                c.Settings.get('folder'))
+        self.app.createFolder(
+                self.folder, 'plugman_folder')
 
     def load(self):
 
@@ -45,13 +48,11 @@ class Plugman:
         for name, folder in self.picky.rtp.items():
 
             sys.path.append(folder)
-        
             m=importlib.import_module(name)
             if hasattr(m, 'get_plug_class'):
                 plugs+=[m.get_plug_class()]
 
         self.loadPlugs(plugs)
-
         self.set('normal')
 
     def loadPlugs(self, plugs):

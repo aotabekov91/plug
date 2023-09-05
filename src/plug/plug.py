@@ -31,6 +31,7 @@ class Plug:
         else:
             super(Plug, self).__init__()
 
+        self.files={}
         self.yamls={}
         self.tomls={}
         self.name=name
@@ -71,6 +72,7 @@ class Plug:
 
     def setParser(self): 
         self.parser = argparse.ArgumentParser()
+
 
     def setSystemShortcut(self):
 
@@ -270,6 +272,8 @@ class Plug:
 
             name=f.rsplit('.', 1)[0]
             path=f'{self.path}/{f}'
+
+            self.files[f]=path
 
             if f.endswith('yaml'):
                 with open(path, 'r') as y:

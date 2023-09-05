@@ -43,7 +43,6 @@ class Powerline(PlugObj):
         self.app.window.bar.container_layout.insertWidget(
                 0, self.ui)
         self.app.window.bar.show()
-        self.setCustomStyleSheet()
 
     def on_hashChanged(self, model):
 
