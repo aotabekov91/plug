@@ -3,7 +3,7 @@ import re
 from plug.qt import PlugObj
 from plug.qt.utils import register
 
-class Colorscheme(PlugObj):
+class Styler(PlugObj):
 
     def __init__(self, 
             *args, 
@@ -33,11 +33,11 @@ class Colorscheme(PlugObj):
                 default+=plug.ui.styleSheet()
             path=plug.files.get(self.file_name, None)
             if path:
-                default+=self.readStyleSheet(path)
+                default+=self.readColorScheme(path)
 
         path=self.app.files.get(self.file_name, None)
         if path:
-            default+=self.readStyleSheet(path)
+            default+=self.readColorScheme(path)
         self.colorschemes['default']=default
         self.setColorScheme(self.colorscheme)
 
