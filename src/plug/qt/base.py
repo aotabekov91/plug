@@ -16,7 +16,6 @@ class Plug(BasePlug):
         self.app=app
         self.kwargs=kwargs
         self.command_activated=False
-
         super(Plug, self).__init__(**kwargs)
 
     def setup(self):

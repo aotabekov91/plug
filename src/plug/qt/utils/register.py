@@ -1,6 +1,6 @@
 from functools import wraps
 
-def register(key=None, info=None, modes=[], command=True):
+def register(key=None, modes=[], **kwargs):
 
     def _register(func):
 
@@ -9,10 +9,9 @@ def register(key=None, info=None, modes=[], command=True):
             return func(self, *args, **kwargs)
 
         inner.key=key
-        inner.info=info
-        inner.modes=modes
         inner.func=func
-        inner.command=command
+        inner.modes=modes
+        inner.kwargs=kwargs
         inner.name=func.__name__
 
         return inner

@@ -3,6 +3,7 @@ import re
 import zmq
 import yaml
 import tomli
+import shlex
 import inspect
 import argparse
 
@@ -68,11 +69,19 @@ class Plug:
         self.setActions()
 
     def setPlugman(self): 
+
         self.plugman=Plugman(self)
 
     def setParser(self): 
+
         self.parser = argparse.ArgumentParser()
 
+    def parse(self, text=None): 
+
+        if text:
+            return self.parser.parse_known_args(
+                    shlex.split(text))
+        return self.parser.parse_known_args()
 
     def setSystemShortcut(self):
 
@@ -245,7 +254,8 @@ class Plug:
             else:
                 fp={}
                 for p in prmts:
-                    if p in request: fp[p]=request[p] 
+                    if p in request: 
+                        fp[p]=request[p] 
                 result=func(**fp)
 
             status='ok'

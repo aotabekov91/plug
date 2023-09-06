@@ -2,6 +2,7 @@ import re
 from collections import OrderedDict
 
 from plug.qt import PlugObj
+from plug.qt.utils import register
 
 class Styler(PlugObj):
 
@@ -9,10 +10,9 @@ class Styler(PlugObj):
 
         self.current=None
         self.colorschemes={}
-        self.colorscheme='ColorScheme'
+        self.m_colorscheme='default'
 
         super().__init__(*args, **kwargs)
-
         self.app.plugman.plugsLoaded.connect(
                 self.on_plugsLoaded)
 
@@ -55,7 +55,11 @@ class Styler(PlugObj):
     def on_plugsLoaded(self, plugs):
 
         self.setDefault(plugs)
-        self.setColorScheme(self.colorscheme)
+        self.setColorScheme(self.m_colorscheme)
+
+        self.app.plugman.plugs.exec.addOptions(
+                'colorscheme', 
+                list(self.colorschemes.keys()))
 
     def updateColorScheme(self, style):
 
@@ -97,19 +101,24 @@ class Styler(PlugObj):
         css=self.dictToCSS(updated)
         self.colorschemes[name]=(updated, css)
 
+        self.app.plugman.plugs.exec.addOptions(
+                'colorscheme', 
+                list(self.colorschemes.keys()))
+
     def reloadColorScheme(self):
 
-        if self.current!=self.colorscheme:
-            self.setColorScheme(self.colorscheme)
+        if self.current!=self.m_colorscheme:
+            self.setColorScheme(self.m_colorscheme)
 
-    def setColorScheme(self, name):
+    @register(modes=['exec'])
+    def setColorScheme(self, name, test=None):
         
         style=self.colorschemes.get(name, None)
 
         if style:
             cdict, css=style
             self.current=name
-            self.colorscheme=name
+            self.m_colorscheme=name
             self.app.setStyleSheet(css)
         else:
             self.current=None

@@ -24,10 +24,8 @@ class PlugApp(Plug, QtWidgets.QApplication):
                 view_class)
 
     def setPlugman(self): 
-        self.plugman=Plugman(self)
 
-    def parse(self): 
-        return self.parser.parse_known_args()
+        self.plugman=Plugman(self)
 
     def setName(self):
 

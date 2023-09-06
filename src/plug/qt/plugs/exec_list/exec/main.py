@@ -1,8 +1,8 @@
 from PyQt5 import QtCore
-from inspect import signature
-from collections import OrderedDict
 
 from plug.qt import PlugObj
+
+from .widget import ListWidget
 
 class Exec(PlugObj):
 
@@ -10,8 +10,6 @@ class Exec(PlugObj):
             'carriage', 
             'escape', 
             'escape_bracket']
-
-    tabPressed=QtCore.pyqtSignal()
 
     def __init__(self, 
                  app=None, 
@@ -28,19 +26,23 @@ class Exec(PlugObj):
                 listen_leader=listen_leader, 
                 **kwargs
                 )
-        self.args={}
         self.options={}
         self.commands={}
         self.event_listener.returnPressed.connect(
                 self.on_returnPressed)
+        self.event_listener.tabPressed.connect(
+                self.on_tabPressed)
         self.event_listener.keysSet.connect(
                 self.on_keysSet)
+        self.setUI()
 
-    def setup(self):
+    def setUI(self):
 
-        super().setup()
-        self.setParser()
-        self.parser.add_argument('command')
+        self.ui=ListWidget(
+                self.app,
+                objectName='ExecList',
+                )
+        self.ui.hide()
 
     def delisten(self):
 
@@ -62,49 +64,42 @@ class Exec(PlugObj):
     def on_keysSet(self, commands):
 
         self.commands = self.event_listener.methods
-        for c, m in self.commands.items():
-            self.args[c]=OrderedDict()
-            prmts=signature(m).parameters
-            self.args[c]={}
-            for n, p in prmts.items():
-                self.args[c][n]=[]
-                self.parser.add_argument(
-                        f'--{p}')
-
-                # if p.default!=Parameter.empty:
-                #     self.parser.add_argument(f'--{p}')
-                # else:
-                #     self.parser.add_argument(f'--{p}')
 
     def on_tabPressed(self):
 
-        self.tabPressed.emit()
+        col=self.getMethods()
+
+        if not self.ui.isVisible():
+
+            if len(col)==1:
+                name, method=col[0]
+                options=self.options.get(name, None)
+                print(options)
+                if options:
+                    for o in options: 
+                        self.ui.list.addItem(o)
+                    self.ui.show()
+
+        else:
+            pass
 
     def on_returnPressed(self): 
 
         col=self.getMethods()
         if len(col)==1: 
-            _, m, kwargs, pos = col[0]
-            m(*pos, **kwargs)
+            name, method = col[0]
+            method()
         self.delistenWanted.emit()
-
-    def getText(self):
-
-        t=self.app.window.bar.edit.text()
-        return self.parse(t)
 
     def getMethods(self):
 
+        name=self.app.window.bar.edit.text()
+        method=self.commands.get(name)
         col=[]
-        args, unkwn = self.getText()
-        t=args.command
-        for n, m in self.commands.items():
-            if n[:len(t)]!=t: continue
-            aa={}
-            for a, v in vars(args).items():
-                c1 = a in self.args[n]
-                c2 = not v is None
-                if c1 and c2: aa[a]=v
-            col+=[(n, m, aa, unkwn)]
-            if n==t: break
+        if method:
+            col+=[(name, method)]
+        else:
+            for n, m in self.commands.items():
+                if n[len(name)]==name: 
+                    col+=[(n, m)]
         return col
