@@ -8,9 +8,9 @@ class Styler(PlugObj):
 
     def __init__(self, *args, **kwargs):
 
+        self.styles={}
         self.current=None
-        self.colorschemes={}
-        self.m_colorscheme='default'
+        self.style='default'
         super().__init__(*args, **kwargs)
         self.app.plugman.plugsLoaded.connect(
                 self.on_plugsLoaded)
@@ -54,15 +54,14 @@ class Styler(PlugObj):
     def on_plugsLoaded(self, plugs):
 
         self.setDefault(plugs)
-        self.setColorScheme(self.m_colorscheme)
-
+        self.colorscheme(self.style)
         self.app.plugman.plugs.exec.addOptions(
                 'colorscheme', 
-                list(self.colorschemes.keys()))
+                list(self.styles.keys()))
 
-    def updateColorScheme(self, style):
+    def updateColorscheme(self, style):
 
-        default, css=self.colorschemes.get('default')
+        default, css=self.styles.get('default')
         tmp=default.copy()
         self.updateStyle(tmp, style)
         return tmp
@@ -84,40 +83,48 @@ class Styler(PlugObj):
                     style=self.cssToDict(style)
                     self.updateStyle(default, style)
 
-            style=plug.tomls.get('style', {})
+            file=plug.files.get('style.css', None)
+            if file:
+                style=self.readColorscheme(file)
+                self.updateStyle(default, style)
+
+        file=self.app.files.get('style.css', None)
+        if file:
+            style=self.readColorscheme(file)
             self.updateStyle(default, style)
-
-        style=self.app.tomls.get('style', {})
-        self.updateStyle(default, style)
         css=self.dictToCSS(default)
+        self.styles['default']=(default, css)
 
-        self.colorschemes['default']=(default, css)
+    def readColorscheme(self, path):
 
-    def addColorScheme(self, name, colorscheme):
+        with open(path, 'r') as y:
+            lines=' '.join(y.readlines())
+            css=re.sub(r'[\n\t]', ' ', lines)
+            return self.cssToDict(css)
 
-        updated=self.updateColorScheme(
+    def addColorscheme(self, name, colorscheme):
+
+        updated=self.updateColorscheme(
                 colorscheme)
         css=self.dictToCSS(updated)
-        self.colorschemes[name]=(updated, css)
-
+        self.styles[name]=(updated, css)
         self.app.plugman.plugs.exec.addOptions(
                 'colorscheme', 
-                list(self.colorschemes.keys()))
+                list(self.styles.keys()))
 
-    def reloadColorScheme(self):
+    def reloadColorscheme(self):
 
-        if self.current!=self.m_colorscheme:
-            self.setColorScheme(self.m_colorscheme)
+        if self.current!=self.style:
+            self.colorscheme(self.style)
 
     @register(modes=['exec'])
-    def setColorScheme(self, name, test='New'):
+    def colorscheme(self, name, test='New'):
         
-        style=self.colorschemes.get(name, None)
-
+        style=self.styles.get(name, None)
         if style:
             cdict, css=style
             self.current=name
-            self.m_colorscheme=name
+            self.style=name
             self.app.setStyleSheet(css)
         else:
             self.current=None

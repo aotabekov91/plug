@@ -1,3 +1,3 @@
-from .main import ColorScheme
+from .main import Colorscheme
 
-def get_plug_class(): return ColorScheme
+def get_plug_class(): return Colorscheme
