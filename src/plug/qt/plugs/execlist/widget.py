@@ -12,6 +12,7 @@ class ListWidget(QtWidgets.QWidget):
 
         self.list=QtWidgets.QListWidget(
                 parent=self,
+                objectName='List',
                 )
         self.show()
         self.list.show()

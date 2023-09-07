@@ -55,9 +55,6 @@ class ExecList(PlugObj):
                 last=u[-1]
                 pos=len(u)-1
 
-
-                options
-
         if clist:
             self.ui.list.clear()
             self.ui.list.addItems(clist)
