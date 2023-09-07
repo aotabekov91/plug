@@ -11,7 +11,6 @@ class Styler(PlugObj):
         self.current=None
         self.colorschemes={}
         self.m_colorscheme='default'
-
         super().__init__(*args, **kwargs)
         self.app.plugman.plugsLoaded.connect(
                 self.on_plugsLoaded)
