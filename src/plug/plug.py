@@ -74,7 +74,9 @@ class Plug:
 
     def setParser(self): 
 
-        self.parser = argparse.ArgumentParser()
+        self.parser = argparse.ArgumentParser(
+                exit_on_error=False
+                )
 
     def parse(self, text=None): 
 

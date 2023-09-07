@@ -111,7 +111,7 @@ class Styler(PlugObj):
             self.setColorScheme(self.m_colorscheme)
 
     @register(modes=['exec'])
-    def setColorScheme(self, name, test=None):
+    def setColorScheme(self, name, test='New'):
         
         style=self.colorschemes.get(name, None)
 
