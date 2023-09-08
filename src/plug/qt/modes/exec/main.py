@@ -3,14 +3,16 @@ from collections import OrderedDict
 from inspect import signature, Parameter
 
 from plug.qt import PlugObj
+from plug.qt.utils import register
 from .parser import ArgumentParser
 
 class Exec(PlugObj):
 
     special=['return', 
-            'carriage', 
-            'escape', 
-            'escape_bracket']
+             'tab', 
+             'carriage', 
+             'escape', 
+             'escape_bracket']
 
     tabPressed=QtCore.pyqtSignal()
     textChanged=QtCore.pyqtSignal()
@@ -34,6 +36,8 @@ class Exec(PlugObj):
         self.args={}
         self.commands={}
         self.event_listener.returnPressed.connect(
+                self.on_returnPressed)
+        self.event_listener.carriageReturnPressed.connect(
                 self.on_returnPressed)
         self.event_listener.tabPressed.connect(
                 self.on_tabPressed)
@@ -94,31 +98,19 @@ class Exec(PlugObj):
                             f'--{n}',
                             default=p.default)
 
-    def on_tabPressed(self):
-
-        edit=self.app.window.bar.edit
-        t=edit.text().split(' ')
-
-        if len(t)==1:
-            similar=self.getSimilar(t[0])
-            if len(similar)==1:
-                n = similar[0]
-                edit=self.app.window.bar.edit
-                edit.setText(f'{n} ')
-                edit.setFocus()
-        self.tabPressed.emit()
+    def on_tabPressed(self): pass
 
     def on_returnPressed(self): 
 
-        # try:
+        try:
 
-        col=self.getMethods()
-        if col:
-            n, m, args, unk = col
-            m(**args)
+            col=self.getMethods()
+            if col:
+                n, m, args, unk = col
+                m(**args)
 
-        # except:
-            # pass
+        except:
+            pass
 
         self.delistenWanted.emit()
 

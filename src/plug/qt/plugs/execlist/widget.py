@@ -21,6 +21,10 @@ class ListWidget(QtWidgets.QWidget):
         self.list.setModel(self.proxy)
 
         self.show()
+
+    def show(self):
+
+        super().show()
         self.list.show()
 
     def sizeHint(self):
