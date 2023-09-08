@@ -55,9 +55,6 @@ class Styler(PlugObj):
 
         self.setDefault(plugs)
         self.colorscheme(self.style)
-        self.app.plugman.plugs.exec.addOptions(
-                'colorscheme', 
-                list(self.styles.keys()))
 
     def updateColorscheme(self, style):
 
@@ -108,8 +105,9 @@ class Styler(PlugObj):
                 colorscheme)
         css=self.dictToCSS(updated)
         self.styles[name]=(updated, css)
-        self.app.plugman.plugs.exec.addOptions(
+        self.app.plugman.plugs.exec.setArgOptions(
                 'colorscheme', 
+                'name',
                 list(self.styles.keys()))
 
     def reloadColorscheme(self):
@@ -118,7 +116,7 @@ class Styler(PlugObj):
             self.colorscheme(self.style)
 
     @register(modes=['exec'])
-    def colorscheme(self, name, test='New'):
+    def colorscheme(self, name, test='new'):
         
         style=self.styles.get(name, None)
         if style:

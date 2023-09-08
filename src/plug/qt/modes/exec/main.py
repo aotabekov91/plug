@@ -1,5 +1,4 @@
 from PyQt5 import QtCore
-from argparse import ArgumentError
 from collections import OrderedDict
 from inspect import signature, Parameter
 
@@ -14,6 +13,7 @@ class Exec(PlugObj):
             'escape_bracket']
 
     tabPressed=QtCore.pyqtSignal()
+    textChanged=QtCore.pyqtSignal()
 
     def __init__(self, 
                  app=None, 
@@ -32,7 +32,6 @@ class Exec(PlugObj):
                 )
 
         self.args={}
-        self.options={}
         self.commands={}
         self.event_listener.returnPressed.connect(
                 self.on_returnPressed)
@@ -49,19 +48,28 @@ class Exec(PlugObj):
     def delisten(self):
 
         super().delisten()
-        self.app.window.bar.bottom.hide()
-        self.app.window.bar.edit.clear()
+        bar=self.app.window.bar
+        bar.edit.clear()
+        bar.bottom.hide()
+        bar.edit.textChanged.disconnect(
+                self.textChanged)
 
     def listen(self):
 
         super().listen()
-        self.app.window.bar.show()
-        self.app.window.bar.bottom.show()
-        self.app.window.bar.edit.setFocus()
+        bar=self.app.window.bar
+        bar.show()
+        bar.bottom.show()
+        bar.edit.setFocus()
+        bar.edit.textChanged.connect(
+                self.textChanged)
 
-    def addOptions(self, name, option_list):
+    def setArgOptions(self, 
+                      cname, 
+                      aname, 
+                      alist):
 
-        self.options[name]=option_list
+        self.args[cname][aname]=alist
 
     def setParser(self):
 
@@ -86,7 +94,6 @@ class Exec(PlugObj):
                             f'--{n}',
                             default=p.default)
 
-
     def on_tabPressed(self):
 
         edit=self.app.window.bar.edit
@@ -99,42 +106,28 @@ class Exec(PlugObj):
                 edit=self.app.window.bar.edit
                 edit.setText(f'{n} ')
                 edit.setFocus()
-
         self.tabPressed.emit()
 
     def on_returnPressed(self): 
 
-        try:
-            col=self.getMethods()
-            if len(col)==1: 
-                _, m, kw, pos = col[0]
-                args={k:v for k, v in kw.items() if v}
-                m(*pos, **args)
-        except:
-            pass
+        # try:
+
+        col=self.getMethods()
+        if col:
+            n, m, args, unk = col
+            m(**args)
+
+        # except:
+            # pass
 
         self.delistenWanted.emit()
 
-    def parse(self, t=None):
+    def parse(self, text=None):
 
-        if not t:
-            t=self.app.window.bar.edit.text().strip()
-        args, unkwn = super().parse(t)
+        if not text:
+            text=self.app.window.bar.edit.text().strip()
+        args, unkwn = super().parse(text)
         return args, unkwn
-
-    def getCollection(self, command, args, unkwn):
-
-        col = []
-        for n, m in self.commands.items():
-            if n[:len(command)]!=command: 
-                continue
-            args=OrderedDict()
-            for a, v in args.items():
-                c1 = a in self.args[n]
-                if c1: args[a]=v
-            col+=[(n, m, args, unkwn)]
-            if n==command: break
-        return col
 
     def getSimilar(self, c):
 
@@ -147,24 +140,20 @@ class Exec(PlugObj):
     def getMethodByAlias(self, c):
 
         similar=self.getSimilar(c)
-        if len(similar)!=1: return []
-
+        if len(similar)!=1: 
+            return None 
         n=similar[0]
         t=self.app.window.bar.edit.text().strip()
         t=t.replace(c, n, 1)
-        args, unkwn = self.parse(t)
-        c=args.command
-        args=vars(args)
-        col=self.getCollection(c, args, unkwn)
-        return col
+        return self.getMethodByName(t)
 
-    def getMethodByName(self):
+    def getMethodByName(self, text=None):
 
-        args, unkwn = self.parse()
-        c=args.command
+        args, unkwn = self.parse(text)
         args=vars(args)
-        return self.getCollection(
-                c, args, unkwn)
+        n=args.pop('command', None)
+        m=self.commands.get(n, None)
+        if m: return (n, m, args, unkwn)
 
     def getMethods(self):
 
@@ -173,3 +162,5 @@ class Exec(PlugObj):
         except LookupError as e:
             return self.getMethodByAlias(
                     e.args[0])
+        except:
+            return None

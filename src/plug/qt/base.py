@@ -10,6 +10,7 @@ from plug.qt.utils import (ZMQListener,
 class Plug(BasePlug):
 
     respond=QtCore.pyqtSignal(dict)
+    startedListening=QtCore.pyqtSignal()
 
     def __init__(self, app=None, **kwargs):
 
@@ -87,6 +88,7 @@ class Plug(BasePlug):
         self.event_listener.listen()
         if hasattr(self, 'ui') and self.activated: 
             self.ui.setFocus()
+        self.startedListening.emit()
 
     def delisten(self): 
 
