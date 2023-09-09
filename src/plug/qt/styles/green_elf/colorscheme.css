@@ -1,0 +1,47 @@
+#Powerline QLabel{
+	color: black;
+	padding: 0 5px 0 5px;
+	background-color: transparent;
+	qproperty-alignment: AlignCenter;
+}
+
+
+#Powerline QLabel#Mode{
+	color: white;
+	background-color: green;
+}
+
+#Powerline QLabel#Page{
+	color: white;
+	background-color: green;
+}
+
+#Statusbar QLineEdit#Edit{
+	border-radius: 0px;
+}
+
+QListWidget::item:selected{
+	color: white;
+	background-color: green;
+}
+
+QListView::item:selected{
+	color: white;
+	background-color: green;
+}
+
+QTreeView::branch:selected{
+	background-color: green;
+}
+
+QTreeView::item:selected{
+	color: white;
+	background-color: green;
+}
+
+QGraphicsView {
+	border-color: red;
+	border-width: 20px;
+}
+
+

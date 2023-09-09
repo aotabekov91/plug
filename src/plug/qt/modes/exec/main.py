@@ -3,7 +3,6 @@ from collections import OrderedDict
 from inspect import signature, Parameter
 
 from plug.qt import PlugObj
-from plug.qt.utils import register
 from .parser import ArgumentParser
 
 class Exec(PlugObj):
@@ -33,7 +32,6 @@ class Exec(PlugObj):
                 **kwargs
                 )
 
-        self.args={}
         self.commands={}
         self.event_listener.returnPressed.connect(
                 self.on_returnPressed)
@@ -53,8 +51,8 @@ class Exec(PlugObj):
 
         super().delisten()
         bar=self.app.window.bar
-        bar.edit.clear()
         bar.bottom.hide()
+        bar.edit.clear()
         bar.edit.textChanged.disconnect(
                 self.textChanged)
 
@@ -62,18 +60,11 @@ class Exec(PlugObj):
 
         super().listen()
         bar=self.app.window.bar
-        bar.show()
         bar.bottom.show()
+        bar.show()
         bar.edit.setFocus()
         bar.edit.textChanged.connect(
                 self.textChanged)
-
-    def setArgOptions(self, 
-                      cname, 
-                      aname, 
-                      alist):
-
-        self.args[cname][aname]=alist
 
     def setParser(self):
 
@@ -86,11 +77,9 @@ class Exec(PlugObj):
 
         self.commands = self.event_listener.methods
         for c, m in self.commands.items():
-            self.args[c]=OrderedDict()
             prmts=signature(m).parameters
             parser=self.subparser.add_parser(c)
             for n, p in prmts.items():
-                self.args[c][n]=[]
                 if p.default==Parameter.empty:
                     parser.add_argument(n)
                 else:
@@ -121,17 +110,18 @@ class Exec(PlugObj):
         args, unkwn = super().parse(text)
         return args, unkwn
 
-    def getSimilar(self, c):
+    def getSimilar(self, c, olist):
 
         similar=[]
-        for n, m in self.commands.items():
-            if n[:len(c)]!=c: continue
-            similar+=[n]
+        for n in olist:
+            if n.startswith(c): 
+                similar+=[n]
         return similar
 
-    def getMethodByAlias(self, c):
+    def getMethodByAbbv(self, c):
 
-        similar=self.getSimilar(c)
+        alist=self.commands.keys()
+        similar=self.getSimilar(c, alist)
         if len(similar)!=1: 
             return None 
         n=similar[0]
@@ -152,7 +142,7 @@ class Exec(PlugObj):
         try:
             return self.getMethodByName()
         except LookupError as e:
-            return self.getMethodByAlias(
+            return self.getMethodByAbbv(
                     e.args[0])
         except:
             return None

@@ -2,19 +2,24 @@ from plug.qt import PlugObj
 
 class Colorscheme(PlugObj):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, 
+                 *args, 
+                 update=True,
+                 **kwargs):
 
+        self.update=update
         super().__init__(*args, **kwargs)
-
         self.app.plugman.plugsLoaded.connect(
                 self.addColorscheme)
 
-    def addColorscheme(self):
+    def addColorscheme(self, plugs):
 
-        styler=self.app.plugman.plugs.get(
-                'Styler', None)
-        cs=self.tomls.get('colorscheme', None)
-        if cs: 
-            styler.addColorscheme(self.name, cs)
-            styler.reloadColorscheme()
+        styler=plugs.get('Styler', None)
+        file=self.files.get('colorscheme.css', None)
+        if styler and file:
 
+            style=styler.readColorscheme(file)
+            styler.addColorscheme(
+                    self.name, 
+                    style,
+                    self.update)

@@ -25,6 +25,22 @@ class PowerlineWidget(QtWidgets.QWidget):
         self.page=QtWidgets.QLabel(
                 objectName='Page')
 
+        self.mode.setAlignment(
+                QtCore.Qt.AlignCenter|
+                QtCore.Qt.AlignVCenter)
+        self.info.setAlignment(
+                QtCore.Qt.AlignCenter|
+                QtCore.Qt.AlignVCenter)
+        self.detail.setAlignment(
+                QtCore.Qt.AlignCenter|
+                QtCore.Qt.AlignVCenter)
+        self.keys.setAlignment(
+                QtCore.Qt.AlignCenter|
+                QtCore.Qt.AlignVCenter)
+        self.page.setAlignment(
+                QtCore.Qt.AlignCenter|
+                QtCore.Qt.AlignVCenter)
+
         layout.addWidget(self.mode, QtCore.Qt.AlignLeft)
         layout.addStretch(1)
         layout.addWidget(self.info, QtCore.Qt.AlignLeft)
@@ -32,12 +48,13 @@ class PowerlineWidget(QtWidgets.QWidget):
         layout.addWidget(self.detail)
         layout.addStretch(100)
         layout.addWidget(self.keys, QtCore.Qt.AlignRight)
-        # layout.addStretch(1)
+        layout.addStretch(1)
         layout.addWidget(self.model, QtCore.Qt.AlignRight)
-        # layout.addStretch(1)
+        layout.addStretch(1)
         layout.addWidget(self.page)
+        layout.addStretch(1)
 
-        self.setFixedHeight(20)
+        # self.setFixedHeight(20)
 
         self.info.hide()
         self.page.hide()

@@ -4,6 +4,7 @@ from PyQt5 import QtGui
 from plug.qt import PlugObj
 from plug.qt.utils import register
 
+from .filler import Filler
 from .widget import ListWidget
 
 class ExecList(PlugObj):
@@ -21,21 +22,28 @@ class ExecList(PlugObj):
                 )
 
         self.setUI()
-        self.clist=[]
+        self.args={}
         self.exec=None
+        self.filler=Filler()
         self.app.plugman.plugsLoaded.connect(
                 self.on_plugsLoaded)
-
         self.event_listener.tabPressed.connect(
                 self.select)
 
-    def on_tabPressed(self): raise
+    def setArgOptions(self, 
+                      cname, 
+                      aname, 
+                      alist):
+        if not cname in self.args:
+            self.args[cname]={}
+        self.args[cname][aname]=alist
+        print(cname, aname)
 
     def setUI(self):
 
         self.ui=ListWidget(
                     objectName='ExecList',
-                    parent=self.app.window.main,
+                    parent=self.app.window,
                 )
         self.ui.hide()
 
@@ -75,13 +83,7 @@ class ExecList(PlugObj):
             text, tlist = self.current_data
             t=idx.data()
             new=''.join(tlist[:-1]+[t])
-
-        self.exec.textChanged.disconnect(
-                self.on_textChanged)
         self.setEditText(new)
-        self.exec.textChanged.connect(
-                self.on_textChanged)
-        self.setEditText(new+' ')
         self.updateListPosition()
 
     @register('<c-k>')
@@ -92,12 +94,12 @@ class ExecList(PlugObj):
 
     def move(self, kind):
 
+        # Todo not working properly
         idx=self.ui.list.currentIndex()
 
+        delta=1
         if kind=='up':
             delta=-1
-        else:
-            delta=1
 
         if idx.data():
             row=idx.row()+delta
@@ -120,20 +122,20 @@ class ExecList(PlugObj):
             t=idx.data()
             new=''.join(tlist[:-1]+[t])
 
-        self.exec.textChanged.disconnect(
-                self.on_textChanged)
         self.setEditText(new)
-        self.exec.textChanged.connect(
-                self.on_textChanged)
 
     def setEditText(self, text):
 
+        self.exec.textChanged.disconnect(
+                self.on_textChanged)
         self.app.window.bar.edit.setText(text)
+        self.exec.textChanged.connect(
+                self.on_textChanged)
 
     def getEditText(self):
 
         text=self.app.window.bar.edit.text()
-        t=re.split('(\W)', text)
+        t=re.split('( )', text)
         self.current_data=text, t
         return text, t, t[-1]
 
@@ -143,17 +145,18 @@ class ExecList(PlugObj):
         text, t, last = self.getEditText()
 
         if len(t)==1:
-            clist=self.exec.getSimilar(t[0])
-            self.setList(clist)
+            alist=self.exec.commands
+            clist=self.exec.getSimilar(t[0], alist)
         else:
             try:
                 try:
                     col = self.exec.getMethodByName()
                 except LookupError as e:
-                    col = self.exec.getMethodByAlias(
+                    col = self.exec.getMethodByAbbv(
                             e.args[0])
                 if not col:
-                    clist=self.exec.getSimilar('')
+                    alist=self.exec.commands
+                    clist=self.exec.getSimilar('', alist)
                 else:
                     n, m, args, unk = col
                     found=None
@@ -161,26 +164,31 @@ class ExecList(PlugObj):
                         if v.startswith(last):
                             found = (a, v)
                             break
-                    if found:
-                        a, v = found
-                        clist=self.exec.args[n][a]
+                    if found: a, v = found
+                    if not v: last=None
+                    clist=self.getOptions(n, a, v)
             except ValueError as e:
-                command, arg=e.args
-                clist=self.exec.args[command][arg]
-            except Exception as e:
-                clist=[]
+                c, a=e.args
+                clist=self.getOptions(c, a, last)
+            except Exception:
+                clist=None
             clist=self.getSimilar(last, clist)
-            self.setList(clist)
+        self.setList(clist)
+        self.updateListPosition()
+
+    def getOptions(self, command, arg, last):
+
+        cdict=self.args.get(command, None)
+        if cdict:
+            clist=self.args[command][arg]
+            if clist=='path':
+                clist=self.filler.getPaths(last)
+            return clist
 
     def getSimilar(self, name, alist):
 
         if not name: return alist
-
-        similar=[]
-        for a in alist:
-            if a.startswith(name): 
-                similar+=[a]
-        return similar
+        return self.exec.getSimilar(name, alist)
 
     def setList(self, clist):
 
@@ -188,17 +196,17 @@ class ExecList(PlugObj):
         self.ui.model.clear()
 
         if clist:
-            for i in clist:
-                item=QtGui.QStandardItem(i)
+            for item in clist:
+                if type(item)!=QtGui.QStandardItem:
+                    item=QtGui.QStandardItem(item)
                 self.ui.model.appendRow(item)
             self.ui.list.setCurrentIndex(
                     self.ui.proxy.index(0, 0))
             self.updateListPosition()
 
-    def updateListPosition(self, x=None):
+    def updateListPosition(self, x=None, delta=5):
 
         if not x:
             edit=self.app.window.bar.edit
-            cr=edit.cursorRect()
-            x=cr.x()+5
+            x=edit.cursorRect().x()+delta
         self.ui.updatePosition(x)

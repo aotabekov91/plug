@@ -1,4 +1,4 @@
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtWidgets
 from plug.qt import PlugObj
 from plug.qt.utils import register
 from gizmo.widget import InputTree
@@ -38,33 +38,17 @@ class TreePlug(PlugObj):
     @register('t', modes=['command'])
     def toggle(self): super().toggle()
 
-    @register('<leader>ob')
+    @register('<leader>i')
     def openBelow(self): 
 
         self.open(how='below', focus=False)
         self.ui.show()
 
-    @register('<leader>oB')
-    def openBelowFocus(self): 
-
-        self.open(how='below', focus=True)
-
-    @register('o')
+    @register('<leader>O')
     def openReset(self): 
 
         self.open(how='reset', focus=False)
         self.ui.show()
-
-    @register('<leader>O')
-    def openResetFocus(self): 
-
-        self.open(how='reset', focus=True)
-    
-    @register('<leader>oD')
-    def openAndDeactivate(self): 
-
-        self.open(how='reset', focus=True)
-        self.deactivate()
 
     @register('<leader>s')
     def center(self):

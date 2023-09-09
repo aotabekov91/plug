@@ -55,12 +55,13 @@ class Styler(PlugObj):
 
         self.setDefault(plugs)
         self.colorscheme(self.style)
+        self.addToExecList()
 
-    def updateColorscheme(self, style):
+    def updateColorscheme(self, cs):
 
         default, css=self.styles.get('default')
         tmp=default.copy()
-        self.updateStyle(tmp, style)
+        self.updateStyle(tmp, cs)
         return tmp
 
     def updateStyle(self, base, append):
@@ -99,16 +100,22 @@ class Styler(PlugObj):
             css=re.sub(r'[\n\t]', ' ', lines)
             return self.cssToDict(css)
 
-    def addColorscheme(self, name, colorscheme):
+    def addColorscheme(self, name, cs, update=True):
 
-        updated=self.updateColorscheme(
-                colorscheme)
-        css=self.dictToCSS(updated)
-        self.styles[name]=(updated, css)
-        self.app.plugman.plugs.exec.setArgOptions(
-                'colorscheme', 
-                'name',
-                list(self.styles.keys()))
+        if update:
+            cs=self.updateColorscheme(cs)
+        css=self.dictToCSS(cs)
+        self.styles[name]=(cs, css)
+        self.reloadColorscheme()
+        self.addToExecList()
+
+    def addToExecList(self):
+
+        execlist=getattr(
+                self.app.plugman.plugs, 'ExecList')
+        if execlist:
+            execlist.setArgOptions(
+                    'colorscheme', 'name', self.styles)
 
     def reloadColorscheme(self):
 
@@ -116,7 +123,7 @@ class Styler(PlugObj):
             self.colorscheme(self.style)
 
     @register(modes=['exec'])
-    def colorscheme(self, name, test='new'):
+    def colorscheme(self, name):
         
         style=self.styles.get(name, None)
         if style:

@@ -17,6 +17,7 @@ class Plug(BasePlug):
 
         self.app=app
         self.kwargs=kwargs
+        self.listening=False
         self.command_activated=False
         super(Plug, self).__init__(**kwargs)
 
@@ -25,6 +26,10 @@ class Plug(BasePlug):
         super().setup()
         self.setEventListener(**self.kwargs)
         self.setActions()
+
+        if hasattr(self, 'on_plugsLoaded'):
+            self.app.plugman.plugsLoaded.connect(
+                    self.on_plugsLoaded)
 
     def setEventListener(self, **kwargs):
 
@@ -86,6 +91,7 @@ class Plug(BasePlug):
 
     def listen(self): 
 
+        self.listening=True
         self.event_listener.listen()
         if hasattr(self, 'ui') and self.activated: 
             self.ui.setFocus()
@@ -93,6 +99,7 @@ class Plug(BasePlug):
 
     def delisten(self): 
 
+        self.listening=False
         self.event_listener.delisten()
         self.endedListening.emit(self)
 

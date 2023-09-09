@@ -28,8 +28,9 @@ class Plugman(Base, QtCore.QObject):
     @register(modes=['exec'])
     def updatePicks(self): super().updatePicks()
 
-    @register('pc', modes=['normal', 'exec'])
+    @register(modes=['normal', 'exec'])
     def cleanupPicks(self): 
+
         print('cleaning up')
         super().cleanupPicks()
 

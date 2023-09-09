@@ -1,5 +1,5 @@
 import os
-
+from plug.qt.utils import register
 from PyQt5.QtWidgets import QFileSystemModel
 
 from .base import TreePlug
@@ -16,6 +16,15 @@ class FileBrowser(TreePlug):
                 mode_keys=mode_keys,
                 **kwargs)
         self.setPath()
+        self.app.plugman.plugsLoaded.connect(
+                self.on_plugsLoaded)
+
+    def on_plugsLoaded(self, plugs):
+
+        execlist=plugs.get('ExecList', None)
+        if execlist:
+            execlist.setArgOptions(
+                'openFile', 'path', 'path')
 
     def getPath(self, index=None):
 
@@ -41,11 +50,25 @@ class FileBrowser(TreePlug):
         for i in range(1, 4): 
             self.ui.main.tree.hideColumn(i)
 
-    def open(self, how='reset', focus=True):
+    @register(modes=['exec'])
+    def openFile(self, 
+                 path, 
+                 how=None, 
+                 focus=True):
 
-        tree=self.ui.main.tree
-        index=tree.currentIndex()
-        path=self.getPath(index)
+        self.open(path, how, focus)
+
+    @register('<leader>o')
+    def open(self, 
+             path=None, 
+             how=None, 
+             focus=False):
+
+        if not path:
+            tree=self.ui.main.tree
+            index=tree.currentIndex()
+            path=self.getPath(index)
+        print(path)
         if path:
             if os.path.isdir(path): 
                 tree.expand(tree.currentIndex())

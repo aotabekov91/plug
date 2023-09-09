@@ -1,49 +1,36 @@
 #Statusbar QLabel#Colon {
-
-color: white;
-
+	color: white; 
 }
 
 #Statusbar QLabel#Edit {
-
-color: white;
-border-width: 0px;
-border-radius: 0px;
-border-color: transparent;
-background-color: transparent;
-
+	color: white;
+	border-width: 0px;
+	border-radius: 0px;
+	border-color: transparent;
+	background-color: transparent; 
 }
 
 #Powerline QLabel {
-
-color: white;
-padding: 0 5px 0 5px;
-qproperty-alignment: AlignCenter;
-
+	color: white;
+	padding: 0 0px 0 0px;
+	qproperty-alignment: AlignCenter; 
 }
 
 #Powerline QLabel#Mode {
-
-color: black;
-padding: 0 5px 0 5px;
-background-color: red;
-qproperty-alignment: AlignCenter;
-
+	color: black;
+	padding: 0 0 0 0;
+	background-color: red;
+	qproperty-alignment: AlignCenter; 
 }
 
 #Powerline QLabel#Keys {
-
-color: white;
-padding: 0 5px 0 5px;
-qproperty-alignment: AlignCenter;
-
+	padding: 0 0 0 0;
+	qproperty-alignment: AlignCenter; 
 }
 
 #Powerline QLabel#Page {
-
-color: black;
-padding: 0 5px 0 5px;
-background-color: yellow;
-qproperty-alignment: AlignCenter;
-
+	color: black;
+	padding: 0 0 0 0;
+	background-color: yellow;
+	qproperty-alignment: AlignCenter; 
 }

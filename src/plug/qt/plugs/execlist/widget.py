@@ -11,15 +11,21 @@ class ListWidget(QtWidgets.QWidget):
     def setup(self):
 
         self.list=QtWidgets.QListView(
-                parent=self,
-                objectName='List',
-                )
+                parent=self, objectName='List')
+        self.list.setVerticalScrollBarPolicy(
+                QtCore.Qt.ScrollBarAlwaysOff)
+        self.list.setHorizontalScrollBarPolicy(
+                QtCore.Qt.ScrollBarAlwaysOff)
+
+        self.m_layout=QtWidgets.QVBoxLayout(self)
+        self.m_layout.setContentsMargins(0,0,0,0)
+        self.m_layout.addWidget(self.list)
+        self.setLayout(self.m_layout)
 
         self.model=QtGui.QStandardItemModel()
         self.proxy=QtCore.QSortFilterProxyModel()
         self.proxy.setSourceModel(self.model)
         self.list.setModel(self.proxy)
-
         self.show()
 
     def show(self):
@@ -29,24 +35,41 @@ class ListWidget(QtWidgets.QWidget):
 
     def sizeHint(self):
 
-        w=self.width()
+        w=self.list.width()
         if self.proxy.rowCount()==0:
             return QtCore.QSize(w, 0)
         n=self.proxy.rowCount()
-        h=self.list.sizeHintForRow(0)
-        ph = self.parent().rect().height()
-        h=min(ph, h*n)
+        h=self.list.sizeHintForRow(0)#*n
+
+        c=0
+        for i in range(self.proxy.rowCount()):
+            c=max(c, self.list.sizeHintForColumn(i))
+        c+=5
+
+        r = self.parent().rect()
+
+        dy=self.rect().y()
+        w= min(int(0.8*r.width()-dy), c)
+        h = min(int(0.9*r.height()), h*n)
         return QtCore.QSize(w, h) 
 
     def updatePosition(self, x=None):
 
-        prect = self.parent().rect()
-        if prect:
+        p = self.parent().rect()
+        if p:
             self.adjustSize()
             w=self.width()
             h=self.height()
             if x is None: x=0
-            y=prect.height()-self.height()
+            y=p.height()-self.height()
+
+            bar=self.parent().bar
+            dh=22*bar.container_layout.count()
+            y-=dh
+            # print(bar.rect())
+            # if bar.isVisible():
+                # yy-=bar.container.size().height()
+            # y=-25
             self.setGeometry(x, y, w, h)
 
     def eventFilter(self, widget, event):

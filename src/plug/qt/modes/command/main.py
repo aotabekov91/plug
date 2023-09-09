@@ -19,7 +19,7 @@ class Command(PlugObj):
                 **kwargs,
                 )
 
-    @register('q', modes=['command', 'normal'])
+    @register('<c-q>', modes=['any'])
     def exit(self):
 
         if self.app: self.app.exit()
