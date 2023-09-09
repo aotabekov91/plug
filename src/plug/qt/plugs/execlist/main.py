@@ -122,7 +122,8 @@ class ExecList(PlugObj):
             t=idx.data()
             new=''.join(tlist[:-1]+[t])
 
-        self.setEditText(new)
+        print(new)
+        # self.setEditText(new)
 
     def setEditText(self, text):
 
