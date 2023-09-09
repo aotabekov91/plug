@@ -13,7 +13,7 @@ pyzmq = ">=25.0.2"
 gitpython = ">=3.1.32"
 PyQt6 = { version = ">=6.5.2", optional = true}
 pynput = { version = ">=1.7.6", optional = true}
-gizmo = { optional =true, git = "https://github.com/aotabekov91/gizmo" }
+gizmo = { optional = true, git = "https://github.com/aotabekov91/gizmo", branch = 'main' }
 
 [tool.poetry.extras]
 qt=["gizmo", "PyQt6", "pynput"]
