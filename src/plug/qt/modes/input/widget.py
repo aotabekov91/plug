@@ -1,4 +1,4 @@
-from PyQt6 import QtWidgets, QtCore 
+from PyQt5 import QtWidgets, QtCore 
 
 from gizmo.widget import Editor, NVim
 

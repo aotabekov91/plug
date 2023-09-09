@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from plug.qt import PlugObj
 

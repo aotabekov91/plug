@@ -1,6 +1,6 @@
 import os
 import re
-from PyQt6 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
 from plug import Plug as BasePlug
 from plug.qt.utils import (ZMQListener, 

@@ -1,5 +1,5 @@
 import time
-from PyQt6 import QtCore
+from PyQt5 import QtCore
 
 class ZMQListener(QtCore.QObject):
 

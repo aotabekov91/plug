@@ -1,4 +1,4 @@
-from PyQt6 import QtCore
+from PyQt5 import QtCore
 from collections import OrderedDict
 from inspect import signature, Parameter
 

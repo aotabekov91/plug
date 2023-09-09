@@ -1,4 +1,4 @@
-from PyQt6 import QtWidgets
+from PyQt5 import QtWidgets
 from plug.qt import PlugObj
 from plug.qt.utils import register
 from gizmo.widget import InputTree

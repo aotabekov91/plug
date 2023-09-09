@@ -1,6 +1,6 @@
 import os
 from plug.qt.utils import register
-from PyQt6.QtWidgets import QFileSystemModel
+from PyQt5.QtWidgets import QFileSystemModel
 
 from .base import TreePlug
 

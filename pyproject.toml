@@ -11,12 +11,12 @@ tomli = ">=2.0.1"
 pyyaml = ">=6.0.1"
 pyzmq = ">=25.0.2" 
 gitpython = ">=3.1.32"
-PyQt6 = { version = ">=6.5.2", optional = true}
+PyQt5 = { version = ">=5.15.6", optional = true}
 pynput = { version = ">=1.7.6", optional = true}
 gizmo = { optional = true, git = "https://github.com/aotabekov91/gizmo", branch = 'main' }
 
 [tool.poetry.extras]
-qt=["gizmo", "PyQt6", "pynput"]
+qt=["gizmo", "PyQt5", "pynput"]
 
 [build-system]
 requires = ["poetry-core"]
