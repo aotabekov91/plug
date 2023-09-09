@@ -1,5 +1,5 @@
 import re
-from PyQt5 import QtGui
+from PyQt6 import QtGui
 
 from plug.qt import PlugObj
 from plug.qt.utils import register

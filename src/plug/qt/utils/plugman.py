@@ -1,4 +1,4 @@
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 from plug.utils import Plugman as Base
 from plug.qt.utils.register import register
