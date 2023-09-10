@@ -103,7 +103,7 @@ class Plug(BasePlug):
         self.event_listener.delisten()
         self.endedListening.emit(self)
 
-    def checkLeader(self, event):
+    def checkLeader(self, event, pressed=None): 
 
-        return self.event_listener.checkLeader(
-                event, kind='listen_leader')
+        l=self.event_listener.listen_leader
+        return pressed in l

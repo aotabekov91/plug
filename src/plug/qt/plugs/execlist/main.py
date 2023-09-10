@@ -37,7 +37,6 @@ class ExecList(PlugObj):
         if not cname in self.args:
             self.args[cname]={}
         self.args[cname][aname]=alist
-        print(cname, aname)
 
     def setUI(self):
 
@@ -123,6 +122,7 @@ class ExecList(PlugObj):
             new=''.join(tlist[:-1]+[t])
 
         print(new)
+        # Todo
         # self.setEditText(new)
 
     def setEditText(self, text):
