@@ -16,32 +16,34 @@
 	background-color: green;
 }
 
+#DockWidget QWidget {
+	background-color: transparent;
+}
+
+QListWidget::item:selected {
+	color: white;
+	background-color: green;
+}
+
+QListView::item:selected {
+	color: white;
+	background-color: green;
+}
+
+QTreeView::branch:selected {
+	background-color: green;
+}
+
+QTreeView::item:selected {
+	color: white;
+	background-color: green;
+}
+
+QAbstractScrollArea {
+	padding: 0 0 0 0;
+	border-width: 0px;
+}
+
 #Statusbar QLineEdit#Edit{
 	border-radius: 0px;
 }
-
-QListWidget::item:selected{
-	color: white;
-	background-color: green;
-}
-
-QListView::item:selected{
-	color: white;
-	background-color: green;
-}
-
-QTreeView::branch:selected{
-	background-color: green;
-}
-
-QTreeView::item:selected{
-	color: white;
-	background-color: green;
-}
-
-QGraphicsView {
-	border-color: red;
-	border-width: 20px;
-}
-
-

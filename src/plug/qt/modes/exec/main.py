@@ -52,9 +52,9 @@ class Exec(PlugObj):
         super().delisten()
         bar=self.app.window.bar
         bar.bottom.hide()
-        bar.edit.clear()
         bar.edit.textChanged.disconnect(
                 self.textChanged)
+        bar.edit.clear()
 
     def listen(self):
 
@@ -91,16 +91,16 @@ class Exec(PlugObj):
 
     def on_returnPressed(self): 
 
+
         try:
-
-            col=self.getMethods()
-            if col:
-                n, m, args, unk = col
-                m(**args)
-
+            text=self.app.window.bar.edit.text().strip()
+            if text:
+                col=self.getMethods()
+                if col:
+                    n, m, args, unk = col
+                    m(**args)
         except:
             pass
-
         self.delistenWanted.emit()
 
     def parse(self, text=None):

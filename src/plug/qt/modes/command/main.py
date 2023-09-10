@@ -8,6 +8,7 @@ class Command(PlugObj):
                  name='command',
                  show_statusbar=True, 
                  listen_leader='<c-,>',
+                 delisten_on_exec=True,
                  **kwargs,
                  ):
 
@@ -16,6 +17,7 @@ class Command(PlugObj):
                 name=name, 
                 listen_leader=listen_leader,
                 show_statusbar=show_statusbar, 
+                delisten_on_exec=delisten_on_exec,
                 **kwargs,
                 )
 
