@@ -33,7 +33,6 @@ class Plugman:
 
         c=dotdict(self.app.config.get(
             'Plugman', {}))
-
         self.picky=c.Picky
         self.base=c.Settings.get('base')
         self.folder=os.path.expanduser(
@@ -44,14 +43,11 @@ class Plugman:
     def load(self):
 
         plugs=[]
-
         for name, folder in self.picky.rtp.items():
-
-            sys.path.append(folder)
+            sys.path.insert(0, folder)
             m=importlib.import_module(name)
             if hasattr(m, 'get_plug_class'):
                 plugs+=[m.get_plug_class()]
-
         self.loadPlugs(plugs)
         self.set('normal')
 
@@ -71,12 +67,9 @@ class Plugman:
 
         if type(listener)==str:
             listener=self.plugs.get(listener)
-
         if self.current!=listener:
-
             if self.current: 
                 self.current.delisten()
-
             self.prev=self.current
             self.current=listener
             self.current.listen()

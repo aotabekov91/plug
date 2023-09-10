@@ -19,6 +19,8 @@ class EventListener(Base):
         if self.app:
             ms=self.app.plugman.plugs.items()
             for _, m in ms:
+                f=getattr(m, 'checkLeader', None)
+                if not f: continue 
                 if m.checkLeader(event, (self.pressed,)):
                     if m==self.obj:
                         self.delistenWanted.emit()

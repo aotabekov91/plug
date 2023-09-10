@@ -18,4 +18,3 @@ class ZMQListener(QtCore.QObject):
             self.request.emit(request)
             while not self.acted:
                 time.sleep(1)
-

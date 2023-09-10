@@ -23,10 +23,14 @@ class Plugman(Base, QtCore.QObject):
         self.register(self, actions)
 
     @register(modes=['exec'])
-    def installPicks(self): super().installPicks()
+    def installPicks(self): 
+
+        super().installPicks()
 
     @register(modes=['exec'])
-    def updatePicks(self): super().updatePicks()
+    def updatePicks(self): 
+
+        super().updatePicks()
 
     @register(modes=['normal', 'exec'])
     def cleanupPicks(self): 

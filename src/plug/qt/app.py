@@ -11,8 +11,7 @@ class PlugApp(Plug, QtWidgets.QApplication):
     def __init__(self, argv=[], **kwargs):
 
         super(PlugApp, self).__init__(
-                argv=argv, 
-                **kwargs)
+                argv=argv, **kwargs)
 
     def setGUI(self, 
                display_class=None, 
@@ -23,9 +22,14 @@ class PlugApp(Plug, QtWidgets.QApplication):
                 display_class, 
                 view_class)
 
-    def setPlugman(self): 
+    def setup(self):
 
-        self.plugman=Plugman(self)
+        super().setup()
+        self.setPlugman(plugman=Plugman)
+
+    def initialize(self):
+
+        self.plugman.load()
 
     def setName(self):
 
@@ -34,13 +38,12 @@ class PlugApp(Plug, QtWidgets.QApplication):
 
     def run(self):
 
-        if hasattr(self, 'parser'):
-            self.parse()
-        self.running=True
-        if hasattr(self, 'window'): self.window.show()
+        super().run()
+        if hasattr(self, 'window'): 
+            self.window.show()
         sys.exit(self.exec_())
 
     def exit(self): 
 
-        self.running=False
+        super().exit()
         sys.exit()

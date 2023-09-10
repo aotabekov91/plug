@@ -28,7 +28,6 @@ class PlugObj(Plug, QtCore.QObject):
                 listen_port=listen_port,
                 **kwargs)
 
-
     def setup(self):
 
         super().setup()
@@ -39,7 +38,6 @@ class PlugObj(Plug, QtCore.QObject):
 
         self.ui=CommandStack()
         self.ui.setObjectName(self.name)
-
         if hasattr(self.ui, 'hideWanted'):
             self.ui.hideWanted.connect(
                     self.on_uiHideWanted)
@@ -61,8 +59,17 @@ class PlugObj(Plug, QtCore.QObject):
         if hasattr(self.ui, 'forceDelisten'):
             self.ui.forceDelisten.connect(
                     self.forceDelisten)
-
         self.locateUI()
+
+    def on_uiFocusGained(self):
+
+        if self.follow_mouse: 
+            self.modeWanted.emit(self)
+
+    def on_uiHideWanted(self):
+
+        self.delistenWanted.emit()
+        self.deactivate()
 
     def locateUI(self):
 
@@ -89,22 +96,6 @@ class PlugObj(Plug, QtCore.QObject):
         self.delocateUI()
         self.locateUI()
 
-    def on_uiFocusGained(self):
-
-        if self.follow_mouse: 
-            self.modeWanted.emit(self)
-
-    def on_uiHideWanted(self):
-
-        self.delistenWanted.emit()
-        self.deactivate()
-
-    def activate(self):
-
-        self.activated=True
-        self.listenWanted.emit(self)
-        self.activateUI()
-
     def activateUI(self): 
 
         if hasattr(self, 'ui'): 
@@ -115,11 +106,6 @@ class PlugObj(Plug, QtCore.QObject):
             elif self.position=='overlay':
                 self.ui.show()
 
-    def deactivate(self):
-
-        self.activated=False
-        self.deactivateUI()
-
     def deactivateUI(self):
 
         if hasattr(self, 'ui'): 
@@ -129,3 +115,14 @@ class PlugObj(Plug, QtCore.QObject):
                 self.app.window.show(self.app.window.main)
             elif self.position=='overlay':
                 self.ui.hide()
+
+    def activate(self):
+
+        self.activated=True
+        self.listenWanted.emit(self)
+        self.activateUI()
+
+    def deactivate(self):
+
+        self.activated=False
+        self.deactivateUI()
