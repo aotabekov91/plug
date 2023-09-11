@@ -1,5 +1,6 @@
+import re
+import shlex
 from PyQt5 import QtCore
-from collections import OrderedDict
 from inspect import signature, Parameter
 
 from plug.qt import PlugObj
@@ -70,8 +71,7 @@ class Exec(PlugObj):
 
         self.parser=ArgumentParser()
         self.subparser=self.parser.add_subparsers(
-                dest='command'
-                )
+                dest='command')
 
     def on_keysSet(self, commands):
 
@@ -91,53 +91,61 @@ class Exec(PlugObj):
 
     def on_returnPressed(self): 
 
+        # try:
 
-        try:
-            text=self.app.window.bar.edit.text().strip()
-            if text:
-                col=self.getMethods()
-                if col:
-                    n, m, args, unk = col
-                    m(**args)
-        except:
-            pass
+        text, _, __=self.getEditText()
+        if text:
+            col=self.getMethods()
+            if col:
+                n, m, args, unk = col
+                m(**args)
+
+        # except:
+        #     pass
+
         self.delistenWanted.emit()
 
-    def parse(self, text=None):
+    def getEditText(self):
 
-        if not text:
-            text=self.app.window.bar.edit.text().strip()
-        args, unkwn = super().parse(text)
-        return args, unkwn
+        text=self.app.window.bar.edit.text()
+        t=re.split('( )', text)
+        self.current_data=text, t
+        return text, t, t[-1]
 
-    def getSimilar(self, c, olist):
+    def parse(self, t=None):
 
-        similar=[]
-        for n in olist:
-            if n.startswith(c): 
-                similar+=[n]
-        return similar
+        if not t:
+            t, _, __ = self.getEditText()
+        t=shlex.split(t)
+        return self.parser.parse_known_args(t)
+
+    def getSimilar(self, c, alist):
+
+        s=[]
+        if not alist: return s
+        for n in alist:
+            if n.startswith(c): s+=[n]
+        return s
 
     def getMethodByAbbv(self, c):
 
         alist=self.commands.keys()
         similar=self.getSimilar(c, alist)
-        if len(similar)!=1: 
-            return None 
+        if len(similar)!=1: return None 
         n=similar[0]
-        t=self.app.window.bar.edit.text().strip()
+        t, _, __ = self.getEditText()
         t=t.replace(c, n, 1)
         return self.getMethodByName(t)
 
     def getMethodByName(self, text=None):
 
-        args, unkwn = self.parse(text)
-        args=vars(args)
-        n=args.pop('command', None)
+        a, u = self.parse(text)
+        a=vars(a)
+        n=a.pop('command', None)
         m=self.commands.get(n, None)
-        if m: return (n, m, args, unkwn)
+        if m: return (n, m, a, u)
 
-    def getMethods(self):
+    def getMethods(self, raise_error=True):
 
         try:
             return self.getMethodByName()
@@ -145,4 +153,7 @@ class Exec(PlugObj):
             return self.getMethodByAbbv(
                     e.args[0])
         except:
-            return None
+            if raise_error:
+                raise
+            else:
+                return None
