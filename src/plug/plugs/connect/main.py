@@ -14,6 +14,7 @@ class Connect(Plug):
 
         self.app=app
         self.port=port
+        self.socket=None
         self.handler=handler
         self.parent_port=parent_port
         super().__init__(*args, **kwargs)
@@ -22,19 +23,21 @@ class Connect(Plug):
             kind='PULL', 
             port_kind='PUSH',
             parent_kind='REQ', 
+            socket_kind='bind',
             ):
 
-        self.socket = self.get(kind)
-        if self.port:
-            socket=f'tcp://*:{self.port}'
-            self.socket.bind(socket)
-        else: 
-            self.port=self.socket.bind_to_random_port(
-                    'tcp://*')
         if self.parent_port:
             self.psocket = self.get(parent_kind)
             s=f'tcp://localhost:{self.parent_port}'
             self.psocket.connect(s)
+        if socket_kind=='bind':
+            self.socket = self.get(kind)
+            if self.port:
+                socket=f'tcp://*:{self.port}'
+                self.socket.bind(socket)
+            else: 
+                self.port=self.socket.bind_to_random_port(
+                        'tcp://*')
 
     def get(self, kind):
 

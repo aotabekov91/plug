@@ -1,47 +1,56 @@
-import json
+from argparse import ArgumentParser
 
 from plug import Plug
+from plug.plugs.connect import Connect
 
 class CLI(Plug):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
 
+        self.connect=None
+        self.handler_port=None
         super(CLI, self).__init__(
-                listen_port=False)
+                *args, **kwargs)
+
+    def setup(self):
+
+        super().setup()
+        self.setParser()
+        self.setConnection()
 
     def setParser(self):
 
-        super().setParser()
-
+        self.parser=ArgumentParser()
         self.parser.add_argument('command')
         self.parser.add_argument('-p', '--part')
 
     def setConnection(self): 
 
-        self.socket = self.getConnection(kind='REQ')
-        self.socket.connect(f'tcp://localhost:{self.port}')
+        if self.handler_port:
+            self.connect=Connect(
+                    parent_port=self.handler_port)
+            self.connect.set(parent_kind='PUSH')
 
-    def modeAction(self, mode, action, request={}):
+    def modeAction(self, 
+                   mode=None, 
+                   action=None, 
+                   request={}):
 
         request['part']=mode
         request['action']=action
-
-        self.socket.send_json(request)
-        response=self.socket.recv_json()
-        json_object = json.dumps(response, indent = 4) 
-        print(json_object)
+        self.connect.send(request)
 
     def run(self):
 
-        args, unkw = self.parser.parse_known_args()
-
+        a, u = self.parser.parse_known_args()
         request={}
-        for i in range(0, len(unkw), 2):
-            request[unkw[i][2:]]=unkw[i+1]
-        if args.command:
-            self.modeAction(args.part, args.command, request)
+        for i in range(0, len(u), 2):
+            request[u[i][2:]]=u[i+1]
+        if a.command:
+            self.modeAction(
+                    a.part, a.command, request)
 
 def run():
 
-   app=LuraCLI()
+   app=CLI()
    app.run()
