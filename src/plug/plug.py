@@ -25,10 +25,10 @@ class Plug:
         self.name=name
         self.actions={}
         self.config=config
+        self.kwargs=kwargs
         self.commandKeys={}
         self.running = False
         self.activated = False
-        self.kwargs=kwargs
         self.setup()
         self.initialize()
 
