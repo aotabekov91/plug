@@ -12,6 +12,9 @@ class Picky:
         self.base=os.path.expanduser(base)
         self.folder=os.path.expanduser(folder)
 
+    def installDependencies(self, name):
+        pass
+
     def install(self):
 
         for data in self.picks:
