@@ -6,11 +6,12 @@ authors = ["AO <adhambek.otabekov.post@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = "^3.8"
 tomli = ">=2.0.1"
 pyyaml = ">=6.0.1"
 pyzmq = ">=25.0.2" 
 gitpython = ">=3.1.32"
+poetry = "^1.6.1"
 PyQt5 = { version = ">=5.15.6", optional = true}
 pynput = { version = ">=1.7.6", optional = true}
 gizmo = { optional = true, git = "https://github.com/aotabekov91/gizmo", branch = 'main' }
