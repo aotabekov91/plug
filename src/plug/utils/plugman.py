@@ -1,5 +1,6 @@
 import os
 import sys
+import poetry
 import importlib
 
 from .picky import Picky
@@ -23,9 +24,13 @@ class Plugman:
                 self.base)
         self.installPicks()
 
-    def installPicks(self): self.picky.install()
+    def installPicks(self): 
 
-    def updatePicks(self): self.picky.update()
+        self.picky.install(self.app.path)
+
+    def updatePicks(self): 
+
+        self.picky.update(self.app.path)
 
     def cleanupPicks(self): self.picky.cleanup()
 
