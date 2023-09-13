@@ -15,7 +15,6 @@ poetry = "^1.6.1"
 PyQt5 = { version = ">=5.15.6", optional = true}
 pynput = { version = ">=1.7.6", optional = true}
 gizmo = { optional = true, git = "https://github.com/aotabekov91/gizmo", branch = 'main' }
-cleo = "^2.0.1"
 
 [tool.poetry.extras]
 qt=["gizmo", "PyQt5", "pynput"]
