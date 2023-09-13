@@ -1,5 +1,6 @@
+from io import StringIO
 from pathlib import Path
-from cleo.io.null_io import NullIO
+# from cleo.io.null_io import NullIO
 from poetry.factory import Factory
 from poetry.utils.env import EnvManager
 from poetry.installation.installer import Installer
@@ -16,7 +17,7 @@ def installDeps(parent_path, child_path):
         parent.package.add_dependency(d)
 
     installer = Installer(
-        NullIO(),
+        StringIO(),
         parent_env,
         parent.package,
         parent.locker,
