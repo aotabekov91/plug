@@ -22,12 +22,13 @@ class Picky:
             if repo:
                 name, folder = self.installDirect(repo)
                 self.rtp[name] = folder
-                print(name, folder)
                 for subdir in subdirs: 
                     url=f"{repo}/{subdir}"
                     name, path, folder=self.getInfo(url)
                     self.rtp[name]=folder
                 # self.installDirect(repo)
+        for name, path in self.rtp.items():
+            self.installDeps(base_path, path)
 
     def cleanup(self):
 
