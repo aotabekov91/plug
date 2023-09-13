@@ -14,28 +14,20 @@ class Picky:
         self.base=os.path.expanduser(base)
         self.folder=os.path.expanduser(folder)
 
-    def installDependencies(self, ppath, cpath):
-
-        installDeps(ppath, cpath)
-
-    def install(self):
+    def install(self, base_path=None):
 
         for data in self.picks:
-
             repo = data.get('pick', None)
             subdirs = data.get('subdir', [])
-
             if repo:
-
                 name, folder = self.installDirect(repo)
                 self.rtp[name] = folder
-
+                print(name, folder)
                 for subdir in subdirs: 
                     url=f"{repo}/{subdir}"
                     name, path, folder=self.getInfo(url)
                     self.rtp[name]=folder
-
-                self.installDirect(repo)
+                # self.installDirect(repo)
 
     def cleanup(self):
 
@@ -44,7 +36,7 @@ class Picky:
                 path=os.path.join(self.folder, d)
                 shutil.rmtree(path)
 
-    def update(self): 
+    def update(self, base_path=None): 
 
         for name in self.repos:
             path=os.path.join(self.folder, name)

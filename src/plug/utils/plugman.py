@@ -26,10 +26,11 @@ class Plugman:
 
     def installPicks(self): 
 
-        self.picky.install()
-        parent_path=self.app.
+        self.picky.install(self.app.path)
 
-    def updatePicks(self): self.picky.update()
+    def updatePicks(self): 
+
+        self.picky.update(self.app.path)
 
     def cleanupPicks(self): self.picky.cleanup()
 
