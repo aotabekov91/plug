@@ -2,6 +2,8 @@ import os
 import git
 import shutil
 
+from .install_deps import installDeps
+
 class Picky:
 
     def __init__(self, picks, folder, base):
@@ -12,8 +14,9 @@ class Picky:
         self.base=os.path.expanduser(base)
         self.folder=os.path.expanduser(folder)
 
-    def installDependencies(self, name):
-        pass
+    def installDependencies(self, ppath, cpath):
+
+        installDeps(ppath, cpath)
 
     def install(self):
 

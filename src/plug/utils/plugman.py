@@ -24,7 +24,10 @@ class Plugman:
                 self.base)
         self.installPicks()
 
-    def installPicks(self): self.picky.install()
+    def installPicks(self): 
+
+        self.picky.install()
+        parent_path=self.app.
 
     def updatePicks(self): self.picky.update()
 
