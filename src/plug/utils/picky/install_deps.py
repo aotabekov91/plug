@@ -42,6 +42,7 @@ def installPackages(parent):
 def installDeps(ppath, cpath):
 
     r = getPoetries(ppath, cpath)
+    print(r)
     if r:
         parent, child = r
         updatePackages(parent, child)
