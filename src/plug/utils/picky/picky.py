@@ -28,7 +28,8 @@ class Picky:
                     self.rtp[name]=folder
                 # self.installDirect(repo)
         for name, path in self.rtp.items():
-            installDeps(base_path, path)
+            child_path=os.path.join(path, name)
+            installDeps(base_path, child_path)
 
     def cleanup(self):
 
