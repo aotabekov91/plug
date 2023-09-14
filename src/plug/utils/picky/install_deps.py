@@ -39,9 +39,10 @@ def installPackages(parent):
     installer.update(True)
     installer.run()
 
-def installDeps(parent_path, child_path):
+def installDeps(ppath, cpath):
 
-    parent, child = getPoetries(parent_path,
-                                child_path)
-    updatePackages(parent, child)
-    installPackages(parent)
+    r = getPoetries(ppath, cpath)
+    if r:
+        parent, child = r
+        updatePackages(parent, child)
+        installPackages(parent)

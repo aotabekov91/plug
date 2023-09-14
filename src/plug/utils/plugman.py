@@ -1,6 +1,5 @@
 import os
 import sys
-import poetry
 import importlib
 
 from .picky import Picky
