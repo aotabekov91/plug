@@ -19,6 +19,9 @@ gizmo = { optional = true, git = "https://github.com/aotabekov91/gizmo", branch 
 [tool.poetry.extras]
 qt=["gizmo", "PyQt5", "pynput"]
 
+[tool.poetry.group.test.dependencies]
+pytest = "^6.0.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
