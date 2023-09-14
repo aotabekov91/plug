@@ -7,9 +7,11 @@ from poetry.installation.installer import Installer
 
 def updatePackages(parent, child):
 
-    group=child.package.dependency_group('main')
-    for d in group.dependencies:
-        parent.package.add_dependency(d)
+    cgroup=child.package.dependency_group('main')
+    pgroup=parent.package.dependency_group('main')
+    for d in cgroup.dependencies:
+        if not d in pgroup.dependencies:
+            parent.package.add_dependency(d)
 
 def getPoetries(parent_path, child_path):
 

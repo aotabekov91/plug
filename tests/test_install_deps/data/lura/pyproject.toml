@@ -2,7 +2,7 @@
 name = "lura"
 version = "0.0.1"
 description = "A document viewer"
-authors = ["Your Name <you@example.com>"]
+authors = ["A O <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

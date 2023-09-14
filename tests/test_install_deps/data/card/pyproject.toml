@@ -6,7 +6,7 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = "^3.9"
 plyer = ">=2.1.0"
 ankipulator = {git = "https://github.com/aotabekov91/ankipulator", branch="main"}
 
