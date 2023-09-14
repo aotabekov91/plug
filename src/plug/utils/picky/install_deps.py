@@ -16,10 +16,13 @@ def updatePackages(parent, child):
 def getPoetries(parent_path, child_path):
 
     n='pyproject.toml'
+    f1=os.path.join(parent_path, n)
+    f2=os.path.join(child_path, n)
+
     c1=os.path.exists(os.path.join(parent_path, n))
     c2=os.path.exists(os.path.join(child_path, n))
 
-    print(c1, c2)
+    print(f1, c1, f2, c2)
     if not (c1 and c2): return
 
     child = Factory().create_poetry(Path(child_path))
