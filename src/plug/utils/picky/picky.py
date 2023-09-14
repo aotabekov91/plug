@@ -1,6 +1,7 @@
 import os
 import git
 import shutil
+from pathlib import Path
 
 from .install_deps import installDeps
 
@@ -29,7 +30,8 @@ class Picky:
                 # self.installDirect(repo)
         for name, path in self.rtp.items():
             child_path=os.path.join(path, name)
-            installDeps(base_path, child_path)
+            parent_path=Path(base_path).parent.parent # todo
+            installDeps(parent_path, child_path)
 
     def cleanup(self):
 
