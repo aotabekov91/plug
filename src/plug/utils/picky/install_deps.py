@@ -49,4 +49,8 @@ def installDeps(ppath, cpath):
     if r:
         parent, child = r
         updatePackages(parent, child)
-        installPackages(parent)
+        try:
+            installPackages(parent)
+        except:
+            print('Error install dependencies')
+            # Todo
