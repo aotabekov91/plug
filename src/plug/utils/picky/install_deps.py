@@ -1,11 +1,8 @@
 import os
 
-def installDeps(ppath, cpath):
+def installDeps(path):
 
-    r=os.path.join(cpath, "requirements.txt")
-    print(r)
+    r=os.path.join(path, "requirements.txt")
     if os.path.exists(r):
-        with open(r, 'r') as f:
-            for l in f.readlines():
-                req=l.strip('\n')
-                os.popen(['pip', 'install', '-r', req])
+        cmd=' '.join(['pip', 'install', '-r', r])
+        os.popen(cmd)

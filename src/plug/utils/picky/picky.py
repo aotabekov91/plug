@@ -31,7 +31,7 @@ class Picky:
         for name, path in self.rtp.items():
             child_path=os.path.join(path, name)
             parent_path=Path(base_path).parent.parent # todo
-            installDeps(parent_path, child_path)
+            installDeps(child_path)
 
     def cleanup(self):
 
