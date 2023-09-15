@@ -29,7 +29,7 @@ class PlugApp(Plug, QtWidgets.QApplication):
 
     def initialize(self):
 
-        self.plugman.load()
+        self.plugman.loadPicks()
 
     def setName(self):
 

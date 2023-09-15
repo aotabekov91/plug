@@ -45,7 +45,7 @@ class Plugman:
         self.app.createFolder(
                 self.folder, 'plugman_folder')
 
-    def load(self):
+    def loadPicks(self):
 
         plugs=[]
         for name, folder in self.picky.rtp.items():

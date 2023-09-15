@@ -35,8 +35,12 @@ class Plugman(Base, QtCore.QObject):
     @register(modes=['normal', 'exec'])
     def cleanupPicks(self): 
 
-        print('cleaning up')
         super().cleanupPicks()
+
+    @register(modes=['normal', 'exec'])
+    def loadPicks(self):
+
+        super().loadPicks()
 
     def add(self, picked):
 
