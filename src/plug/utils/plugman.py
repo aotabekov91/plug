@@ -21,17 +21,18 @@ class Plugman:
                 self.picky,
                 self.folder,
                 self.base)
-        self.installPicks()
 
     def installPicks(self): 
 
-        self.picky.install(self.app.path)
+        self.picky.install()
 
     def updatePicks(self): 
 
-        self.picky.update(self.app.path)
+        self.picky.update()
 
-    def cleanupPicks(self): self.picky.cleanup()
+    def cleanupPicks(self): 
+
+        self.picky.cleanup()
 
     def setup(self):
 

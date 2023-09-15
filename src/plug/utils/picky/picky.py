@@ -1,7 +1,6 @@
 import os
 import git
 import shutil
-from pathlib import Path
 
 from .install_deps import installDeps
 
@@ -12,26 +11,40 @@ class Picky:
         self.rtp={}
         self.repos=[]
         self.picks=picks
+        self.install_requirements=True
         self.base=os.path.expanduser(base)
         self.folder=os.path.expanduser(folder)
+        self.updateRunTimePaths()
 
-    def install(self, base_path=None):
+    def updateRunTimePaths(self):
 
         for data in self.picks:
             repo = data.get('pick', None)
             subdirs = data.get('subdir', [])
             if repo:
-                name, folder = self.installDirect(repo)
+                name, path, folder = self.getInfo(repo)
                 self.rtp[name] = folder
                 for subdir in subdirs: 
                     url=f"{repo}/{subdir}"
                     name, path, folder=self.getInfo(url)
                     self.rtp[name]=folder
-                # self.installDirect(repo)
-        for name, path in self.rtp.items():
-            child_path=os.path.join(path, name)
-            parent_path=Path(base_path).parent.parent # todo
-            installDeps(child_path)
+
+    def install(self):
+
+        for data in self.picks:
+            repo = data.get('pick', None)
+            if repo: self.installRepo(repo)
+
+        if self.install_requirements:
+            self.installRequirements()
+
+    def update(self): 
+
+        for name in self.repos:
+            path=os.path.join(self.folder, name)
+            print('Updating', path)
+            repo = git.Repo(path)
+            repo.remotes.origin.pull()
 
     def cleanup(self):
 
@@ -39,14 +52,6 @@ class Picky:
             if not d in self.repos:
                 path=os.path.join(self.folder, d)
                 shutil.rmtree(path)
-
-    def update(self, base_path=None): 
-
-        for name in self.repos:
-            path=os.path.join(self.folder, name)
-            print('Updating', path)
-            repo = git.Repo(path)
-            repo.remotes.origin.pull()
 
     def getInfo(self, gid): 
 
@@ -56,27 +61,26 @@ class Picky:
         if len(name_space)>2:
             holder='/'.join(name_space[1:-1])
             holder+='/'
-
         folder=f"{self.folder}/{holder}"
         path=f"{folder}/{name}"
-        
         return name, path, folder
 
-    def installDirect(self, gid):
+    def installRepo(self, repo):
 
-        name, path, folder=self.getInfo(gid)
-
+        name, path, folder=self.getInfo(repo)
         self.rtp[name]=folder
         if not name in self.repos: 
             self.repos+=[name]
-
         if not os.path.exists(path):
-
-            gpath=os.path.expanduser(gid)
+            gpath=os.path.expanduser(repo)
             if os.path.exists(gpath):
                 shutil.copy(gpath, path)
             else:
-                url=f"{self.base}/{gid}"
+                url=f"{self.base}/{repo}"
                 git.Repo.clone_from(url, path)
-
         return name, folder
+
+    def installRequirements(self):
+
+        for n, p in self.rtp.items():
+            installDeps(os.path.join(p, n))
