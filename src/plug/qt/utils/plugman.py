@@ -74,4 +74,4 @@ class Plugman(Base, QtCore.QObject):
     def register(self, plug, actions):
 
         super().register(plug, actions)
-        self.actionsRegistered.emit()
+        self.actionsRegistered.emit(plug, actions)

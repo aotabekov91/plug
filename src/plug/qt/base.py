@@ -3,17 +3,27 @@ from PyQt5 import QtCore
 from plug import Plug as BasePlug
 from plug.qt.utils import EventListener
 
-class Plug(BasePlug):
+class Plug(BasePlug, QtCore.QObject):
 
     endedListening=QtCore.pyqtSignal(object)
     startedListening=QtCore.pyqtSignal(object)
+
+    forceDelisten=QtCore.pyqtSignal()
+    delistenWanted=QtCore.pyqtSignal()
+    modeWanted=QtCore.pyqtSignal(object)
+    listenWanted=QtCore.pyqtSignal(object)
+    escapePressed=QtCore.pyqtSignal()
+    returnPressed=QtCore.pyqtSignal()
+    keysChanged=QtCore.pyqtSignal(str)
+    keyPressed=QtCore.pyqtSignal(object, object)
 
     def __init__(self, app=None, **kwargs):
 
         self.app=app
         self.listening=False
         self.command_activated=False
-        super(Plug, self).__init__(**kwargs)
+        super(QtCore.QObject).__init__()
+        super(BasePlug, self).__init__(**kwargs)
 
     def setup(self):
 

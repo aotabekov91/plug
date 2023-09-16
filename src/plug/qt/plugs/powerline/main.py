@@ -12,7 +12,6 @@ class Powerline(PlugObj):
         super().__init__(
                 mode_keys=mode_keys,
                 **kwargs)
-
         self.app.plugman.modeChanged.connect(
                 self.on_modeChanged)
         self.app.plugman.keysChanged.connect(
@@ -24,7 +23,6 @@ class Powerline(PlugObj):
         if hasattr(self.app, 'buffer'):
             self.app.buffer.hashChanged.connect(
                     self.on_hashChanged)
-
         self.setUI()
         self.activate()
 
@@ -35,7 +33,9 @@ class Powerline(PlugObj):
 
     def on_modeChanged(self, mode):
 
-        self.ui.setText('mode', mode.name.title())
+        if mode:
+            self.ui.setText(
+                    'mode', mode.name.title())
 
     def setUI(self):
 
@@ -46,9 +46,10 @@ class Powerline(PlugObj):
 
     def on_hashChanged(self, model):
 
-        dhash=model.hash()
-        if dhash:
-            self.ui.setText('model', dhash)
+        if model:
+            dhash=model.hash()
+            if dhash: 
+                self.ui.setText('model', dhash)
 
     def on_viewChanged(self, view, prev): 
 
@@ -62,7 +63,8 @@ class Powerline(PlugObj):
         cpage=view.currentPage()
         pages=view.totalPages()
         if pages:
-            self.ui.setText('page', f'{cpage}/{pages}')
+            self.ui.setText(
+                    'page', f'{cpage}/{pages}')
 
     @register('t', modes=['command'])
     def toggle(self): super().toggle()

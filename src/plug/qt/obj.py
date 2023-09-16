@@ -6,27 +6,16 @@ from .base import Plug
 
 class PlugObj(Plug, QtCore.QObject):
 
-    forceDelisten=QtCore.pyqtSignal()
-    delistenWanted=QtCore.pyqtSignal()
-    modeWanted=QtCore.pyqtSignal(object)
-    listenWanted=QtCore.pyqtSignal(object)
-    escapePressed=QtCore.pyqtSignal()
-    returnPressed=QtCore.pyqtSignal()
-    keysChanged=QtCore.pyqtSignal(str)
-    keyPressed=QtCore.pyqtSignal(object, object)
-
     def __init__(self,
+                 *args,
                  position=None,
-                 listen_port=False, 
                  follow_mouse=True,
                  **kwargs):
 
         self.position=position
         self.follow_mouse=follow_mouse
 
-        super(PlugObj, self).__init__(
-                listen_port=listen_port,
-                **kwargs)
+        super(Plug, self).__init__(*args, **kwargs)
 
     def setup(self):
 

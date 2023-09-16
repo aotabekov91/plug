@@ -8,10 +8,10 @@ from .utils import Plugman
 
 class PlugApp(Plug, QtWidgets.QApplication):
 
-    def __init__(self, argv=[], **kwargs):
+    def __init__(self, *args, argv=[], **kwargs):
 
-        super(PlugApp, self).__init__(
-                argv=argv, **kwargs)
+        super(QtWidgets.QApplication).__init__(argv)
+        super(PlugApp, self).__init__(*args, **kwargs)
 
     def setGUI(self, 
                display_class=None, 
