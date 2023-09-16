@@ -11,7 +11,7 @@ class PlugApp(Plug, QtWidgets.QApplication):
     def __init__(self, *args, argv=[], **kwargs):
 
         super(QtWidgets.QApplication).__init__()
-        super(PlugApp, self).__init__(*args, **kwargs)
+        super(Plug, self).__init__(*args, **kwargs)
 
     def setGUI(self, 
                display_class=None, 
