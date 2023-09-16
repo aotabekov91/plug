@@ -7,13 +7,15 @@ from types import MethodType, BuiltinFunctionType
 
 from plug.utils import Plugman
 
-class Plug:
+class Plug(object):
 
     def __init__(self, 
                  name=None, 
                  config={}, 
                  **kwargs,
                  ):
+
+        super(object, self).__init__()
 
         self.files={}
         self.name=name
