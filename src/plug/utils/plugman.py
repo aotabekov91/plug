@@ -49,17 +49,11 @@ class Plugman:
 
         plugs=[]
         for name, folder in self.picky.rtp.items():
-            sys.path.insert(0, folder)
-
-            try:
-
+            if os.path.exists(folder):
+                sys.path.insert(0, folder)
                 m=importlib.import_module(name)
                 if hasattr(m, 'get_plug_class'):
                     plugs+=[m.get_plug_class()]
-
-            except ModuleNotFoundError:
-                print(f'Module {name} not found')
-
         self.loadPlugs(plugs)
         self.set('normal')
 
