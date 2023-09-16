@@ -12,14 +12,8 @@ class Plug:
     def __init__(self, 
                  name=None, 
                  config={}, 
-                 argv=None,
                  **kwargs,
                  ):
-
-        if argv!=None: 
-            super(Plug, self).__init__(argv)
-        else:
-            super(Plug, self).__init__()
 
         self.files={}
         self.name=name
