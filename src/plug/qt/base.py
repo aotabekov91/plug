@@ -33,7 +33,6 @@ class Plug(BasePlug, QtCore.QObject):
 
     def setEventListener(self, **kwargs):
 
-        print(self.app)
         self.event_listener=EventListener(
                 obj=self, app=self.app, **kwargs)
 

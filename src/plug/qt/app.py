@@ -8,7 +8,7 @@ from plug.qt.utils import Plugman
 
 class PlugApp(Plug, QtWidgets.QApplication):
 
-    def __init__(self, *args, argv=[], **kwargs):
+    def __init__(self, *args, **kwargs):
 
         super(QtWidgets.QApplication).__init__()
         super(Plug, self).__init__(*args, **kwargs)
