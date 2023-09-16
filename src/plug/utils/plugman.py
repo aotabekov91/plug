@@ -50,6 +50,7 @@ class Plugman:
         plugs=[]
         for name, folder in self.picky.rtp.items():
             if os.path.exists(folder):
+                print(folder)
                 sys.path.insert(0, folder)
                 m=importlib.import_module(name)
                 if hasattr(m, 'get_plug_class'):
