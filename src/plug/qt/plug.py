@@ -47,7 +47,6 @@ class Plug(BasePlug, QtCore.QObject):
                 display_class, 
                 view_class)
 
-
     def setName(self):
 
         super().setName()
@@ -69,15 +68,15 @@ class Plug(BasePlug, QtCore.QObject):
             self.event_timer=QtCore.QTimer()
         if self.app:
             self.app.plugman.add(self)
-            self.setEventListener(**self.kwargs)
+            self.setEventListener()
 
-    def setEventListener(self, **kwargs):
+    def setEventListener(self):
 
+        print(self.kwargs)
         self.event_listener=EventListener(
-                obj=self,
-                leader='.',
-                listening=False,
-                **kwargs)
+                obj=self, 
+                listening=False, 
+                **self.kwargs)
 
     def toggleCommandMode(self):
 

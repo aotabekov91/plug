@@ -7,9 +7,9 @@ class TreePlug(Plug):
 
     def __init__(self, **kwargs):
 
+        self.follow_index=True
         super().__init__(**kwargs)
         self.setUI()
-        self.m_follow_index=True
 
     def setUI(self):
 
@@ -53,12 +53,12 @@ class TreePlug(Plug):
     @register('<leader>s')
     def center(self):
 
-        if not self.m_follow_index:
-            self.m_follow_index=True
+        if not self.follow_index:
+            self.follow_index=True
             self.ui.main.tree.indexChanged.disconnect(
                     self.on_outlineClicked)
         else:
-            self.m_follow_index=False
+            self.follow_index=False
             self.ui.main.tree.indexChanged.connect(
                     self.on_outlineClicked)
 
