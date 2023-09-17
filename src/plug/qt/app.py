@@ -13,6 +13,8 @@ class PlugApp(Plug, QtWidgets.QApplication):
         super(QtWidgets.QApplication).__init__()
         super(Plug, self).__init__(*args, **kwargs)
 
+    def setEventListener(self, **kwargs): pass
+
     def setGUI(self, 
                display_class=None, 
                view_class=None):
