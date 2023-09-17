@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtWidgets
 from plug import Plug as BasePlug
 from plug.qt.utils import Plugman, EventListener
 
+from gizmo.ui import StackWindow
 from gizmo.widget import CommandStack 
 
 class Plug(BasePlug, QtCore.QObject):
@@ -26,10 +27,29 @@ class Plug(BasePlug, QtCore.QObject):
         self.command_activated=False
 
         self.app=kwargs.get('app', None)
-        self.qapp=kwargs.get('qapp', None)
         self.position=kwargs.get('position', None)
         self.follow_mouse=kwargs.get('follow_mouse', False)
+
+        self.qapp=None
+        if kwargs.get('qapp', False):
+            self.setApp()
+
         super(Plug, self).__init__(*args, **kwargs)
+
+    def setApp(self):
+
+        self.qapp=QtWidgets.QApplication([])
+        self.setParent(self.qapp)
+
+    def setAppUI(self, 
+                 display_class=None, 
+                 view_class=None):
+
+        self.window=StackWindow(
+                self, 
+                display_class, 
+                view_class)
+
 
     def setName(self):
 
@@ -56,7 +76,10 @@ class Plug(BasePlug, QtCore.QObject):
     def setEventListener(self, **kwargs):
 
         self.event_listener=EventListener(
-                obj=self, **kwargs)
+                obj=self,
+                leader='.',
+                listening=False,
+                **kwargs)
 
     def toggleCommandMode(self):
 

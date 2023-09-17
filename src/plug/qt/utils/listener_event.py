@@ -2,18 +2,6 @@ from gizmo.utils import EventListener as Base
 
 class EventListener(Base):
 
-    def __init__(
-            self, 
-            leader='.',
-            listening=False,
-            **kwargs,
-            ):
-
-        super().__init__(
-                leader=leader,
-                listening=listening,
-                **kwargs)
-
     def checkLeader(self, event):
 
         if self.app:
