@@ -15,8 +15,7 @@ class Plug(object):
                  **kwargs,
                  ):
 
-        raise
-        super(object, self).__init__()
+        super().__init__()
 
         self.files={}
         self.name=name
