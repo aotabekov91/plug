@@ -203,7 +203,7 @@ class Plug(BasePlug, QtCore.QObject):
 
         self.activated=True
         self.listenWanted.emit(self)
-        self.activateUI()
+        # self.activateUI()
 
     def deactivate(self):
 

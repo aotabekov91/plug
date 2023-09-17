@@ -137,9 +137,11 @@ class Plug:
     def activate(self):
 
         self.activated=True
-        if hasattr(self, 'ui'): self.ui.show()
+        if hasattr(self, 'ui'): 
+            self.ui.show()
 
     def deactivate(self):
 
         self.activated=False
-        if hasattr(self, 'ui'): self.ui.hide()
+        if hasattr(self, 'ui'): 
+            self.ui.hide()
