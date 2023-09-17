@@ -8,11 +8,11 @@ class PlugApp(Plug):
 
     def __init__(self, *args, argv=[], **kwargs):
 
-        self.app=QtWidgets.QApplication([])
+        self.qapp=QtWidgets.QApplication([])
 
         super(PlugApp, self).__init__(
                 *args,
-                app=self.app,
+                qapp=self.qapp,
                 **kwargs,
                 )
 

@@ -26,6 +26,7 @@ class Plug(BasePlug, QtCore.QObject):
         self.command_activated=False
 
         self.app=kwargs.get('app', None)
+        self.qapp=kwargs.get('qapp', None)
         self.position=kwargs.get('position', None)
         self.follow_mouse=kwargs.get('follow_mouse', False)
         super(Plug, self).__init__(*args, **kwargs)
@@ -33,23 +34,24 @@ class Plug(BasePlug, QtCore.QObject):
     def setName(self):
 
         super().setName()
-        # if self.app:
-            # self.app.setApplicationName(self.name)
+        if self.qapp:
+            self.qapp.setApplicationName(self.name)
 
     def initialize(self):
 
         super().initialize()
-        if self.app:
+        if self.qapp:
             self.plugman.loadPicks()
 
     def setup(self):
 
         super().setup()
         self.setActions()
-        self.setEventListener(**self.kwargs)
-        if self.app: 
+        if self.qapp: 
             self.setPlugman(plugman=Plugman)
-            self.plugman.add(self)
+        if self.app:
+            self.app.plugman.add(self)
+            self.setEventListener(**self.kwargs)
 
     def setEventListener(self, **kwargs):
 
@@ -191,13 +193,13 @@ class Plug(BasePlug, QtCore.QObject):
     def run(self):
 
         super().run()
-        if self.app:
+        if self.qapp:
             if hasattr(self, 'window'): 
                 self.window.show()
-            sys.exit(self.app.exec_())
+            sys.exit(self.qapp.exec_())
 
     def exit(self): 
 
         super().exit()
-        if self.app:
+        if self.qapp:
             sys.exit()
