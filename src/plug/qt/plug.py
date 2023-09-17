@@ -31,8 +31,6 @@ class Plug(BasePlug, QtCore.QObject):
         self.position=kwargs.get('position', None)
         self.follow_mouse=kwargs.get('follow_mouse', False)
 
-        if kwargs.get('qapp', False): self.setApp()
-
         super(Plug, self).__init__(*args, **kwargs)
 
     def setApp(self):
