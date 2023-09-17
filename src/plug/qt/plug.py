@@ -23,6 +23,7 @@ class Plug(BasePlug, QtCore.QObject):
 
     def __init__(self, *args, **kwargs):
 
+        self.qapp=None
         self.listening=False
         self.command_activated=False
 
@@ -30,9 +31,7 @@ class Plug(BasePlug, QtCore.QObject):
         self.position=kwargs.get('position', None)
         self.follow_mouse=kwargs.get('follow_mouse', False)
 
-        self.qapp=None
-        if kwargs.get('qapp', False):
-            self.setApp()
+        if kwargs.get('qapp', False): self.setApp()
 
         super(Plug, self).__init__(*args, **kwargs)
 
