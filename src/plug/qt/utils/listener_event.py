@@ -16,6 +16,7 @@ class EventListener(Base):
             for _, m in ms:
                 f=getattr(m, 'checkLeader', None)
                 if not f: continue 
+                print(m, self.pressed)
                 if m.checkLeader(event, (self.pressed,)):
                     self.timer.stop()
                     self.timer.timeout.disconnect()
