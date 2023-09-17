@@ -7,12 +7,14 @@ from .base import TreePlug
 class FileBrowser(TreePlug):
 
     def __init__(self, 
-            leader='.', 
-            mode_keys={'command': 'f'}, 
+                 leader='.', 
+                 position='left',
+                 mode_keys={'command': 'f'}, 
             **kwargs):
 
         super().__init__(
                 leader=leader,
+                position=position,
                 mode_keys=mode_keys,
                 **kwargs)
         self.setPath()
