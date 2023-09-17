@@ -29,10 +29,10 @@ class Plug(BasePlug, QtCore.QObject):
 
         argv=kwargs.get('argv', None)
         if argv:
-            super(QtWidgets.QApplication, self).__init(
+            super(QtWidgets.QApplication, self).__init__(
                     argv)
         else:
-            super(QtCore.QObject, self).__init()
+            super(QtCore.QObject, self).__init__()
 
         super(BasePlug, self).__init__(*args, **kwargs)
 
