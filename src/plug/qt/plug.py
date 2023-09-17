@@ -54,7 +54,7 @@ class Plug(BasePlug, QtCore.QObject):
     def setEventListener(self, **kwargs):
 
         self.event_listener=EventListener(
-                obj=self, app=self.app, **kwargs)
+                obj=self, **kwargs)
 
     def toggleCommandMode(self):
 
