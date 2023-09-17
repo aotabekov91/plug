@@ -1,4 +1,4 @@
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWidgets
 
 from plug import Plug as BasePlug
 from gizmo.widget import CommandStack 
@@ -27,8 +27,14 @@ class Plug(BasePlug, QtCore.QObject):
         self.position=kwargs.get('position', None)
         self.follow_mouse=kwargs.get('follow_mouse', False)
 
+        argv=kwargs.get('argv', None)
+        if argv:
+            super(QtWidgets.QApplication, self).__init(
+                    argv)
+        else:
+            super(QtCore.QObject, self).__init()
+
         super(BasePlug, self).__init__(*args, **kwargs)
-        super(QtCore.QObject, self).__init()
 
     def setup(self):
 
