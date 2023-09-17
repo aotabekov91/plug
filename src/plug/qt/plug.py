@@ -72,7 +72,6 @@ class Plug(BasePlug, QtCore.QObject):
 
     def setEventListener(self):
 
-        print(self.kwargs)
         self.event_listener=EventListener(
                 obj=self, 
                 listening=False, 
