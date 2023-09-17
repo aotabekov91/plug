@@ -1,8 +1,10 @@
+import sys
 from PyQt5 import QtCore, QtWidgets
 
 from plug import Plug as BasePlug
+from plug.qt.utils import Plugman, EventListener
+
 from gizmo.widget import CommandStack 
-from plug.qt.utils import EventListener
 
 class Plug(BasePlug, QtCore.QObject):
 
@@ -35,11 +37,24 @@ class Plug(BasePlug, QtCore.QObject):
 
         super(BasePlug, self).__init__(*args, **kwargs)
 
+    def setName(self):
+
+        super().setName()
+        if self.app:
+            self.setApplicationName(self.name)
+
+    def initialize(self):
+
+        super().initialize()
+        if self.app:
+            self.plugman.loadPicks()
+
     def setup(self):
 
         super().setup()
         self.setActions()
         if self.app: 
+            self.setPlugman(plugman=Plugman)
             self.app.plugman.add(self)
             self.setEventListener(**self.kwargs)
 
@@ -179,3 +194,17 @@ class Plug(BasePlug, QtCore.QObject):
 
         self.activated=False
         self.deactivateUI()
+
+    def run(self):
+
+        super().run()
+        if self.app:
+            if hasattr(self, 'window'): 
+                self.window.show()
+            sys.exit(self.app.exec_())
+
+    def exit(self): 
+
+        super().exit()
+        if self.app:
+            sys.exit()

@@ -6,9 +6,11 @@ from gizmo.ui import StackWindow
 from plug.qt.plug import Plug
 from plug.qt.utils import Plugman
 
-class PlugApp(Plug, QtWidgets.QApplication):
+class PlugApp(Plug):
 
     def __init__(self, *args, argv=[], **kwargs):
+
+        self.app=QtWidgets.QApplication()
 
         super(PlugApp, self).__init__(
                 *args,
