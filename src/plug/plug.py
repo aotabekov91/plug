@@ -11,7 +11,7 @@ class Plug:
 
     def __init__(self, *args, **kwargs):
 
-        super(object, self).__init__()
+        super().__init__()
 
         self.files={}
         self.actions={}
