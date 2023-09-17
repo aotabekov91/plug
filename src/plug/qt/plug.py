@@ -33,8 +33,8 @@ class Plug(BasePlug, QtCore.QObject):
     def setName(self):
 
         super().setName()
-        if self.app:
-            self.app.setApplicationName(self.name)
+        # if self.app:
+            # self.app.setApplicationName(self.name)
 
     def initialize(self):
 
