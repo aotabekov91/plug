@@ -34,7 +34,7 @@ class Plug(BasePlug, QtCore.QObject):
 
         super().setName()
         if self.app:
-            self.setApplicationName(self.name)
+            self.app.setApplicationName(self.name)
 
     def initialize(self):
 
@@ -46,10 +46,10 @@ class Plug(BasePlug, QtCore.QObject):
 
         super().setup()
         self.setActions()
+        self.setEventListener(**self.kwargs)
         if self.app: 
             self.setPlugman(plugman=Plugman)
-            self.app.plugman.add(self)
-            self.setEventListener(**self.kwargs)
+            self.plugman.add(self)
 
     def setEventListener(self, **kwargs):
 
