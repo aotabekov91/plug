@@ -58,18 +58,18 @@ Input	src/plug/qt/modes/input/main.py	/^class Input(Mode):$/;"	c
 InputWidget	src/plug/qt/modes/input/widget.py	/^class InputWidget(QtWidgets.QWidget):$/;"	c
 KeyListener	src/plug/qt/utils/listener_key.py	/^class KeyListener(BaseListener, QtCore.QObject): pass$/;"	c
 KeyListener	src/plug/utils/listener_key.py	/^class KeyListener:$/;"	c
-Mode	src/plug/qt/modes/base.py	/^class Mode(PlugObj):$/;"	c
+Mode	src/plug/qt/modes/base.py	/^class Mode(Plug):$/;"	c
 Normal	src/plug/qt/modes/normal/main.py	/^class Normal(Mode):$/;"	c
 Picky	src/plug/utils/picky.py	/^class Picky:$/;"	c
 Plug	src/plug/plug.py	/^class Plug:$/;"	c
 Plug	src/plug/qt/base.py	/^class Plug(BasePlug):$/;"	c
 PlugApp	src/plug/qt/app.py	/^class PlugApp(Plug, QtWidgets.QApplication):$/;"	c
-PlugObj	src/plug/qt/obj.py	/^class PlugObj(Plug, QtCore.QObject):$/;"	c
+Plug	src/plug/qt/obj.py	/^class Plug(Plug, QtCore.QObject):$/;"	c
 Plugin	README.md	/^# Plugin$/;"	c
 Plugman	src/plug/qt/utils/plugman.py	/^class Plugman(Base, QtCore.QObject):$/;"	c
 Plugman	src/plug/utils/dotdict.py	/^class Plugman:$/;"	c
 Plugman	src/plug/utils/plugman.py	/^class Plugman:$/;"	c
-Powerline	src/plug/qt/plugs/powerline/main.py	/^class Powerline(PlugObj):$/;"	c
+Powerline	src/plug/qt/plugs/powerline/main.py	/^class Powerline(Plug):$/;"	c
 PowerlineWidget	src/plug/qt/plugs/powerline/widget.py	/^class PowerlineWidget(QtWidgets.QWidget):$/;"	c
 QLabel#Statusbar_colon	src/plug/qt/plugs/powerline/style.css	/^QLabel#Statusbar_colon {$/;"	i
 QLineEdit#Statusbar_edit	src/plug/qt/plugs/powerline/style.css	/^QLineEdit#Statusbar_edit {$/;"	i
@@ -77,7 +77,7 @@ QWidget#Powerline QLabel#keys	src/plug/qt/plugs/powerline/style.css	/^QWidget#Po
 QWidget#Powerline QLabel#mode	src/plug/qt/plugs/powerline/style.css	/^QWidget#Powerline QLabel#mode {$/;"	i
 QWidget#Powerline QLabel#page	src/plug/qt/plugs/powerline/style.css	/^QWidget#Powerline QLabel#page {$/;"	i
 Search	src/plug/qt/modes/search/main.py	/^class Search(Mode):$/;"	c
-TreePlug	src/plug/qt/plugs/trees/base.py	/^class TreePlug(PlugObj):$/;"	c
+TreePlug	src/plug/qt/plugs/trees/base.py	/^class TreePlug(Plug):$/;"	c
 Visual	src/plug/qt/modes/visual/main.py	/^class Visual(Mode):$/;"	c
 ZMQListener	src/plug/qt/utils/listener_zmq.py	/^class ZMQListener(QtCore.QObject):$/;"	c
 __delattr__	src/plug/utils/plugman.py	/^    __delattr__ = dict.__delitem__$/;"	v	class:dotdict	file:
@@ -93,7 +93,7 @@ __init__	src/plug/qt/modes/input/widget.py	/^    def __init__(self, parent):$/;"
 __init__	src/plug/qt/modes/normal/main.py	/^    def __init__(self, $/;"	m	class:Normal
 __init__	src/plug/qt/modes/search/main.py	/^    def __init__(self, $/;"	m	class:Search
 __init__	src/plug/qt/modes/visual/main.py	/^    def __init__(self, $/;"	m	class:Visual
-__init__	src/plug/qt/obj.py	/^    def __init__(self,$/;"	m	class:PlugObj
+__init__	src/plug/qt/obj.py	/^    def __init__(self,$/;"	m	class:Plug
 __init__	src/plug/qt/plugs/powerline/main.py	/^    def __init__(self, **kwargs):$/;"	m	class:Powerline
 __init__	src/plug/qt/plugs/powerline/widget.py	/^    def __init__(self):$/;"	m	class:PowerlineWidget
 __init__	src/plug/qt/plugs/trees/base.py	/^    def __init__(self, **kwargs):$/;"	m	class:TreePlug
@@ -111,7 +111,7 @@ _register	src/plug/qt/utils/register.py	/^    def _register(func):$/;"	f	functio
 _set	src/plug/qt/base.py	/^        def _set(leader):$/;"	f	member:Plug.setLeaders	file:
 act	src/plug/qt/base.py	/^    def act(self, request):$/;"	m	class:Plug
 activate	src/plug/plug.py	/^    def activate(self):$/;"	m	class:Plug
-activate	src/plug/qt/obj.py	/^    def activate(self):$/;"	m	class:PlugObj
+activate	src/plug/qt/obj.py	/^    def activate(self):$/;"	m	class:Plug
 activateCommandMode	src/plug/qt/base.py	/^    def activateCommandMode(self):$/;"	m	class:Plug
 add	src/plug/qt/utils/plugman.py	/^    def add(self, picked, kind):$/;"	m	class:Plugman
 add	src/plug/utils/dotdict.py	/^    def add(self, picked, kind):$/;"	m	class:Plugman
@@ -120,8 +120,8 @@ addKeys	src/plug/qt/modes/base.py	/^    def addKeys(self, event, widget=None):$/
 bufferCreated	src/plug/qt/utils/buffer.py	/^    bufferCreated=QtCore.pyqtSignal(object)$/;"	v	class:Buffer
 center	src/plug/qt/plugs/trees/base.py	/^    def center(self):$/;"	m	class:TreePlug
 checkKey	src/plug/qt/base.py	/^    def checkKey(self, event, kind='listen_leader'):$/;"	m	class:Plug
-checkListen	src/plug/qt/obj.py	/^    def checkListen(self, event):$/;"	m	class:PlugObj
-checkMode	src/plug/qt/obj.py	/^    def checkMode(self, widget, event):$/;"	m	class:PlugObj
+checkListen	src/plug/qt/obj.py	/^    def checkListen(self, event):$/;"	m	class:Plug
+checkMode	src/plug/qt/obj.py	/^    def checkMode(self, widget, event):$/;"	m	class:Plug
 checkSpecialCharacters	src/plug/qt/modes/base.py	/^    def checkSpecialCharacters(self, event):$/;"	m	class:Mode
 checkSpecialCharacters	src/plug/qt/modes/exec/main.py	/^    def checkSpecialCharacters(self, event):$/;"	m	class:Exec
 checkSpecialCharacters	src/plug/qt/modes/input/main.py	/^    def checkSpecialCharacters(self, event):$/;"	m	class:Input
@@ -135,16 +135,16 @@ closeCurrentView	src/plug/qt/modes/normal/main.py	/^    def closeCurrentView(sel
 command	src/plug/utils/command.py	/^def command(delay=None, wait=None, kind='os'):$/;"	f
 createFolder	src/plug/plug.py	/^    def createFolder(self, folder=None, attr_name='folder'):$/;"	m	class:Plug
 deactivate	src/plug/plug.py	/^    def deactivate(self):$/;"	m	class:Plug
-deactivate	src/plug/qt/obj.py	/^    def deactivate(self):$/;"	m	class:PlugObj
+deactivate	src/plug/qt/obj.py	/^    def deactivate(self):$/;"	m	class:Plug
 deactivateCommandMode	src/plug/qt/base.py	/^    def deactivateCommandMode(self):$/;"	m	class:Plug
 decrementFold	src/plug/qt/modes/normal/main.py	/^    def decrementFold(self): $/;"	m	class:Normal
 delisten	src/plug/qt/modes/base.py	/^    def delisten(self):$/;"	m	class:Mode
 delisten	src/plug/qt/modes/exec/main.py	/^    def delisten(self):$/;"	m	class:Exec
 delisten	src/plug/qt/modes/search/main.py	/^    def delisten(self, *args, **kwargs):$/;"	m	class:Search
 delisten	src/plug/qt/modes/visual/main.py	/^    def delisten(self):$/;"	m	class:Visual
-delisten	src/plug/qt/obj.py	/^    def delisten(self): self.listening=False$/;"	m	class:PlugObj
-delistenWanted	src/plug/qt/obj.py	/^    delistenWanted=QtCore.pyqtSignal()$/;"	v	class:PlugObj
-delocateUI	src/plug/qt/obj.py	/^    def delocateUI(self):$/;"	m	class:PlugObj
+delisten	src/plug/qt/obj.py	/^    def delisten(self): self.listening=False$/;"	m	class:Plug
+delistenWanted	src/plug/qt/obj.py	/^    delistenWanted=QtCore.pyqtSignal()$/;"	v	class:Plug
+delocateUI	src/plug/qt/obj.py	/^    def delocateUI(self):$/;"	m	class:Plug
 dotdict	src/plug/utils/plugman.py	/^class dotdict(dict):$/;"	c
 down	src/plug/qt/modes/normal/main.py	/^    def down(self, digit=1): $/;"	m	class:Normal
 escapePressed	src/plug/qt/modes/exec/main.py	/^    escapePressed=QtCore.pyqtSignal()$/;"	v	class:Exec
@@ -154,7 +154,7 @@ eventFilter	src/plug/qt/modes/base.py	/^    def eventFilter(self, widget, event)
 eventFilter	src/plug/qt/modes/exec/main.py	/^    def eventFilter(self, w, e):$/;"	m	class:Exec
 eventFilter	src/plug/qt/modes/input/main.py	/^    def eventFilter(self, w, e):$/;"	m	class:Input
 eventFilter	src/plug/qt/modes/input/widget.py	/^    def eventFilter(self, widget, event):$/;"	m	class:InputWidget
-eventFilter	src/plug/qt/obj.py	/^    def eventFilter(self, widget, event):$/;"	m	class:PlugObj
+eventFilter	src/plug/qt/obj.py	/^    def eventFilter(self, widget, event):$/;"	m	class:Plug
 executeMatch	src/plug/qt/modes/base.py	/^    def executeMatch(self, matches, partial, digit):$/;"	m	class:Mode
 exit	src/plug/plug.py	/^    def exit(self): self.running=False$/;"	m	class:Plug
 exit	src/plug/qt/app.py	/^    def exit(self): $/;"	m	class:PlugApp
@@ -165,7 +165,7 @@ focusCurrentView	src/plug/qt/modes/normal/main.py	/^    def focusCurrentView(sel
 focusDownView	src/plug/qt/modes/normal/main.py	/^    def focusDownView(self): $/;"	m	class:Normal
 focusSearch	src/plug/qt/modes/search/main.py	/^    def focusSearch(self): $/;"	m	class:Search
 focusUpView	src/plug/qt/modes/normal/main.py	/^    def focusUpView(self): $/;"	m	class:Normal
-forceDelisten	src/plug/qt/obj.py	/^    forceDelisten=QtCore.pyqtSignal()$/;"	v	class:PlugObj
+forceDelisten	src/plug/qt/obj.py	/^    forceDelisten=QtCore.pyqtSignal()$/;"	v	class:Plug
 getConnection	src/plug/plug.py	/^    def getConnection(self, kind):$/;"	m	class:Plug
 getInfo	src/plug/utils/picky.py	/^    def getInfo(self, gid): $/;"	m	class:Picky
 getKeys	src/plug/qt/modes/base.py	/^    def getKeys(self):$/;"	m	class:Mode
@@ -200,7 +200,7 @@ installPicks	src/plug/qt/utils/plugman.py	/^    def installPicks(self): super().
 installPicks	src/plug/utils/dotdict.py	/^    def installPicks(self): self.picky.install()$/;"	m	class:Plugman
 installPicks	src/plug/utils/plugman.py	/^    def installPicks(self): self.picky.install()$/;"	m	class:Plugman
 jump	src/plug/qt/modes/search/main.py	/^    def jump(self, increment=1, match=None):$/;"	m	class:Search
-keyPressed	src/plug/qt/obj.py	/^    keyPressed=QtCore.pyqtSignal(object, object)$/;"	v	class:PlugObj
+keyPressed	src/plug/qt/obj.py	/^    keyPressed=QtCore.pyqtSignal(object, object)$/;"	v	class:Plug
 keysChanged	src/plug/qt/modes/base.py	/^    keysChanged=QtCore.pyqtSignal(str)$/;"	v	class:Mode
 keysChanged	src/plug/qt/utils/plugman.py	/^    keysChanged=QtCore.pyqtSignal(str)$/;"	v	class:Plugman
 left	src/plug/qt/modes/normal/main.py	/^    def left(self, digit=1): $/;"	m	class:Normal
@@ -210,9 +210,9 @@ listen	src/plug/qt/modes/input/main.py	/^    def listen(self):$/;"	m	class:Input
 listen	src/plug/qt/modes/normal/main.py	/^    def listen(self):$/;"	m	class:Normal
 listen	src/plug/qt/modes/search/main.py	/^    def listen(self): $/;"	m	class:Search
 listen	src/plug/qt/modes/visual/main.py	/^    def listen(self):$/;"	m	class:Visual
-listen	src/plug/qt/obj.py	/^    def listen(self): $/;"	m	class:PlugObj
+listen	src/plug/qt/obj.py	/^    def listen(self): $/;"	m	class:Plug
 listen	src/plug/utils/listener_key.py	/^    def listen(self, key, func): $/;"	m	class:KeyListener
-listenWanted	src/plug/qt/obj.py	/^    listenWanted=QtCore.pyqtSignal(object)$/;"	v	class:PlugObj
+listenWanted	src/plug/qt/obj.py	/^    listenWanted=QtCore.pyqtSignal(object)$/;"	v	class:Plug
 load	src/plug/qt/utils/buffer.py	/^    def load(self, filePath): pass $/;"	m	class:Buffer
 load	src/plug/utils/dotdict.py	/^    def load(self):$/;"	m	class:Plugman
 load	src/plug/utils/plugman.py	/^    def load(self):$/;"	m	class:Plugman
@@ -220,12 +220,12 @@ loadModes	src/plug/utils/dotdict.py	/^    def loadModes(self, modes):$/;"	m	clas
 loadModes	src/plug/utils/plugman.py	/^    def loadModes(self, modes):$/;"	m	class:Plugman
 loadPlugs	src/plug/utils/dotdict.py	/^    def loadPlugs(self, plugs):$/;"	m	class:Plugman
 loadPlugs	src/plug/utils/plugman.py	/^    def loadPlugs(self, plugs):$/;"	m	class:Plugman
-locateUI	src/plug/qt/obj.py	/^    def locateUI(self):$/;"	m	class:PlugObj
+locateUI	src/plug/qt/obj.py	/^    def locateUI(self):$/;"	m	class:Plug
 loop	src/plug/qt/utils/listener_zmq.py	/^    def loop(self):$/;"	m	class:ZMQListener
 loop	src/plug/utils/listener_key.py	/^    def loop(self): self.listener.start()$/;"	m	class:KeyListener
 modeChanged	src/plug/qt/utils/plugman.py	/^    modeChanged=QtCore.pyqtSignal(object)$/;"	v	class:Plugman
 modeKey	src/plug/qt/base.py	/^    def modeKey(self, mode): $/;"	m	class:Plug
-modeWanted	src/plug/qt/obj.py	/^    modeWanted=QtCore.pyqtSignal(object)$/;"	v	class:PlugObj
+modeWanted	src/plug/qt/obj.py	/^    modeWanted=QtCore.pyqtSignal(object)$/;"	v	class:Plug
 next	src/plug/qt/modes/normal/main.py	/^    def next(self, digit=1): $/;"	m	class:Normal
 next	src/plug/qt/modes/search/main.py	/^    def next(self): self.jump(+1)$/;"	m	class:Search
 on_backspacePressed	src/plug/qt/modes/base.py	/^    def on_backspacePressed(self): self.clearKeys()$/;"	m	class:Mode
@@ -250,8 +250,8 @@ on_returnPressed	src/plug/qt/modes/exec/main.py	/^    def on_returnPressed(self)
 on_tabPressed	src/plug/qt/modes/base.py	/^    def on_tabPressed(self): pass$/;"	m	class:Mode
 on_tabPressed	src/plug/qt/modes/exec/main.py	/^    def on_tabPressed(self): $/;"	m	class:Exec
 on_textChanged	src/plug/qt/modes/exec/main.py	/^    def on_textChanged(self):$/;"	m	class:Exec
-on_uiFocusGained	src/plug/qt/obj.py	/^    def on_uiFocusGained(self):$/;"	m	class:PlugObj
-on_uiHideWanted	src/plug/qt/obj.py	/^    def on_uiHideWanted(self):$/;"	m	class:PlugObj
+on_uiFocusGained	src/plug/qt/obj.py	/^    def on_uiFocusGained(self):$/;"	m	class:Plug
+on_uiHideWanted	src/plug/qt/obj.py	/^    def on_uiHideWanted(self):$/;"	m	class:Plug
 on_viewChanged	src/plug/qt/plugs/powerline/main.py	/^    def on_viewChanged(self, view): $/;"	m	class:Powerline
 on_viewChanged	src/plug/qt/plugs/trees/base.py	/^    def on_viewChanged(self, view): self.setData()$/;"	m	class:TreePlug
 open	src/plug/qt/plugs/trees/base.py	/^    def open(self, how, focus, *args, **kwargs): $/;"	m	class:TreePlug
@@ -273,17 +273,17 @@ readjust	src/plug/qt/modes/normal/main.py	/^    def readjust(self): $/;"	m	class
 register	src/plug/plug.py	/^        def register(kind):$/;"	f	member:Plug.registerByParent	file:
 register	src/plug/plug.py	/^        def register(paths, kind):$/;"	f	member:Plug.registerByUmay	file:
 register	src/plug/plug.py	/^    def register(self, request): pass$/;"	m	class:Plug
-register	src/plug/qt/obj.py	/^    def register(self):$/;"	m	class:PlugObj
+register	src/plug/qt/obj.py	/^    def register(self):$/;"	m	class:Plug
 register	src/plug/qt/utils/register.py	/^def register(key=None, info=None, modes=[], command=True):$/;"	f
 register	src/plug/utils/dotdict.py	/^    def register(self, plug, actions): $/;"	m	class:Plugman
 register	src/plug/utils/plugman.py	/^    def register(self, plug, actions): $/;"	m	class:Plugman
 registerByParent	src/plug/plug.py	/^    def registerByParent(self, kind='PUSH'):$/;"	m	class:Plug
 registerByUmay	src/plug/plug.py	/^    def registerByUmay(self, paths=None, kind='PUSH'):$/;"	m	class:Plug
 registerKey	src/plug/qt/modes/base.py	/^    def registerKey(self, event):$/;"	m	class:Mode
-relocateUI	src/plug/qt/obj.py	/^    def relocateUI(self, position):$/;"	m	class:PlugObj
+relocateUI	src/plug/qt/obj.py	/^    def relocateUI(self, position):$/;"	m	class:Plug
 request	src/plug/qt/utils/listener_zmq.py	/^    request = QtCore.pyqtSignal(dict)$/;"	v	class:ZMQListener
 respond	src/plug/qt/base.py	/^    respond=QtCore.pyqtSignal(dict)$/;"	v	class:Plug
-returnPressed	src/plug/qt/obj.py	/^    returnPressed=QtCore.pyqtSignal()$/;"	v	class:PlugObj
+returnPressed	src/plug/qt/obj.py	/^    returnPressed=QtCore.pyqtSignal()$/;"	v	class:Plug
 right	src/plug/qt/modes/normal/main.py	/^    def right(self, digit=1): $/;"	m	class:Normal
 run	src/plug/plug.py	/^    def run(self):$/;"	m	class:Plug
 run	src/plug/qt/app.py	/^    def run(self):$/;"	m	class:PlugApp
@@ -306,7 +306,7 @@ setData	src/plug/qt/modes/exec/main.py	/^    def setData(self):$/;"	m	class:Exec
 setData	src/plug/qt/plugs/trees/base.py	/^    def setData(self): pass$/;"	m	class:TreePlug
 setFiles	src/plug/plug.py	/^    def setFiles(self):$/;"	m	class:Plug
 setFiles	src/plug/qt/base.py	/^    def setFiles(self):$/;"	m	class:Plug
-setFilter	src/plug/qt/obj.py	/^    def setFilter(self):$/;"	m	class:PlugObj
+setFilter	src/plug/qt/obj.py	/^    def setFilter(self):$/;"	m	class:Plug
 setGUI	src/plug/qt/app.py	/^    def setGUI(self, display_class=None, view_class=None):$/;"	m	class:PlugApp
 setLeaders	src/plug/qt/base.py	/^    def setLeaders(self):$/;"	m	class:Plug
 setListener	src/plug/qt/base.py	/^    def setListener(self):$/;"	m	class:Plug
@@ -326,13 +326,13 @@ setText	src/plug/qt/modes/input/widget.py	/^    def setText(self, text):$/;"	m	c
 setText	src/plug/qt/plugs/powerline/widget.py	/^    def setText(self, kind, text):$/;"	m	class:PowerlineWidget
 setUI	src/plug/qt/modes/exec/main.py	/^    def setUI(self):$/;"	m	class:Exec
 setUI	src/plug/qt/modes/search/main.py	/^    def setUI(self):$/;"	m	class:Search
-setUI	src/plug/qt/obj.py	/^    def setUI(self): $/;"	m	class:PlugObj
+setUI	src/plug/qt/obj.py	/^    def setUI(self): $/;"	m	class:Plug
 setUI	src/plug/qt/plugs/powerline/main.py	/^    def setUI(self):$/;"	m	class:Powerline
 setUI	src/plug/qt/plugs/trees/base.py	/^    def setUI(self):$/;"	m	class:TreePlug
 setup	src/plug/plug.py	/^    def setup(self):$/;"	m	class:Plug
 setup	src/plug/qt/modes/base.py	/^    def setup(self):$/;"	m	class:Mode
 setup	src/plug/qt/modes/input/widget.py	/^    def setup(self):$/;"	m	class:InputWidget
-setup	src/plug/qt/obj.py	/^    def setup(self):$/;"	m	class:PlugObj
+setup	src/plug/qt/obj.py	/^    def setup(self):$/;"	m	class:Plug
 setup	src/plug/qt/utils/plugman.py	/^    def setup(self):$/;"	m	class:Plugman
 setup	src/plug/utils/dotdict.py	/^    def setup(self):$/;"	m	class:Plugman
 setup	src/plug/utils/plugman.py	/^    def setup(self):$/;"	m	class:Plugman

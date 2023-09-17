@@ -7,24 +7,21 @@ from types import MethodType, BuiltinFunctionType
 
 from plug.utils import Plugman
 
-class Plug(object):
+class Plug:
 
-    def __init__(self, 
-                 name=None, 
-                 config={}, 
-                 **kwargs,
-                 ):
+    def __init__(self, *args, **kwargs):
 
         super().__init__()
 
         self.files={}
-        self.name=name
         self.actions={}
-        self.config=config
-        self.kwargs=kwargs
         self.commandKeys={}
         self.running = False
         self.activated = False
+
+        self.kwargs=kwargs
+        self.name=kwargs.get('name', None)
+        self.config=kwargs.get('config', None)
 
         self.setup()
         self.initialize()
