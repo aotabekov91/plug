@@ -25,7 +25,7 @@ class Plug:
 
         self.kwargs=kwargs
         self.name=kwargs.get('name', None)
-        self.config=kwargs.get('config', None)
+        self.config=kwargs.get('config', {})
 
         self.setup()
         self.initialize()
