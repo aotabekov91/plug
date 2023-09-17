@@ -11,7 +11,11 @@ class Plug:
 
     def __init__(self, *args, **kwargs):
 
-        super().__init__()
+        argv=kwargs.get('argv', None)
+        if argv:
+            super().__init__(argv)
+        else:
+            super().__init__()
 
         self.files={}
         self.actions={}
