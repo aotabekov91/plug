@@ -18,16 +18,16 @@ class Plug(BasePlug, QtCore.QObject):
     keysChanged=QtCore.pyqtSignal(str)
     keyPressed=QtCore.pyqtSignal(object, object)
 
-    def __init__(self, app=None, **kwargs):
+    def __init__(self, *args, **kwargs):
 
-        self.app=app
         self.listening=False
         self.command_activated=False
+
+        self.app=kwargs.get('app', None)
         self.position=kwargs.get('position', None)
         self.follow_mouse=kwargs.get('follow_mouse', False)
 
-        super(QtCore.QObject).__init__()
-        super(BasePlug, self).__init__(**kwargs)
+        super(BasePlug, self).__init__(*args, **kwargs)
 
     def setup(self):
 
