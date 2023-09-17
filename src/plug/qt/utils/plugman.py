@@ -9,7 +9,7 @@ class Plugman(Base, QtCore.QObject):
     modeChanged=QtCore.pyqtSignal(object)
     plugLoaded=QtCore.pyqtSignal(object)
     plugsLoaded=QtCore.pyqtSignal(object)
-    actionsRegistered=QtCore.pyqtSignal()
+    actionsRegistered=QtCore.pyqtSignal(object, object)
 
     def setup(self):
 
