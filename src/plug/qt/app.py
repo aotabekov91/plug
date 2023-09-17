@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets
 
 from gizmo.ui import StackWindow
 
-from plug.qt.base import Plug
+from plug.qt.plug import Plug
 from plug.qt.utils import Plugman
 
 class PlugApp(Plug, QtWidgets.QApplication):
