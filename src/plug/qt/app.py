@@ -15,6 +15,7 @@ class PlugApp(Plug):
                 qapp=self.qapp,
                 **kwargs,
                 )
+        self.setParent(self.qapp)
 
     def setGUI(self, 
                display_class=None, 

@@ -128,8 +128,7 @@ class Styler(Plug):
         style=self.styles.get(name, None)
         if style:
             cdict, css=style
-            self.current=name
-            self.style=name
-            self.app.setStyleSheet(css)
+            self.current=self.style=name
+            self.app.qapp.setStyleSheet(css)
         else:
             self.current=None
