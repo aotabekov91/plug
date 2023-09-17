@@ -22,6 +22,7 @@ class Plug(BasePlug, QtCore.QObject):
         self.app=app
         self.listening=False
         self.command_activated=False
+
         super(QtCore.QObject).__init__()
         super(BasePlug, self).__init__(**kwargs)
 

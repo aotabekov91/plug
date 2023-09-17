@@ -25,6 +25,7 @@ class Plug(object):
         self.commandKeys={}
         self.running = False
         self.activated = False
+
         self.setup()
         self.initialize()
 
