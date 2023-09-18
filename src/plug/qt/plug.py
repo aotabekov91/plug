@@ -208,6 +208,7 @@ class Plug(BasePlug, QtCore.QObject):
     def deactivate(self):
 
         self.activated=False
+        self.delistenWanted.emit()
         self.deactivateUI()
 
     def run(self):
