@@ -2,10 +2,11 @@ import sys
 from PyQt5 import QtCore, QtWidgets
 
 from plug import Plug as BasePlug
-from plug.qt.utils import Plugman, EventListener
+from plug.qt.utils import Plugman
 
 from gizmo.ui import StackWindow
 from gizmo.widget import CommandStack 
+from gizmo.utils import EventListener
 
 class Plug(BasePlug, QtCore.QObject):
 

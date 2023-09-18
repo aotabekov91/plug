@@ -1,7 +1,6 @@
 import os
 import tomli
 import inspect
-
 from pathlib import Path
 from types import MethodType, BuiltinFunctionType
 
