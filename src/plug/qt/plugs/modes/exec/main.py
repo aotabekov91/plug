@@ -21,7 +21,7 @@ class Exec(Plug):
                  app=None, 
                  name='exec',
                  special=special,
-                 listen_leader='<c-e>',
+                 listen_leader='<c-.>',
                  **kwargs
                  ):
 

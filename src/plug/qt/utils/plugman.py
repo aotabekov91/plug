@@ -66,6 +66,10 @@ class Plugman(Base, QtCore.QObject):
         super().loadPlugs(plugs)
         self.plugsLoaded.emit(self.plugs)
 
+    def unset(self):
+
+
+
     def set(self, listener='normal'):
 
         super().set(listener)
