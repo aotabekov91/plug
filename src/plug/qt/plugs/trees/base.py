@@ -5,10 +5,10 @@ from gizmo.widget import InputTree
 
 class TreePlug(Plug):
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
 
         self.follow_index=True
-        super().__init__(**kwargs)
+        super().__init__(*args, **kwargs)
         self.setUI()
 
     def setUI(self):
@@ -38,19 +38,19 @@ class TreePlug(Plug):
     @register('t', modes=['command'])
     def toggle(self): super().toggle()
 
-    @register('<leader>i')
+    @register('i')
     def openBelow(self): 
 
         self.open(how='below', focus=False)
         self.ui.show()
 
-    @register('<leader>O')
+    @register('O')
     def openReset(self): 
 
         self.open(how='reset', focus=False)
         self.ui.show()
 
-    @register('<leader>s')
+    @register('s')
     def center(self):
 
         if not self.follow_index:

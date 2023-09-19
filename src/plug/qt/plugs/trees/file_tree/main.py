@@ -7,13 +7,14 @@ from plug.qt.plugs.trees.base import TreePlug
 class FileBrowser(TreePlug):
 
     def __init__(self, 
-                 leader='.', 
                  position='left',
-                 mode_keys={'command': 'f'}, 
+                 mode_keys={
+                     'command': 'f',
+                     'FileBrowser': '<c-u>'
+                     }, 
                  **kwargs):
 
         super().__init__(
-                leader=leader,
                 position=position,
                 mode_keys=mode_keys,
                 **kwargs)
@@ -52,7 +53,7 @@ class FileBrowser(TreePlug):
         for i in range(1, 4): 
             self.ui.main.tree.hideColumn(i)
 
-    @register(key='t', modes=['command'])
+    @register('t', modes=['command'])
     def toggle(self): super().toggle()
 
     @register(modes=['exec'])
@@ -63,7 +64,7 @@ class FileBrowser(TreePlug):
 
         self.open(path, how, focus)
 
-    @register('<leader>o')
+    @register('o')
     def open(self, 
              path=None, 
              how=None, 
