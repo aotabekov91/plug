@@ -6,7 +6,7 @@ from .widget import PowerlineWidget
 class Powerline(Plug):
 
     def __init__(self, 
-                 mode_keys={'command': 'p'},
+                 mode_keys={'command': 'l'},
                  **kwargs):
 
         super().__init__(
