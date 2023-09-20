@@ -24,6 +24,14 @@ class ExecList(Plug):
         self.args={}
         self.exec=None
         self.filler=Filler()
+
+    def setup(self):
+
+        super().setup()
+        self.setConnect()
+
+    def setConnect(self):
+
         self.app.plugman.plugsLoaded.connect(
                 self.on_plugsLoaded)
         self.event_listener.tabPressed.connect(
