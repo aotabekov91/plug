@@ -51,9 +51,13 @@ class Plugman:
         for name, folder in self.picky.rtp.items():
             if os.path.exists(folder):
                 sys.path.insert(0, folder)
-                m=importlib.import_module(name)
-                if hasattr(m, 'get_plug_class'):
-                    plugs+=[m.get_plug_class()]
+                try:
+                    m=importlib.import_module(name)
+                    if hasattr(m, 'get_plug_class'):
+                        plugs+=[m.get_plug_class()]
+                except:
+                    print('Error in plug importing: ', name)
+
         self.loadPlugs(plugs)
         self.set('normal')
 
@@ -62,8 +66,11 @@ class Plugman:
         for p in plugs: 
             name=p.__name__
             config=self.app.config.get(name, {})
-            plug=p(app=self.app, config=config)
-            self.add(plug)
+            try:
+                plug=p(app=self.app, config=config)
+                self.add(plug)
+            except:
+                print('Error in plug loading: ', name)
 
     def add(self, plug):
 
