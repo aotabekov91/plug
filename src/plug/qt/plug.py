@@ -117,9 +117,12 @@ class Plug(BasePlug, QtCore.QObject):
         l=self.event_listener.listen_leader
         return pressed in l
 
-    def setUI(self): 
+    def setUI(self, ui=None): 
 
-        self.ui=CommandStack()
+        if not ui: 
+            ui=CommandStack()
+
+        self.ui=ui
         self.ui.setObjectName(self.name)
         if hasattr(self.ui, 'hideWanted'):
             self.ui.hideWanted.connect(
@@ -159,12 +162,13 @@ class Plug(BasePlug, QtCore.QObject):
         if hasattr(self, 'ui'):
             dock=['left', 'right', 'top', 'bottom']
             if self.position=='window':
-                self.app.window.add(self.ui, self.name) 
-            elif self.position=='overlay':
-                pass
+                self.app.window.add(
+                        self.ui, self.name) 
             elif self.position in dock:
                 self.app.window.docks.setTab(
                         self.ui, self.position)
+            elif self.position=='overlay':
+                pass
 
     def delocateUI(self):
 

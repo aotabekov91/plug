@@ -46,3 +46,7 @@ QAbstractScrollArea {
 #Statusbar QLineEdit#Edit{
 	border-radius: 0px;
 }
+
+#SearchList QListView {
+	background-color: red;
+}

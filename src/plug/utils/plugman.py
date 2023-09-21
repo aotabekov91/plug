@@ -55,8 +55,9 @@ class Plugman:
                     m=importlib.import_module(name)
                     if hasattr(m, 'get_plug_class'):
                         plugs+=[m.get_plug_class()]
-                except:
+                except Exception as e:
                     print('Error in plug importing: ', name)
+                    print(e)
 
         self.loadPlugs(plugs)
         self.set('normal')
@@ -69,8 +70,9 @@ class Plugman:
             try:
                 plug=p(app=self.app, config=config)
                 self.add(plug)
-            except:
+            except Exception as e:
                 print('Error in plug loading: ', name)
+                print(e)
 
     def add(self, plug):
 
