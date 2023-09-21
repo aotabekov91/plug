@@ -25,10 +25,9 @@ class Plugman:
 
     def installPicks(self): 
 
-        raise
-        # self.picky.install()
-        if self.install_requirements:
-            self.picky.installRequirements()
+        self.picky.install()
+        # if self.install_requirements:
+            # self.picky.installRequirements()
 
     def updatePicks(self): 
 

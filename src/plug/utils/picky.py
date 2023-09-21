@@ -83,7 +83,8 @@ class Picky:
             for r in self.getReqs(p):
                 if not r in reqs:
                     reqs+=[r]
-        self.installReqs(reqs)
+        print(reqs)
+        # self.installReqs(reqs)
 
     def getReqs(self, path):
 
@@ -93,8 +94,7 @@ class Picky:
             with open(r, 'r') as f:
                 for i in f.readlines():
                     reqs+=[i.strip('\n')]
-        print(reqs)
-        # return set(reqs)
+        return set(reqs)
 
     def installReqs(self, reqs):
 
