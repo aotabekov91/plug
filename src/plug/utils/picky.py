@@ -31,7 +31,9 @@ class Picky:
 
         for data in self.picks:
             r = data.get('pick', None)
-            if r: self.installRepo(r)
+            if r: 
+                print(r)
+                # self.installRepo(r)
 
     def update(self): 
 
