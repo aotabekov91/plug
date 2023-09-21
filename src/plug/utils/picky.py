@@ -62,18 +62,18 @@ class Picky:
 
     def installRepo(self, repo):
 
-        name, path, folder=self.getInfo(repo)
-        self.rtp[name]=folder
-        if not name in self.repos: 
-            self.repos+=[name]
-        if not os.path.exists(path):
+        n, p, f=self.getInfo(repo)
+        self.rtp[n]=f
+        if not n in self.repos: 
+            self.repos+=[n]
+        if not os.path.exists(p):
             gpath=os.path.expanduser(repo)
             if os.path.exists(gpath):
-                shutil.copy(gpath, path)
+                shutil.copy(gpath, p)
             else:
                 url=f"{self.base}/{repo}"
-                git.Repo.clone_from(url, path)
-        return name, folder
+                git.Repo.clone_from(url, p)
+        return n, f
 
     def installRequirements(self):
 
@@ -98,5 +98,4 @@ class Picky:
     def installReqs(self, reqs):
 
         for r in reqs:
-            raise
             pipmain(['install', r])

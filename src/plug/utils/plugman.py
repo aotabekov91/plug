@@ -25,6 +25,7 @@ class Plugman:
 
     def installPicks(self): 
 
+        return
         self.picky.install()
         if self.install_requirements:
             self.picky.installRequirements()
