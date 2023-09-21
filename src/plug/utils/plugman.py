@@ -9,6 +9,7 @@ class Plugman:
 
     def __init__(self, app=None):
 
+        self.install_requirements=True
         super(Plugman, self).__init__()
         self.app=app
         self.prev=None
@@ -25,6 +26,8 @@ class Plugman:
     def installPicks(self): 
 
         self.picky.install()
+        if self.install_requirements:
+            self.picky.installRequirements()
 
     def updatePicks(self): 
 

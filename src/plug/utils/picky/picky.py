@@ -2,7 +2,7 @@ import os
 import git
 import shutil
 
-from .install_deps import installDeps
+from .install_deps import getReqs, installReqs
 
 class Picky:
 
@@ -11,7 +11,6 @@ class Picky:
         self.rtp={}
         self.repos=[]
         self.picks=picks
-        self.install_requirements=True
         self.base=os.path.expanduser(base)
         self.folder=os.path.expanduser(folder)
         self.updateRunTimePaths()
@@ -33,10 +32,8 @@ class Picky:
 
         for data in self.picks:
             repo = data.get('pick', None)
-            if repo: self.installRepo(repo)
-
-        if self.install_requirements:
-            self.installRequirements()
+            if repo: 
+                self.installRepo(repo)
 
     def update(self): 
 
@@ -82,5 +79,9 @@ class Picky:
 
     def installRequirements(self):
 
+        reqs=[]
         for n, p in self.rtp.items():
-            installDeps(os.path.join(p, n))
+            for r in getReqs(os.path.join(p, n)):
+                if not r in reqs:
+                    reqs+=[r]
+        print(reqs)

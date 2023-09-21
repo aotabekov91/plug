@@ -8,8 +8,8 @@ def installDeps(path):
 
 def getReqs(path):
 
-    r=os.path.join(path, "requirements.txt")
     reqs=[]
+    r=os.path.join(path, "requirements.txt")
     if os.path.exists(r):
         with open(r, 'r') as f:
             for i in f.readlines():
