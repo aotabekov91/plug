@@ -94,9 +94,10 @@ class Picky:
             with open(r, 'r') as f:
                 for i in f.readlines():
                     reqs+=[i.strip('\n')]
-        return reqs
+        print(reqs)
+        return set(reqs)
 
     def installReqs(self, reqs):
 
-        for req in reqs:
-            pipmain(['install', req])
+        for r in reqs:
+            pipmain(['install', r])
