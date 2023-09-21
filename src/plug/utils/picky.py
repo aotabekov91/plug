@@ -20,12 +20,12 @@ class Picky:
             repo = data.get('pick', None)
             subdirs = data.get('subdir', [])
             if repo:
-                name, path, folder = self.getInfo(repo)
-                self.rtp[name] = folder
+                n, p, f = self.getInfo(repo)
+                self.rtp[n] = f
                 for subdir in subdirs: 
                     url=f"{repo}/{subdir}"
-                    name, path, folder=self.getInfo(url)
-                    self.rtp[name]=folder
+                    n, p, f=self.getInfo(url)
+                    self.rtp[n]=f
 
     def install(self):
 
@@ -83,8 +83,7 @@ class Picky:
             for r in self.getReqs(p):
                 if not r in reqs:
                     reqs+=[r]
-        print(reqs)
-        # self.installReqs(reqs)
+        self.installReqs(reqs)
 
     def getReqs(self, path):
 
@@ -99,4 +98,5 @@ class Picky:
     def installReqs(self, reqs):
 
         for r in reqs:
+            raise
             pipmain(['install', r])
