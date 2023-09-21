@@ -7,6 +7,7 @@ class Picky:
 
     def __init__(self, picks, folder, base):
 
+        raise
         self.rtp={}
         self.repos=[]
         self.picks=picks
