@@ -119,7 +119,8 @@ class Plug(BasePlug, QtCore.QObject):
 
     def setUI(self, ui=None): 
 
-        if not ui: 
+        print(ui)
+        if ui is None: 
             ui=CommandStack()
 
         self.ui=ui
