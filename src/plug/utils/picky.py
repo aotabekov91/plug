@@ -1,8 +1,7 @@
 import os
 import git
 import shutil
-
-from .install_deps import getReqs, installReqs
+from pip._internal import main as pipmain
 
 class Picky:
 
@@ -81,7 +80,23 @@ class Picky:
 
         reqs=[]
         for n, p in self.rtp.items():
-            for r in getReqs(os.path.join(p, n)):
+            p=os.path.join(p, n)
+            for r in self.getReqs(p):
                 if not r in reqs:
                     reqs+=[r]
-        print(reqs)
+        self.installReqs(reqs)
+
+    def getReqs(self, path):
+
+        reqs=[]
+        r=os.path.join(path, "requirements.txt")
+        if os.path.exists(r):
+            with open(r, 'r') as f:
+                for i in f.readlines():
+                    reqs+=[i.strip('\n')]
+        return reqs
+
+    def installReqs(self, reqs):
+
+        for req in reqs:
+            pipmain(['install', req])
