@@ -29,6 +29,7 @@ class Picky:
 
     def install(self):
 
+        raise
         for data in self.picks:
             r = data.get('pick', None)
             if r: 
