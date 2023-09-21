@@ -9,7 +9,8 @@ class Plugman(Base, QtCore.QObject):
     modeChanged=QtCore.pyqtSignal(object)
     plugAdded=QtCore.pyqtSignal(object)
     plugsLoaded=QtCore.pyqtSignal(object)
-    actionsRegistered=QtCore.pyqtSignal(object, object)
+    actionsRegistered=QtCore.pyqtSignal(
+            object, object)
 
     def setup(self):
 
@@ -17,10 +18,10 @@ class Plugman(Base, QtCore.QObject):
         funcs=['installPicks', 
                'updatePicks', 
                'cleanupPicks']
-        actions={}
+        a={}
         for f in funcs:
-            actions[('Plugman', f)]=getattr(self, f)
-        self.register(self, actions)
+            a[('Plugman', f)]=getattr(self, f)
+        self.register(self, a)
 
     @register(modes=['exec'])
     def installPicks(self): 
