@@ -95,7 +95,7 @@ class Picky:
                 for i in f.readlines():
                     reqs+=[i.strip('\n')]
         print(reqs)
-        return set(reqs)
+        # return set(reqs)
 
     def installReqs(self, reqs):
 
