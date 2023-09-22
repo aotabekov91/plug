@@ -1,8 +1,6 @@
 import os
 import tomli
 import inspect
-from pathlib import Path
-from types import MethodType, BuiltinFunctionType
 
 from plug.utils import Plugman, createFolder
 
@@ -54,10 +52,8 @@ class Plug:
                     setattr(func, a, v)
                 self.actions[(self.name, m.name)]=m 
 
-        # cnd=[MethodType, BuiltinFunctionType]
         for f in self.__dir__():
             m=getattr(self, f)
-            # if type(m) in cnd and hasattr(m, 'modes'):
             if hasattr(m, 'modes'):
                 d=(self.name, m.name)
                 if not d in self.actions:
@@ -68,8 +64,7 @@ class Plug:
                      fname='folder'):
 
         if not folder: 
-            name=self.__class__.__name__.lower()
-            folder=f'~/{name}'
+            folder=f'~/{self.name.lower()}'
         path=createFolder(folder)
         setattr(self, fname, path)
 

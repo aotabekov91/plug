@@ -5,8 +5,8 @@ from plug import Plug as BasePlug
 from plug.qt.utils import Plugman
 
 from gizmo.ui import StackWindow
-from gizmo.widget import CommandStack 
 from gizmo.utils import EventListener
+from gizmo.widget import CommandStack 
 
 class Plug(BasePlug, QtCore.QObject):
 
@@ -63,20 +63,20 @@ class Plug(BasePlug, QtCore.QObject):
     def setup(self):
 
         super().setup()
-        # self.setActions()
         if self.qapp: 
             self.setPlugman(plugman=Plugman)
             self.event_timer=QtCore.QTimer()
         if self.app:
             self.app.plugman.add(self)
-            self.setEventListener()
+            self.setEar()
 
-    def setEventListener(self):
+    def setEar(self):
 
+        kwargs=self.kwargs.copy()
+        settings=self.config.get('Settings', {})
+        kwargs.update(settings)
         self.ear=EventListener(
-                obj=self, 
-                listening=False, 
-                **self.kwargs)
+                obj=self, listening=False, **kwargs)
 
     def toggleCommandMode(self):
 
@@ -114,8 +114,7 @@ class Plug(BasePlug, QtCore.QObject):
 
     def checkLeader(self, event, pressed=None): 
 
-        l=self.ear.listen_leader
-        return pressed in l
+        return pressed in self.ear.listen_leader
 
     def setUI(self, ui=None): 
 
