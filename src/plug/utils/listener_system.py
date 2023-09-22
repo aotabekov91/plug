@@ -1,10 +1,10 @@
 from pynput import keyboard
 
-class Base
+class SystemListener:
 
     def __init__(self, parent):
 
-        super(KeyListener, self).__init__()
+        super(SystemListener, self).__init__()
 
         self.hotkeys=[]
         self.parent = parent
