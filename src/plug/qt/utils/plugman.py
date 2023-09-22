@@ -24,6 +24,7 @@ class Plugman(Base, QtCore.QObject):
         for f in funcs:
             a[('Plugman', f)]=getattr(self, f)
         self.register(self, a)
+        print(self.actions['Plugman'])
 
     @register(modes=['exec'])
     def installPicks(self): 
