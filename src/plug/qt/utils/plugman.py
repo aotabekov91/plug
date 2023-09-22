@@ -54,9 +54,9 @@ class Plugman(Base, QtCore.QObject):
         super().set(listener)
         self.modeChanged.emit(self.current)
 
-    def register(self, plug, actions):
+    def saveActions(self, plug, actions):
 
-        super().register(plug, actions)
+        super().saveActions(plug, actions)
         self.actionsRegistered.emit(plug, actions)
 
     @register(modes=['exec'])
