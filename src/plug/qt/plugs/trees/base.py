@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 
 from plug.qt import Plug
-from plug.utils.register import register
+from gizmo.utils import register
 
 from gizmo.widget import InputTree
 
