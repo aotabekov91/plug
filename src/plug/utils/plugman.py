@@ -27,7 +27,11 @@ class Plugman:
 
         self.picky.install()
         if self.install_requirements:
-            self.picky.installRequirements()
+            self.installRequirements()
+
+    def installRequirements(self):
+
+        self.picky.installRequirements()
 
     def updatePicks(self): 
 
@@ -48,33 +52,38 @@ class Plugman:
         self.app.createFolder(
                 self.folder, 'plugman_folder')
 
-    def loadPicks(self):
+    def getPicks(self):
 
         plugs=[]
-        for name, folder in self.picky.rtp.items():
-            if os.path.exists(folder):
-                sys.path.insert(0, folder)
+        for n, f in self.picky.rtp.items():
+            if os.path.exists(f):
+                sys.path.insert(0, f)
                 try:
-                    m=importlib.import_module(name)
-                    if hasattr(m, 'get_plug_class'):
-                        plugs+=[m.get_plug_class()]
+                    m=importlib.import_module(n)
+                    k=getattr(m, 'get_plug_class')
+                    if k: plugs+=[k()]
                 except Exception as e:
-                    print('Error in plug importing: ', name)
+                    msg='Error in plug importing: '
+                    print(msg, n)
                     print(e)
+        return plugs
 
+    def loadPicks(self):
+
+        plugs=self.getPicks()
         self.loadPlugs(plugs)
         self.set('normal')
 
     def loadPlugs(self, plugs):
 
         for p in plugs: 
-            name=p.__name__
-            config=self.app.config.get(name, {})
+            n=p.__name__
+            c=self.app.config.get(n, {})
             try:
-                plug=p(app=self.app, config=config)
+                plug=p(app=self.app, config=c)
                 self.add(plug)
             except Exception as e:
-                print('Error in plug loading: ', name)
+                print('Error in plug loading: ', n)
                 print(e)
 
     def add(self, plug):
