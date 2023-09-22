@@ -22,7 +22,7 @@ class Plugman(Base, QtCore.QObject):
         a={}
         for f in funcs:
             a[('Plugman', f)]=getattr(self, f)
-        self.register(self, a)
+        self.saveActions(self, a)
 
     def add(self, picked):
 
@@ -40,7 +40,7 @@ class Plugman(Base, QtCore.QObject):
             picked.keysChanged.connect(
                     self.keysChanged)
 
-        self.register(picked, picked.actions)
+        self.saveActions(picked, picked.actions)
         self.plugAdded.emit(picked)
 
     def loadPlugs(self, plugs):

@@ -5,7 +5,7 @@ import importlib
 from .picky import Picky
 from .miscel import dotdict
 
-from plug.utils import register
+from plug.utils.register import register
 
 class Plugman:
 
@@ -107,7 +107,7 @@ class Plugman:
             self.current=listener
             self.current.listen()
 
-    def register(self, plug, actions): 
+    def saveActions(self, plug, actions): 
 
         self.actions[plug]=actions
         for n, a in actions.items():
