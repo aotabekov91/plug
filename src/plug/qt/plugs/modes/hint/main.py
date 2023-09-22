@@ -18,7 +18,7 @@ class Hint(Plug):
                 **kwargs,
                 )
 
-        self.event_listener.keyPressed.connect(
+        self.ear.keyPressed.connect(
                 self.on_keysPressed)
 
     def listen(self):

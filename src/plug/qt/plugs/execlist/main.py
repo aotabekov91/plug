@@ -34,7 +34,7 @@ class ExecList(Plug):
 
         self.app.plugman.plugsLoaded.connect(
                 self.on_plugsLoaded)
-        self.event_listener.tabPressed.connect(
+        self.ear.tabPressed.connect(
                 self.select)
 
     def setArgOptions(self, 

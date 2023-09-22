@@ -73,7 +73,7 @@ class Plug(BasePlug, QtCore.QObject):
 
     def setEventListener(self):
 
-        self.event_listener=EventListener(
+        self.ear=EventListener(
                 obj=self, 
                 listening=False, 
                 **self.kwargs)
@@ -101,7 +101,7 @@ class Plug(BasePlug, QtCore.QObject):
     def listen(self): 
 
         self.listening=True
-        self.event_listener.listen()
+        self.ear.listen()
         if hasattr(self, 'ui') and self.activated: 
             self.ui.setFocus()
         self.startedListening.emit(self)
@@ -109,12 +109,12 @@ class Plug(BasePlug, QtCore.QObject):
     def delisten(self): 
 
         self.listening=False
-        self.event_listener.delisten()
+        self.ear.delisten()
         self.endedListening.emit(self)
 
     def checkLeader(self, event, pressed=None): 
 
-        l=self.event_listener.listen_leader
+        l=self.ear.listen_leader
         return pressed in l
 
     def setUI(self, ui=None): 

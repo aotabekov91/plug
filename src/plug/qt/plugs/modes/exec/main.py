@@ -34,13 +34,14 @@ class Exec(Plug):
                 )
 
         self.commands={}
-        self.event_listener.returnPressed.connect(
+        self.ear=self.ear
+        self.ear.returnPressed.connect(
                 self.on_returnPressed)
-        self.event_listener.carriageReturnPressed.connect(
+        self.ear.carriageReturnPressed.connect(
                 self.on_returnPressed)
-        self.event_listener.tabPressed.connect(
+        self.ear.tabPressed.connect(
                 self.on_tabPressed)
-        self.event_listener.keysSet.connect(
+        self.ear.keysSet.connect(
                 self.on_keysSet)
 
     def setup(self):
@@ -75,7 +76,7 @@ class Exec(Plug):
 
     def on_keysSet(self, commands):
 
-        self.commands = self.event_listener.methods
+        self.commands = self.ear.methods
         for c, m in self.commands.items():
             prmts=signature(m).parameters
             parser=self.subparser.add_parser(c)
