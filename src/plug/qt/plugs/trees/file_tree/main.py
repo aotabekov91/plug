@@ -8,7 +8,7 @@ class FileBrowser(TreePlug):
 
     def __init__(self, 
                  position='left',
-                 mode_keys={
+                 prefix_key={
                      'command': 'f',
                      'FileBrowser': '<c-u>'
                      }, 
@@ -16,7 +16,7 @@ class FileBrowser(TreePlug):
 
         super().__init__(
                 position=position,
-                mode_keys=mode_keys,
+                prefix_key=prefix_key,
                 **kwargs)
         self.setPath()
         self.app.plugman.plugsLoaded.connect(
