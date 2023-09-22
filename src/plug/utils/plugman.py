@@ -5,6 +5,8 @@ import importlib
 from .picky import Picky
 from .miscel import dotdict
 
+from plug.utils import register
+
 class Plugman:
 
     def __init__(self, app=None):
@@ -23,20 +25,24 @@ class Plugman:
                 self.folder,
                 self.base)
 
+    @register(modes=['exec'])
     def installPicks(self): 
 
         self.picky.install()
         if self.install_requirements:
             self.installRequirements()
 
+    @register(modes=['exec'])
     def installRequirements(self):
 
         self.picky.installRequirements()
 
+    @register(modes=['exec'])
     def updatePicks(self): 
 
         self.picky.update()
 
+    @register(modes=['exec'])
     def cleanupPicks(self): 
 
         self.picky.cleanup()

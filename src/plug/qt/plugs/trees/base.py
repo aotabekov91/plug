@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from plug.qt import Plug
-from plug.qt.utils import register
+from plug.utils import register
 from gizmo.widget import InputTree
 
 class TreePlug(Plug):

@@ -1,7 +1,7 @@
 from PyQt5 import QtGui
 
 from plug.qt import Plug
-from plug.qt.utils import register
+from plug.utils import register
 
 from .filler import Filler
 from .widget import ListWidget

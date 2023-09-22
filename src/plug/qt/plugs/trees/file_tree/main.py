@@ -1,7 +1,7 @@
 import os
 from PyQt5.QtWidgets import QFileSystemModel
 
-from plug.qt.utils import register
+from plug.utils import register
 from plug.qt.plugs.trees.base import TreePlug
 
 class FileBrowser(TreePlug):

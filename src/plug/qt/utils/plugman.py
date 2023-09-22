@@ -1,7 +1,6 @@
 from PyQt5 import QtCore
 
 from plug.utils import Plugman as Base
-from plug.qt.utils.register import register
 
 class Plugman(Base, QtCore.QObject):
 
@@ -24,31 +23,6 @@ class Plugman(Base, QtCore.QObject):
         for f in funcs:
             a[('Plugman', f)]=getattr(self, f)
         self.register(self, a)
-
-    @register(modes=['exec'])
-    def installPicks(self): 
-
-        super().installPicks()
-
-    @register(modes=['exec'])
-    def updatePicks(self): 
-
-        super().updatePicks()
-
-    @register(modes=['exec'])
-    def cleanupPicks(self): 
-
-        super().cleanupPicks()
-
-    @register(modes=['exec'])
-    def loadPicks(self):
-
-        super().loadPicks()
-
-    @register(modes=['exec'])
-    def installRequirements(self):
-
-        super().installRequirements()
 
     def add(self, picked):
 

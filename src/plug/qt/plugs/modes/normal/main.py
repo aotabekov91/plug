@@ -1,4 +1,4 @@
-from plug.qt.utils import register
+from plug.utils import register
 from plug.qt import Plug
 
 class Normal(Plug):
