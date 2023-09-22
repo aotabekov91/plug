@@ -14,7 +14,6 @@ class Plug:
 
         self.files={}
         self.actions={}
-        self.commandKeys={}
         self.running = False
         self.activated = False
 
@@ -58,7 +57,7 @@ class Plug:
                     setattr(m.__func__, 'modes', modes)
                     d=(self.__class__.__name__, m.name)
                     self.actions[d]=m 
-                    self.commandKeys[m.key]=m
+
         if not obj: obj=self
         cnd=[MethodType, BuiltinFunctionType]
         for f in obj.__dir__():
@@ -70,11 +69,6 @@ class Plug:
                 d=(name, m.name)
                 if not d in self.actions:
                     self.actions[d]=m 
-                    if type(m.key)==str:
-                        self.commandKeys[m.key]=m
-                    elif type(m.key)==list:
-                        for k in m.key: 
-                            self.commandKeys[k]=m
 
     def createFolder(self, 
                      folder=None, 

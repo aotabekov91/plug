@@ -1,6 +1,6 @@
 from pynput import keyboard
 
-class KeyListener:
+class Base
 
     def __init__(self, parent):
 
