@@ -1,5 +1,5 @@
-from plug.utils import register
 from plug.qt import Plug
+from plug.utils.register import register
 
 class Normal(Plug):
 
