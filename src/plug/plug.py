@@ -4,7 +4,7 @@ import inspect
 from pathlib import Path
 from types import MethodType, BuiltinFunctionType
 
-from plug.utils import Plugman
+from plug.utils import Plugman, createFolder
 
 class Plug:
 
@@ -38,37 +38,22 @@ class Plug:
 
         self.plugman=plugman(self)
 
-    def setActions(self, obj=None):
+    def setActions(self):
 
-        if self.config.get('Keys'):
-            keys=self.config['Keys']
-            for f, key in keys.items():
-                m=getattr(self, f, None)
-                if m and hasattr(m, '__func__'):
-                    if type(key)==str:
-                        modes=getattr(m, 'modes', ['command'])
-                        setattr(m.__func__, 'key', f'{key}')
-                    elif 'key' in key:
-                        modes=getattr(m, 'modes', ['command'])
-                        modes=key.get('modes', modes)
-                        key=key.get('key')
-                    f=getattr(m, 'name', m.__func__.__name__)
-                    setattr(m.__func__, 'name', f)
-                    setattr(m.__func__, 'modes', modes)
-                    d=(self.__class__.__name__, m.name)
-                    self.actions[d]=m 
-
-        if not obj: obj=self
-        cnd=[MethodType, BuiltinFunctionType]
-        for f in obj.__dir__():
-            m=getattr(obj, f)
-            if type(m) in cnd and hasattr(m, 'modes'):
-                name=getattr(obj, 
-                             'name', 
-                             obj.__class__.__name__)
-                d=(name, m.name)
-                if not d in self.actions:
-                    self.actions[d]=m 
+        keys=self.config.get('Keys', {})
+        for f, k in keys.items():
+            m=getattr(self, f, None)
+            if m and hasattr(m, '__func__'):
+                func=m.__func__
+                fname=func.__name__
+                cname=self.__class__.__name__
+                name=getattr(m, 'name', fname)
+                setattr(func, 'name', name)
+                if type(k)==str: 
+                    k={'key':k}
+                for a, v in k.items():
+                    setattr(func, a, v)
+                self.actions[(cname, m.name)]=m 
 
     def createFolder(self, 
                      folder=None, 
@@ -77,11 +62,8 @@ class Plug:
         if not folder: 
             name=self.__class__.__name__.lower()
             folder=f'~/{name}'
-        folder=os.path.expanduser(folder)
-        attr=Path(folder)
-        setattr(self, fname, attr)
-        if not os.path.exists(folder): 
-            attr.mkdir(parents=True, exist_ok=True)
+        path=createFolder(folder)
+        setattr(self, fname, path)
 
     def setName(self):
 

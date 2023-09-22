@@ -60,7 +60,7 @@ class Plugman:
                 sys.path.insert(0, f)
                 try:
                     m=importlib.import_module(n)
-                    k=getattr(m, 'get_plug_class')
+                    k=getattr(m, 'get_plug_class', None)
                     if k: plugs+=[k()]
                 except Exception as e:
                     msg='Error in plug importing: '

@@ -63,7 +63,7 @@ class Plug(BasePlug, QtCore.QObject):
     def setup(self):
 
         super().setup()
-        self.setActions()
+        # self.setActions()
         if self.qapp: 
             self.setPlugman(plugman=Plugman)
             self.event_timer=QtCore.QTimer()
