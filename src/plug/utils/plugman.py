@@ -105,7 +105,8 @@ class Plugman:
                 self.current.delisten()
             self.prev=self.current
             self.current=listener
-            self.current.listen()
+            if self.current:
+                self.current.listen()
 
     def saveActions(self, plug, actions): 
 
