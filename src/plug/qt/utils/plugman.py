@@ -18,6 +18,7 @@ class Plugman(Base, QtCore.QObject):
         funcs=['installPicks', 
                'updatePicks', 
                'cleanupPicks',
+               'installRequirements'
                ]
         a={}
         for f in funcs:
