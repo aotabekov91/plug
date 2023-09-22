@@ -46,14 +46,22 @@ class Plug:
             if m and hasattr(m, '__func__'):
                 func=m.__func__
                 fname=func.__name__
-                cname=self.__class__.__name__
-                name=getattr(m, 'name', fname)
-                setattr(func, 'name', name)
+                n=getattr(m, 'name', fname)
+                setattr(func, 'name', n)
                 if type(k)==str: 
                     k={'key':k}
                 for a, v in k.items():
                     setattr(func, a, v)
-                self.actions[(cname, m.name)]=m 
+                self.actions[(self.name, m.name)]=m 
+
+        # cnd=[MethodType, BuiltinFunctionType]
+        for f in self.__dir__():
+            m=getattr(self, f)
+            # if type(m) in cnd and hasattr(m, 'modes'):
+            if hasattr(m, 'modes'):
+                d=(self.name, m.name)
+                if not d in self.actions:
+                    self.actions[d]=m 
 
     def createFolder(self, 
                      folder=None, 
