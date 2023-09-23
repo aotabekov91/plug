@@ -2,7 +2,11 @@ import os
 import tomli
 import inspect
 
-from plug.utils import Plugman, createFolder
+from plug.utils import Plugman
+from plug.utils.plug_utils import (
+        createFolder, 
+        setKeys,
+        )
 
 class Plug:
 
@@ -38,26 +42,37 @@ class Plug:
 
     def setActions(self):
 
-        keys=self.config.get('Keys', {})
-        for f, k in keys.items():
-            m=getattr(self, f, None)
-            if m and hasattr(m, '__func__'):
-                func=m.__func__
-                fname=func.__name__
-                n=getattr(m, 'name', fname)
-                setattr(func, 'name', n)
-                if type(k)==str: 
-                    k={'key':k}
-                for a, v in k.items():
-                    setattr(func, a, v)
-                self.actions[(self.name, m.name)]=m 
+        def setPlugKeys():
 
-        for f in self.__dir__():
-            m=getattr(self, f)
-            if hasattr(m, 'modes'):
-                d=(self.name, m.name)
-                if not d in self.actions:
-                    self.actions[d]=m 
+            keys=self.config.get('Keys', {})
+            actions=setKeys(self, keys)
+            self.actions.update(actions)
+
+        def setPlugOwnKeys():
+
+            for f in self.__dir__():
+                m=getattr(self, f)
+                if hasattr(m, 'modes'):
+                    d=(self.name, m.name)
+                    if not d in self.actions:
+                        self.actions[d]=m 
+
+        setPlugKeys()
+        setPlugOwnKeys()
+
+    def setUIKeys(self, ui=None):
+
+        def setKeys(keys, widget):
+            for k, v in keys.items():
+                if type(v)==str:
+                    pass
+            self.setUIKeys(ui)
+
+        ui=getattr(self, 'ui', None)
+        keys=self.config.get('Keys', {})
+        ui_keys=keys.get('UI', {})
+        setKeys(ui_keys, ui)
+
 
     def createFolder(self, 
                      folder=None, 
