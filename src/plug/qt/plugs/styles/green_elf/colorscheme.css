@@ -50,3 +50,9 @@ QAbstractScrollArea {
 #SearchList QListView {
 	background-color: red;
 }
+
+#ViewContainer QWidget:focus{
+	border-color: red;
+	border-width: 25px;
+	border-style: solid;
+}
