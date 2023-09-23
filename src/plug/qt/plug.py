@@ -151,7 +151,6 @@ class Plug(Base, QtCore.QObject):
     def setUIKeys(self, ui=None):
 
         def setWidgetKeys(keys, widget):
-            print(widget, keys)
             for k, v in keys.items():
                 if type(v)==str:
                     setKeys(widget, keys)
@@ -160,7 +159,6 @@ class Plug(Base, QtCore.QObject):
                 elif type(v)==dict:
                     widget=getattr(widget, k, None)
                     if widget: setKeys(widget, v)
-            self.setUIKeys(ui)
 
         ui=getattr(self, 'ui', None)
         keys=self.config.get('Keys', {})
