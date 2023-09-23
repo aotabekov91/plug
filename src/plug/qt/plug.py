@@ -158,8 +158,10 @@ class Plug(Base, QtCore.QObject):
                     ear=getattr(widget, 'ear', None)
                     if ear: ear.saveOwnKeys()
                 elif type(v)==dict:
+                    print(v, widget)
                     widget=getattr(widget, k, None)
-                    if widget: setKeys(widget, v)
+                    if widget: 
+                        setWidgetKeys(keys, widget)
 
         ui=getattr(self, 'ui', None)
         keys=self.config.get('Keys', {})
