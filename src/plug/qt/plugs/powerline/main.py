@@ -6,11 +6,11 @@ from .widget import PowerlineWidget
 class Powerline(Plug):
 
     def __init__(self, 
-                 prefix_key={'command': 'l'},
+                 prefix_keys={'command': 'l'},
                  **kwargs):
 
         super().__init__(
-                prefix_key=prefix_key,
+                prefix_keys=prefix_keys,
                 **kwargs)
         self.app.plugman.modeChanged.connect(
                 self.on_modeChanged)
