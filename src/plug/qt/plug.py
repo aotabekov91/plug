@@ -150,17 +150,27 @@ class Plug(Base, QtCore.QObject):
 
     def setUIKeys(self, ui=None):
 
+        def cleanPrevious(widget, name):
+
+            ear=getattr(widget, 'ear', None)
+            if ear:
+                m=ear.matches.get(name, None)
+                c=ear.commands.pop(m)
+                print(m, c)
+
         def setWidgetKeys(keys, widget):
+
             for k, v in keys.items():
-                print(k, v, widget)
-                if type(v)==str:
-                    setKeys(widget, keys)
-                    ear=getattr(widget, 'ear', None)
-                    if ear: ear.saveOwnKeys()
-                elif type(v)==dict:
+                if type(v)==dict:
                     widget=getattr(widget, k, None)
-                    if widget: 
-                        setWidgetKeys(v, widget)
+                    if widget: setWidgetKeys(v, widget)
+                    return
+
+                cleanPrevious(widget, k)
+
+            setKeys(widget, keys)
+            ear=getattr(widget, 'ear', None)
+            if ear: ear.saveOwnKeys()
 
         ui=getattr(self, 'ui', None)
         keys=self.config.get('Keys', {})
