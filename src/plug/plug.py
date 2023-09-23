@@ -60,25 +60,6 @@ class Plug:
         setPlugKeys()
         setPlugOwnKeys()
 
-    def setUIKeys(self, ui=None):
-
-        def setWidgetKeys(keys, widget):
-            print(widget, keys)
-            for k, v in keys.items():
-                if type(v)==str:
-                    setKeys(widget, keys)
-                    ear=getattr(widget, 'ear', None)
-                    if ear: ear.saveOwnKeys()
-                elif type(v)==dict:
-                    widget=getattr(widget, k, None)
-                    if widget: setKeys(widget, v)
-            self.setUIKeys(ui)
-
-        ui=getattr(self, 'ui', None)
-        keys=self.config.get('Keys', {})
-        ui_keys=keys.get('UI', {})
-        setWidgetKeys(ui_keys, ui)
-
     def createFolder(self, 
                      folder=None, 
                      fname='folder'):

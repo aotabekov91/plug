@@ -1,14 +1,15 @@
 import sys
 from PyQt5 import QtCore, QtWidgets
 
-from plug import Plug as BasePlug
+from plug import Plug as Base
+from plug.utils import setKeys
 from plug.qt.utils import Plugman
 
 from gizmo.ui import StackWindow
 from gizmo.utils import EventListener
 from gizmo.widget import CommandStack 
 
-class Plug(BasePlug, QtCore.QObject):
+class Plug(Base, QtCore.QObject):
 
     endedListening=QtCore.pyqtSignal(object)
     startedListening=QtCore.pyqtSignal(object)
@@ -57,6 +58,7 @@ class Plug(BasePlug, QtCore.QObject):
     def initialize(self):
 
         super().initialize()
+        self.setUIKeys()
         if self.qapp:
             self.plugman.loadPicks()
 
@@ -145,6 +147,26 @@ class Plug(BasePlug, QtCore.QObject):
             self.ui.forceDelisten.connect(
                     self.forceDelisten)
         self.locateUI()
+
+    def setUIKeys(self, ui=None):
+
+        def setWidgetKeys(keys, widget):
+            print(widget, keys)
+            for k, v in keys.items():
+                if type(v)==str:
+                    setKeys(widget, keys)
+                    ear=getattr(widget, 'ear', None)
+                    if ear: ear.saveOwnKeys()
+                elif type(v)==dict:
+                    widget=getattr(widget, k, None)
+                    if widget: setKeys(widget, v)
+            self.setUIKeys(ui)
+
+        ui=getattr(self, 'ui', None)
+        keys=self.config.get('Keys', {})
+        ui_keys=keys.get('UI', {})
+        if ui and ui_keys:
+            setWidgetKeys(ui_keys, ui)
 
     def on_uiFocusGained(self):
 
