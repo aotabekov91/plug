@@ -155,8 +155,7 @@ class Plug(Base, QtCore.QObject):
             ear=getattr(widget, 'ear', None)
             if ear:
                 m=ear.matches.get(name, None)
-                c=ear.commands.pop(m)
-                print(m, c)
+                ear.commands.pop(m)
 
         def setWidgetKeys(keys, widget):
 
