@@ -152,6 +152,7 @@ class Plug(Base, QtCore.QObject):
 
         def setWidgetKeys(keys, widget):
             for k, v in keys.items():
+                print(k, v, widget)
                 if type(v)==str:
                     setKeys(widget, keys)
                     ear=getattr(widget, 'ear', None)
