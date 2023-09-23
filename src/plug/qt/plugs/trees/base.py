@@ -11,6 +11,10 @@ class TreePlug(Plug):
 
         self.follow_index=True
         super().__init__(*args, **kwargs)
+
+    def setup(self):
+
+        super().setup()
         self.setUI()
 
     def setUI(self):
