@@ -165,7 +165,9 @@ class Plug(Base, QtCore.QObject):
         ui=getattr(self, 'ui', None)
         keys=self.config.get('Keys', {})
         ui_keys=keys.get('UI', {})
-        print(self.name, ui, ui_keys)
+        if self.name=='FileBrowser':
+            print(self.name, ui, ui_keys)
+            print(self.ui)
         if ui and ui_keys:
             setWidgetKeys(ui_keys, ui)
 
