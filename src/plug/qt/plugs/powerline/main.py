@@ -53,18 +53,20 @@ class Powerline(Plug):
 
     def on_viewChanged(self, view, prev): 
 
-        name=view.model().hash()
-        if name:
-            self.ui.setText('model', name)
+        mname=''
+        if view:
+            mname=view.model().hash()
+        self.ui.setText('model', mname)
         self.on_itemChanged(view)
 
     def on_itemChanged(self, view, item=None): 
 
-        cpage=view.currentPage()
-        pages=view.totalPages()
-        if pages:
-            self.ui.setText(
-                    'page', f'{cpage}/{pages}')
+        page=''
+        if view:
+            cpage=view.currentPage()
+            tpages=view.totalPages()
+            page=f'{cpage}/{tpages}'
+        self.ui.setText('page', page)
 
     @register('t', modes=['command'])
     def toggle(self): super().toggle()

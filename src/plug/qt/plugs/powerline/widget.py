@@ -65,5 +65,8 @@ class PowerlineWidget(QtWidgets.QWidget):
 
         field=getattr(self, kind, None)
         if field:
-            field.show()
             field.setText(text)
+            if text:
+                field.show()
+            else:
+                field.hide()
