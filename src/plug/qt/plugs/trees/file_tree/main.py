@@ -70,11 +70,10 @@ class FileBrowser(TreePlug):
              how=None, 
              focus=False):
 
+        tree=self.ui.main.tree
         if not path:
-            tree=self.ui.main.tree
             index=tree.currentIndex()
             path=self.getPath(index)
-        print(path)
         if path:
             if os.path.isdir(path): 
                 tree.expand(tree.currentIndex())
