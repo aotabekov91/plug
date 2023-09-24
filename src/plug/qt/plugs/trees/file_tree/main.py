@@ -79,7 +79,7 @@ class FileBrowser(TreePlug):
             if os.path.isdir(path): 
                 tree.expand(tree.currentIndex())
             else:
-                self.app.window.main.open(
+                self.app.open(
                         path, 
                         how=how, 
                         focus=focus)
