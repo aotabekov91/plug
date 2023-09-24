@@ -1,3 +1,4 @@
+from .uiman import UIMan
 from .buffer import Buffer
 from .plugman import Plugman
 from .listener_zmq import ZMQListener

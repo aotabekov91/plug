@@ -22,7 +22,7 @@ class Resize(Plug):
         prev=self.app.plugman.prev
         # Todo add dock resizing here also
         # bar=self.app.window.bar
-        display=self.app.window.main.display
+        display=self.app.display
 
         if prev.name=='normal':
             display.resize(direction, kind)

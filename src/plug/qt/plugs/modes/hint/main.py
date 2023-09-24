@@ -41,7 +41,7 @@ class Hint(Plug):
                 getNodes(leaf, coor)
             return coor
 
-        display=self.app.window.main.display
+        display=self.app.display
         root=display.m_layout.root
         nodes=getNodes(root, [])
 
@@ -67,6 +67,6 @@ class Hint(Plug):
         node=self.labels.get(digit, None)
         if node:
             print(node.widget)
-            self.app.window.main.display.focusView(
+            self.app.display.focusView(
                     node.widget)
         self.delistenWanted.emit()

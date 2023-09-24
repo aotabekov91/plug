@@ -13,20 +13,12 @@ class Plug:
     def __init__(self, *args, **kwargs):
 
         super().__init__()
-
         self.files={}
         self.actions={}
-        self.running = False
-        self.activated = False
-
         self.kwargs=kwargs
         self.name=kwargs.get('name', None)
         self.config=kwargs.get('config', {})
-
         self.setup()
-        self.initialize()
-
-    def initialize(self): pass
 
     def setup(self):
 
@@ -37,18 +29,17 @@ class Plug:
         self.setActions()
 
     def setPlugman(self, plugman=Plugman): 
-
         self.plugman=plugman(self)
 
     def setActions(self):
 
-        def setPlugKeys():
+        def saveSetKeys():
 
             keys=self.config.get('Keys', {})
             actions=setKeys(self, keys)
             self.actions.update(actions)
 
-        def setPlugOwnKeys():
+        def saveOwnKeys():
 
             for f in self.__dir__():
                 m=getattr(self, f)
@@ -57,8 +48,8 @@ class Plug:
                     if not d in self.actions:
                         self.actions[d]=m 
 
-        setPlugKeys()
-        setPlugOwnKeys()
+        saveSetKeys()
+        saveOwnKeys()
 
     def createFolder(self, 
                      folder=None, 
@@ -97,30 +88,3 @@ class Plug:
             settings=self.config['Settings']
             for name, value in settings.items():
                 setattr(self, name, value)
-
-    def run(self):
-
-        self.running=True
-
-    def exit(self):
-
-        self.running=False
-
-    def toggle(self):
-
-        if not self.activated:
-            self.activate()
-        else:
-            self.deactivate()
-
-    def activate(self):
-
-        self.activated=True
-        if hasattr(self, 'ui'): 
-            self.ui.show()
-
-    def deactivate(self):
-
-        self.activated=False
-        if hasattr(self, 'ui'): 
-            self.ui.hide()

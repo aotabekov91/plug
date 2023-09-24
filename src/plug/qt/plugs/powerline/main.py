@@ -16,9 +16,9 @@ class Powerline(Plug):
                 self.on_modeChanged)
         self.app.plugman.keysChanged.connect(
                 self.on_keysChanged)
-        self.app.window.main.display.itemChanged.connect(
+        self.app.display.itemChanged.connect(
                 self.on_itemChanged)
-        self.app.window.main.display.viewChanged.connect(
+        self.app.display.viewChanged.connect(
                 self.on_viewChanged)
         if hasattr(self.app, 'buffer'):
             self.app.buffer.hashChanged.connect(

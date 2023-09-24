@@ -27,7 +27,7 @@ class Visual(Plug):
         super().delisten()
         self.hints=False
         if self.hinting:
-            self.app.window.main.display.view.update()
+            self.app.display.view.update()
         self.hinting=False
 
     def listen(self):

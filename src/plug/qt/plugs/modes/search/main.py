@@ -13,23 +13,22 @@ class Search(Plug):
                  **kwargs,
                  ):
 
-        super(Search, self).__init__(app=app, 
-                                     name=name,
-                                     listen_leader=listen_leader, 
-                                     show_statusbar=show_statusbar,
-                                     delisten_on_exec=delisten_on_exec,
-                                     **kwargs,
-                                     )
+        super(Search, self).__init__(
+                app=app, 
+                name=name,
+                listen_leader=listen_leader, 
+                show_statusbar=show_statusbar, 
+                delisten_on_exec=delisten_on_exec, 
+                **kwargs)
 
         self.index=-1
         self.matches=[]
         self.match=None
-
         self.setUI()
 
     def setUI(self):
 
-        super().setUI()
+        self.uiman.setUI()
         self.ui.addWidget(
                 ListWidget(
                     item_widget=Item, 
@@ -57,7 +56,7 @@ class Search(Plug):
     @register('f')
     def focusSearch(self): 
 
-        self.listen_widget=[self.app.window.main.display]
+        self.listen_widget=[self.app.display]
         self.exclude_widget=[self.app.window.bar.edit]
 
         self.app.window.bar.edit.setFocus()
@@ -66,7 +65,7 @@ class Search(Plug):
 
         super().listen()
 
-        self.listen_widget=[self.app.window.main.display]
+        self.listen_widget=[self.app.display]
         self.exclude_widget=[self.app.window.bar.edit]
 
         self.app.window.bar.edit.show()
@@ -83,7 +82,7 @@ class Search(Plug):
             self.ui.deactivate()
             self.app.window.bar.hideWanted.disconnect()
             self.app.window.bar.edit.returnPressed.disconnect(self.find)
-            self.app.window.main.display.cleanUp()
+            self.app.display.cleanUp()
 
         super().delisten(*args, **kwargs)
 
@@ -115,7 +114,7 @@ class Search(Plug):
         self.app.window.main.setFocus()
 
         if text:
-            self.matches=search(text, self.app.window.main.display.view)
+            self.matches=search(text, self.app.display.view)
             if len(self.matches) > 0: 
                 self.ui.main.setList(self.matches)
                 self.jump()
@@ -140,13 +139,13 @@ class Search(Plug):
         page=match['page']
         rect=match['rect']
 
-        pageItem=self.app.window.main.display.view.pageItem(page-1)
+        pageItem=self.app.display.view.pageItem(page-1)
         matchMapped=pageItem.mapToItem(rect)
         pageItem.setSearched([matchMapped])
         sceneRect=pageItem.mapRectToScene(matchMapped)
 
-        self.app.window.main.display.view.goto(page)
-        self.app.window.main.display.view.centerOn(0, sceneRect.y())
+        self.app.display.view.goto(page)
+        self.app.display.view.centerOn(0, sceneRect.y())
 
     def getLine(self, text, page, rectF):
 

@@ -17,7 +17,7 @@ class Normal(Plug):
                 listen_leader=listen_leader,
                 delisten_on_exec=delisten_on_exec, 
                 **kwargs,)
-        self.display=self.app.window.main.display
+        self.display=self.app.display
 
     def currentView(self):
         return self.display.currentView()

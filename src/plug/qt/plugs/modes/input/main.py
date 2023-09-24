@@ -66,7 +66,7 @@ class Input(Plug):
 
     def eventFilter(self, w, e):
 
-        if self.listening:
+        if self.ear.listening:
             if  e.type()==QtCore.QEvent.Enter:
                 e.accept()
                 return True

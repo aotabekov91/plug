@@ -18,7 +18,7 @@ class TreePlug(Plug):
 
     def setUI(self):
 
-        super().setUI()
+        self.uiman.setUI()
         input_tree=InputTree(set_base_style=False)
         input_tree.tree.setSelectionBehavior(
                 QtWidgets.QAbstractItemView.SelectRows)
