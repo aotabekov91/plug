@@ -11,10 +11,9 @@ tomli = ">=2.0.1"
 pyyaml = ">=6.0.1"
 pyzmq = ">=25.0.2" 
 gitpython = ">=3.1.32"
-poetry = "^1.6.1"
 PyQt5 = { version = ">=5.15.6", optional = true}
 pynput = { version = ">=1.7.6", optional = true}
-gizmo = {path = "/home/adam/code/gizmo", develop = true, optional = true}
+gizmo = { optional = true, git = "https://github.com/aotabekov91/gizmo", branch = 'main' }
 
 [tool.poetry.extras]
 qt=["gizmo", "PyQt5", "pynput"]
