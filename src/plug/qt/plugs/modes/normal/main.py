@@ -1,3 +1,5 @@
+from PyQt5 import QtGui, QtCore
+
 from plug.qt import Plug
 from gizmo.utils import register
 
@@ -11,13 +13,17 @@ class Normal(Plug):
                  **kwargs,
                  ):
 
+        self.cursor_visible=True
+
         super(Normal, self).__init__(
                 app=app, 
                 name=name, 
                 listen_leader=listen_leader,
                 delisten_on_exec=delisten_on_exec, 
                 **kwargs,)
+
         self.display=self.app.display
+        self.app.installEventFilter(self)
 
     def currentView(self):
         return self.display.currentView()
@@ -183,7 +189,12 @@ class Normal(Plug):
     @register(key='tc', modes=['normal', 'command'])
     def toggleCursor(self): 
 
-        self.display.toggleCursor()
+        if self.cursor_visible:
+            c=QtGui.QCursor(QtCore.Qt.BlankCursor)
+        else:
+            c=QtGui.QCursor(QtCore.Qt.ArrowCursor)
+        self.cursor_visible=not self.cursor_visible
+        self.app.setOverrideCursor(c)
 
     @register(key='<c-w>sv', modes=['normal', 'command'])
     def splitVertical(self): 
@@ -236,3 +247,11 @@ class Normal(Plug):
     def focusPrevView(self): 
 
         self.display.focus('prev')
+
+    def eventFilter(self, widget, event):
+
+        if event.type()==QtCore.QEvent.MouseMove:
+            if not self.cursor_visible:
+                event.accept()
+                return True
+        return False

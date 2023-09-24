@@ -30,15 +30,16 @@ class UIMan(QtCore.QObject):
                 self.obj.name)
         self.obj.setParent(self.qapp)
 
-    def setAppUI(self, 
-                 display_class=None, 
-                 view_class=None):
+    def setAppUI(self, display_class, buffer_class):
 
-        self.window=StackWindow(
-                self.obj, 
-                display_class, 
-                view_class)
+        self.window=StackWindow()
+        self.buffer=buffer_class(self)
+        self.display=display_class(self)
+        self.window.main.m_layout.addWidget(
+                self.display)
+        self.obj.buffer=self.buffer
         self.obj.window=self.window
+        self.obj.display=self.display
 
     def setUI(self, ui=None): 
 
