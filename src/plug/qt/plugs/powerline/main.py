@@ -20,6 +20,7 @@ class Powerline(Plug):
                 self.on_itemChanged)
         self.app.display.viewChanged.connect(
                 self.on_viewChanged)
+
         self.activate()
 
     def setup(self):
@@ -27,21 +28,24 @@ class Powerline(Plug):
         super().setup()
         self.setUI()
 
-    def on_keysChanged(self, pressed):
+    def on_keysChanged(self, keys):
 
-        if pressed:
-            self.ui.setText('keys', pressed)
+        if keys:
+            self.ui.setText('keys', keys)
 
     def on_modeChanged(self, mode):
 
         if mode:
             self.ui.setText(
-                    'mode', mode.name.title())
+                    'mode', 
+                    mode.name.title()
+                    )
 
     def setUI(self):
 
         self.ui=PowerlineWidget()
-        self.app.window.bar.container_layout.insertWidget(
+        bar=self.app.window.bar
+        bar.container_layout.insertWidget(
                 0, self.ui)
         self.app.window.bar.show()
 
@@ -49,7 +53,7 @@ class Powerline(Plug):
 
         uid=''
         if view:
-            uid=view.model().hash()
+            uid=view.model().id()
         self.ui.setText('model', uid)
         self.on_itemChanged(view)
 

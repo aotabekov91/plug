@@ -5,13 +5,15 @@ class PowerlineWidget(QtWidgets.QWidget):
     def __init__(self):
 
         super().__init__(objectName='Powerline')
+        self.setUI()
+
+    def setUI(self):
 
         layout=QtWidgets.QHBoxLayout()
-        self.setLayout(layout)
-
         layout.setSpacing(0)
         layout.setContentsMargins(0,0,0,0)
 
+        self.setLayout(layout)
         self.mode=QtWidgets.QLabel(
                 objectName='Mode')
         self.info=QtWidgets.QLabel(
@@ -41,15 +43,19 @@ class PowerlineWidget(QtWidgets.QWidget):
                 QtCore.Qt.AlignCenter|
                 QtCore.Qt.AlignVCenter)
 
-        layout.addWidget(self.mode, QtCore.Qt.AlignLeft)
+        layout.addWidget(
+                self.mode, QtCore.Qt.AlignLeft)
         layout.addStretch(1)
-        layout.addWidget(self.info, QtCore.Qt.AlignLeft)
+        layout.addWidget(
+                self.info, QtCore.Qt.AlignLeft)
         layout.addStretch(1)
         layout.addWidget(self.detail)
         layout.addStretch(100)
-        layout.addWidget(self.keys, QtCore.Qt.AlignRight)
+        layout.addWidget(
+                self.keys, QtCore.Qt.AlignRight)
         layout.addStretch(1)
-        layout.addWidget(self.model, QtCore.Qt.AlignRight)
+        layout.addWidget(
+                self.model, QtCore.Qt.AlignRight)
         layout.addStretch(1)
         layout.addWidget(self.page)
         layout.addStretch(1)
