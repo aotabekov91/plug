@@ -5,46 +5,36 @@ from plug.plugs.connect import Connect
 
 class Handler(Plug):
 
-    def __init__(self, 
-                 *args,
-                 app=None,
-                 port=None,
-                 **kwargs): 
+    def __init__(
+            self, 
+            *args, 
+            port=None, 
+            **kwargs):
 
-        self.app=app
         self.port=port
-        super().__init__(*args, **kwargs)
+
+        super(Handler, self).__init__(
+                *args, **kwargs)
 
     def setup(self):
 
         super().setup()
-        port=getattr(self.app, 'handler_port')
-        if port: self.port=port
-        self.setConnection()
+        self.setConnect(self.port)
+        
+    def setConnect(
+            self, port, connect=Connect):
 
-    def setConnection(self, connect=Connect):
+        if port:
+            self.connect=connect(
+                    port=port,
+                    handler=self.handle,
+                    )
+            self.run()
 
-        self.connect=connect(
-                self.app,
-                port=self.port,
-                handler=self.handle,
-                )
+    def run(self):
+
         self.connect.set()
         self.connect.run()
-
-    # def getActions(self):
-    #     data={}
-    #     actions=self.app.plugman
-    #     for plug, actions in actions.items():
-    #         plug_data=[]
-    #         if hasattr(plug, 'name'):
-    #             name=plug.name
-    #         else:
-    #             name=plug.__class__.__name__
-    #         for d, a in actions.items():
-    #             plug_data+=['_'.join(d)]
-    #         data[name]=plug_data
-    #     return data
 
     def handle(self, request):
 

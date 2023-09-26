@@ -12,18 +12,23 @@ class Connect(Base, QtCore.QObject):
     def run(self):
 
         self.running=True
-        QtCore.QTimer.singleShot(0, self.listener.start)
+        QtCore.QTimer.singleShot(
+                0, self.listener.start)
 
     def setListener(self):
 
         self.zeromq=ZMQListener(self)
         self.listener = QtCore.QThread()
-        self.zeromq.request.connect(self.handle)
-        self.zeromq.moveToThread(self.listener)
-        self.listener.started.connect(self.zeromq.loop)
+        self.zeromq.request.connect(
+                self.handle)
+        self.zeromq.moveToThread(
+                self.listener)
+        self.listener.started.connect(
+                self.zeromq.loop)
 
     def handle(self, request):
 
-        r=super().handle(request)
-        if r: self.socket.send_json(r)
+        respond=super().handle(request)
+        if respond: 
+            self.socket.send_json(respond)
         self.zeromq.acted=True
