@@ -9,13 +9,12 @@ class Buffer(QtCore.QObject):
     def __init__(self, app):
 
         super().__init__(app)
-
         self.app=app
         self.buffers={}
         self.modellers=[]
-
         self.watch=QtCore.QFileSystemWatcher()
-        self.watch.fileChanged.connect(self.on_fileChanged)
+        self.watch.fileChanged.connect(
+                self.on_fileChanged)
 
     def addModeller(self, modeller):
         self.modellers+=[modeller]
@@ -23,9 +22,7 @@ class Buffer(QtCore.QObject):
     def getModel(self, path):
 
         for m in self.modellers:
-            model=m.getModel(path)
-            if model: 
-                return model
+            return m.getModel(path)
 
     def load(self, path):
 
@@ -34,13 +31,18 @@ class Buffer(QtCore.QObject):
             return self.buffers[path]
         model=self.getModel(path)
         if model and model.readSuccess():
+            self.setID(path, model)
             self.buffers[path]=model
-            self.setHash(path)
             self.bufferCreated.emit(model)
             return model
 
-    def on_fileChanged(self, filePath): pass
+    def setID(self, path, model):
+        pass
 
-    def watchFile(self, filePath): 
+    def on_fileChanged(self, path): 
+        pass
 
-        self.watch.addPath(os.path.realpath(filePath))
+    def watchFile(self, path): 
+
+        self.watch.addPath(
+                os.path.realpath(path))

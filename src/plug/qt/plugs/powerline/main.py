@@ -20,11 +20,12 @@ class Powerline(Plug):
                 self.on_itemChanged)
         self.app.display.viewChanged.connect(
                 self.on_viewChanged)
-        if hasattr(self.app, 'buffer'):
-            self.app.buffer.hashChanged.connect(
-                    self.on_hashChanged)
-        self.setUI()
         self.activate()
+
+    def setup(self):
+
+        super().setup()
+        self.setUI()
 
     def on_keysChanged(self, pressed):
 
@@ -44,19 +45,12 @@ class Powerline(Plug):
                 0, self.ui)
         self.app.window.bar.show()
 
-    def on_hashChanged(self, model):
-
-        if model:
-            dhash=model.hash()
-            if dhash: 
-                self.ui.setText('model', dhash)
-
     def on_viewChanged(self, view, prev): 
 
-        mname=''
+        uid=''
         if view:
-            mname=view.model().hash()
-        self.ui.setText('model', mname)
+            uid=view.model().hash()
+        self.ui.setText('model', uid)
         self.on_itemChanged(view)
 
     def on_itemChanged(self, view, item=None): 
