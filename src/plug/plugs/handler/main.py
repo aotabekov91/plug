@@ -1,4 +1,4 @@
-import inspect
+from inspect import signature
 
 from plug import Plug
 from plug.plugs.connect import Connect
@@ -12,17 +12,12 @@ class Handler(Plug):
             **kwargs):
 
         self.port=port
-
         super(Handler, self).__init__(
                 *args, **kwargs)
 
-    def setup(self):
-
-        super().setup()
-        self.setConnect(self.port)
-        
-    def setConnect(
-            self, port, connect=Connect):
+    def setConnect(self, 
+                   port=None, 
+                   connect=Connect):
 
         if port:
             self.connect=connect(
@@ -36,26 +31,36 @@ class Handler(Plug):
         self.connect.set()
         self.connect.run()
 
-    def handle(self, request):
+    def getFunc(self, action, obj=None):
 
-        part=request.get('part', None)
-        action=request.get('action', None)
+        if obj:
+            return getattr(obj, action, None)
+        else:
+            app=getattr(self, 'app', None)
+            if app:
+                a=app.plugman.all_actions
+                return a.get(action, None)
+
+    def handle(self, r):
+
+        part=r.get('part', None)
+        action=r.get('action', None)
         if part:
             obj=self
             parts=part.split('.')
             for p in parts: 
                 obj=getattr(obj, p, None)
                 if not obj: break
-            func=getattr(obj, action, None)
+            func=self.getFunc(action, obj)
         else:
-            func=self.app.plugman.all_actions.get(
-                    action, None)
+            func=self.getFunc(action)
         if func:
             try:
-                prm=inspect.signature(func).parameters
-                fp={}
-                for p in prm:
-                    if p in request: fp[p]=request[p] 
-                func(**fp)
+                prm={}
+                sig=signature(func)
+                for p in sig.parameters:
+                    if p in r: 
+                        prm[p]=r[p] 
+                func(**prm)
             except ValueError:
                 func()
