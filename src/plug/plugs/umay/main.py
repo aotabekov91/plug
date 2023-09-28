@@ -1,39 +1,30 @@
-from plug import Plug
-from plug.plugs.connect import Connect
+from plug.plugs.handler import Handler
 
-class Umay(Plug):
+class Umay(Handler):
 
     def __init__(self, 
                  *args, 
-                 app=None,
-                 umay_port=19999,
+                 umay_port=None,
                  **kwargs):
 
-        self.app=app
         self.umay_port=umay_port
-        self.connect=Connect(app)
-        super().__init__(*args, **kwargs)
-        self.app.plugman.plugsLoaded.connect(
-                self.on_plugsLoaded)
+        super(Umay, self).__init__(
+                *args, **kwargs)
 
     def setup(self):
 
-        umay_port=self.app.config.get(
-                'umay_port', None)
-        if umay_port:
-            self.umay_port=umay_port
-        self.setConnection()
+        super().setup()
+        self.setApp()
+        self.setConnect(self.umay_port)
 
-    def setConnection(self, connect=Connect):
+    def setApp(self):
 
-        self.connect=connect(
-                self.app,
-                handler=self.handle,
-                parent_port=self.umay_port,
-                )
-        self.connect.set()
+        self.app=self.kwargs.get('app', None)
+        if self.app:
+            self.app.plugman.plugsLoaded.connect(
+                    self.load)
 
-    def on_plugsLoaded(self, plugs):
+    def load(self, plugs):
 
         data=[]
         for n, p in plugs.items(): 
@@ -57,8 +48,10 @@ class Umay(Plug):
                 'intents.yaml', None)
         entities=plug.files.get(
                 'entities.yaml', None)
-        if intents: paths+=[intents]
-        if entities: paths+=[entities]
+        if intents: 
+            paths+=[intents]
+        if entities: 
+            paths+=[entities]
         return paths
 
     def getKeyword(self, plug):

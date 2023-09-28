@@ -15,7 +15,6 @@ class Connect(Plug):
         self.handler=handler
         self.parent_port=parent_port
         self.socket=kwargs.get('socket', None)
-
         super().__init__(*args, **kwargs)
 
     def set(self, 
