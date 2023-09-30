@@ -21,7 +21,7 @@ class Connect(Plug):
             kind='PULL', 
             port_kind='PUSH',
             parent_kind='REQ', 
-            socket_kind='bind',
+            socket_kind=None,
             ):
 
         if self.parent_port:
@@ -42,18 +42,20 @@ class Connect(Plug):
         return zmq.Context().socket(
                 getattr(zmq, kind))
 
-    def send(self, data):
+    def send(self, data, with_poller=True):
 
-        poller=zmq.Poller()
-        poller.register(self.psocket, 
-                        flags=zmq.POLLIN)
+        if with_poller:
+            poller=zmq.Poller()
+            poller.register(self.psocket, 
+                            flags=zmq.POLLIN)
         for d in data:
             self.psocket.send_json(d)
-            if poller.poll(timeout=1000):
-                self.psocket.recv_json()
-            else:
-                self.psocket.setsockopt(
-                        zmq.LINGER, 1)
+            if with_poller:
+                if poller.poll(timeout=1000):
+                    self.psocket.recv_json()
+                else:
+                    self.psocket.setsockopt(
+                            zmq.LINGER, 1)
 
     def run(self):
 

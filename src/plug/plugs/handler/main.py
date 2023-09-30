@@ -20,6 +20,7 @@ class Handler(Plug):
 
     def setConnect(self, 
                    port=None, 
+                   parent_port=None,
                    connect=Connect,
                    **kwargs,
                    ):
@@ -27,9 +28,9 @@ class Handler(Plug):
         self.connect=connect(
                 port=port,
                 handler=self.handle,
+                parent_port=parent_port,
                 )
-        if port:
-            self.connect.set(**kwargs)
+        self.connect.set(**kwargs)
 
     def run(self):
 

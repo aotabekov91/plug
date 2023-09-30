@@ -14,8 +14,15 @@ class Umay(Handler):
     def setup(self):
 
         super().setup()
+        self.setConnect(socket_kind='bind')
+        self.setUmayConnect()
         self.setApp()
-        self.setConnect(self.umay_port)
+
+    def setUmayConnect(self):
+
+        self.usocket=self.connect.get('PUSH')
+        self.usocket.connect(
+                f'tcp://localhost:{self.umay_port}')
 
     def setApp(self):
 
@@ -26,20 +33,19 @@ class Umay(Handler):
 
     def load(self, plugs):
 
-        data=[]
+        plug_data={}
         for n, p in plugs.items(): 
-            paths = self.getFilePaths(p)
-            if not paths: continue
-            pdata={'kind': 'PUSH', 
-                   'action': 'register',
+            name=p.__class__.__name__
+            plug_data[name]={
+                   'kind': 'PUSH', 
                    'port': self.connect.port,
-                   'mode': p.__class__.__name__,
+                   'paths': self.getFilePaths(p),
                    'keyword': self.getKeyword(p),
-                   'paths': self.getFilePaths(p)
                    }
-            data+=[pdata]
-        self.connect.send(data)
-        self.connect.run()
+        data={'data': plug_data}
+        self.usocket.send_json(
+                {'register': data})
+        print(self.umay_port, data)
             
     def getFilePaths(self, plug):
 
