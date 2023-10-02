@@ -9,12 +9,9 @@ class Handler(Plug):
             self, 
             *args, 
             port=None, 
-            respond=False,
             **kwargs):
 
         self.port=port
-        self.respond=respond
-
         super(Handler, self).__init__(
                 *args, **kwargs)
 
@@ -32,8 +29,11 @@ class Handler(Plug):
                 )
         self.connect.set(**kwargs)
 
-    def run(self):
+    def stop(self):
+        self.running=False
 
+    def run(self):
+        self.running=True
         self.connect.run()
 
     def getFunc(self, action, obj=None):
@@ -60,10 +60,7 @@ class Handler(Plug):
     def handle(self, req):
 
         print(f'{self.name} received request: {req}')
-
         res={}
         for name, args in req.items():
             res[name]=self.runFunc(name, args)
-
-        if self.respond: 
-            return res
+        return res
