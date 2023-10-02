@@ -11,6 +11,7 @@ class Connect(Base, QtCore.QObject):
 
     def run(self):
 
+        print(self.port)
         self.running=True
         QtCore.QTimer.singleShot(
                 0, self.listener.start)
@@ -28,6 +29,8 @@ class Connect(Base, QtCore.QObject):
 
     def handle(self, request):
 
+        print(self.handler, request)
+        raise
         respond=super().handle(request)
         if respond: 
             self.socket.send_json(respond)

@@ -14,6 +14,7 @@ class Umay(Handler):
         self.umay_port=umay_port
         super(Umay, self).__init__(
                 *args, **kwargs)
+        self.run()
 
     def setName(self):
 
@@ -36,7 +37,6 @@ class Umay(Handler):
 
     def setApp(self):
 
-        self.app=self.kwargs.get('app', None)
         if self.app:
             plugman=getattr(
                     self.app, 'plugman', None)

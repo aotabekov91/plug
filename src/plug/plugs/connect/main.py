@@ -59,11 +59,12 @@ class Connect(Plug):
 
     def run(self):
 
-        self.running=True
         if self.socket:
+            self.running=True
             thread=threading.Thread(
                     target=self.listen)
             thread.run()
+            return thread
 
     def listen(self):
 

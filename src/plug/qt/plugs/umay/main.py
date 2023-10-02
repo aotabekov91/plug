@@ -4,6 +4,16 @@ from plug.qt.plugs.connect import Connect
 
 class Umay(Base, QtCore.QObject):
 
-    def setConnection(self):
+    def setConnect(
+            self, 
+            port=None,
+            connect=None,
+            parent_port=None,
+            **kwargs,
+            ):
 
-        super().setConnection(connect=Connect)
+        super().setConnect(
+                port=port,
+                connect=Connect,
+                parent_port=parent_port,
+                **kwargs)

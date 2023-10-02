@@ -99,12 +99,15 @@ class Plugman:
 
             n=p.__name__
             c=self.app.config.get(n, {})
-            try:
-                plug=p(app=self.app, config=c)
-                self.add(plug)
-            except Exception as e:
-                print('Error in plug loading: ', n)
-                print(e)
+
+            # try:
+
+            plug=p(app=self.app, config=c)
+            self.add(plug)
+
+            # except Exception as e:
+            #     print('Error in plug loading: ', n)
+            #     print(e)
 
     def add(self, plug):
 

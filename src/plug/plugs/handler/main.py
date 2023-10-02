@@ -20,8 +20,8 @@ class Handler(Plug):
 
     def setConnect(self, 
                    port=None, 
-                   parent_port=None,
                    connect=Connect,
+                   parent_port=None,
                    **kwargs,
                    ):
 
