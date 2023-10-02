@@ -100,4 +100,12 @@ class Umay(Handler):
                 'keyword', plug.name)
 
     def handle(self, request):
-        raise
+
+        for k, d in request.items():
+            l=k.split('_')
+            name, action = l[0], l[1]
+            plug=self.app.plugman.plugs.get(
+                    name, None)
+            if plug:
+                func=getattr(plug, action, None)
+                if func: func(**d)
