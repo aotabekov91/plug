@@ -1,15 +1,25 @@
+import io
+import yaml
 from plug.plugs.handler import Handler
 
 class Umay(Handler):
 
     def __init__(self, 
                  *args, 
+                 app=None,
                  umay_port=None,
                  **kwargs):
 
+        self.app=app
         self.umay_port=umay_port
         super(Umay, self).__init__(
                 *args, **kwargs)
+
+    def setName(self):
+
+        super().setName()
+        if self.app:
+            self.name=self.app.name
 
     def setup(self):
 
@@ -28,36 +38,60 @@ class Umay(Handler):
 
         self.app=self.kwargs.get('app', None)
         if self.app:
-            self.app.plugman.plugsLoaded.connect(
+            plugman=getattr(
+                    self.app, 'plugman', None)
+            if plugman:
+                plugman.plugsLoaded.connect(
                     self.load)
 
     def load(self, plugs):
 
-        plug_data={}
+        data={
+            'kind':'PUSH', 
+            'name': self.name,
+            'port': self.connect.port,
+            }
+
+        units={}
         for n, p in plugs.items(): 
-            name=p.__class__.__name__
-            plug_data[name]={
-                   'kind': 'PUSH', 
-                   'port': self.connect.port,
-                   'paths': self.getFilePaths(p),
-                   'keyword': self.getKeyword(p),
-                   }
-        data={'data': plug_data}
+            units[n]=self.getUnits(p)
+        data['units']=units
         self.usocket.send_json(
                 {'register': data})
-        print(self.umay_port, data)
+
+    def getUnits(self, plug):
+
+        units=[]
+        paths=self.getFiles(plug)
+        for path in paths:
+            units+=self.readYaml(path)
+        for unit in units:
+            self.adjustName(plug, unit)
+        return units
+
+    def readYaml(self, path):
+
+        with io.open(path, encoding="utf8") as f:
+            yunits = yaml.safe_load_all(f)
+            return list(yunits)
+
+    def adjustName(self, plug, unit):
+
+        t=unit.get('type', None)
+        n=unit.get('name', None)
+        if t=='intent' and n:
+            pref=[self.name, plug.name, n]
+            new_name='_'.join(pref)
+            unit['name']=new_name
+        return unit
             
-    def getFilePaths(self, plug):
+    def getFiles(self, plug):
 
         paths=[]
-        intents=plug.files.get(
-                'intents.yaml', None)
-        entities=plug.files.get(
-                'entities.yaml', None)
-        if intents: 
-            paths+=[intents]
-        if entities: 
-            paths+=[entities]
+        umay_yaml=plug.files.get(
+                'umay.yaml', None)
+        if umay_yaml: 
+            paths+=[umay_yaml]
         return paths
 
     def getKeyword(self, plug):
