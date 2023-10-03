@@ -22,23 +22,20 @@ class CLI(Plug):
 
         self.parser=ArgumentParser()
         self.parser.add_argument('command')
-        self.parser.add_argument('-p', '--part')
 
     def setConnection(self): 
 
         if self.handler_port:
-            self.connect=Connect(
-                    parent_port=self.handler_port)
-            self.connect.set(parent_kind='PUSH')
+            self.connect=Connect()
+            self.socket=self.connect.get('PUSH')
+            self.socket.connect(
+                    f'tcp://localhost:{self.handler_port}')
 
-    def modeAction(self, 
-                   mode=None, 
-                   action=None, 
-                   request={}):
+    def act(self, action, request={}):
 
-        request['part']=mode
-        request['action']=action
-        self.connect.send(request)
+        cmd={action: request}
+        print(cmd)
+        self.socket.send_json(cmd)
 
     def run(self):
 
@@ -47,8 +44,7 @@ class CLI(Plug):
         for i in range(0, len(u), 2):
             request[u[i][2:]]=u[i+1]
         if a.command:
-            self.modeAction(
-                    a.part, a.command, request)
+            self.act(a.command, request)
 
 def run():
 

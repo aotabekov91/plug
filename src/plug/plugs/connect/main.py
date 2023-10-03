@@ -57,22 +57,26 @@ class Connect(Plug):
                     self.psocket.setsockopt(
                             zmq.LINGER, 1)
 
+    def stop(self):
+        self.running=False
+
     def run(self):
+
+        def listen():
+
+            while self.running:
+                q=self.socket.recv_json()
+                a=self.handle(q)
+                if a: 
+                    self.socket.send_json(a)
 
         if self.socket:
             self.running=True
             thread=threading.Thread(
-                    target=self.listen)
-            thread.run()
+                    target=listen)
+            thread.deamon=True
+            thread.start()
             return thread
-
-    def listen(self):
-
-        while self.running:
-            q=self.socket.recv_json()
-            a=self.handle(q)
-            if a: 
-                self.socket.send_json(a)
 
     def handle(self, r):
 

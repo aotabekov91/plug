@@ -40,7 +40,6 @@ class Plugman(Base, QtCore.QObject):
         if hasattr(picked, 'keysChanged'):
             picked.keysChanged.connect(
                     self.keysChanged)
-
         self.saveActions(picked, picked.actions)
         self.plugAdded.emit(picked)
 

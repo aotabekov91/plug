@@ -21,12 +21,9 @@ class Plug(Base, QtCore.QObject):
 
         self.running = False
         self.activated = False
-        self.app=kwargs.get('app', None)
         self.position=kwargs.get('position', None)
         self.follow_mouse=kwargs.get('follow_mouse', False)
-
         super(Plug, self).__init__(*args, **kwargs)
-
         self.initialize()
 
     def initialize(self):

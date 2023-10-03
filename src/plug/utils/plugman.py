@@ -9,19 +9,20 @@ class Plugman:
 
     def __init__(self, app=None):
 
-        self.install_requirements=True
-        super(Plugman, self).__init__()
         self.app=app
         self.prev=None
         self.current=None
         self.actions={}
         self.all_actions={}
         self.plugs=dotdict()
+        self.install_requirements=True
+        super(Plugman, self).__init__()
         self.setup()
         self.picky=Picky(
                 self.picky,
                 self.folder,
                 self.base)
+        self.installPicks()
 
     def installPicks(self): 
 
@@ -30,15 +31,12 @@ class Plugman:
             self.installRequirements()
 
     def installRequirements(self):
-
         self.picky.installRequirements()
 
     def updatePicks(self): 
-
         self.picky.update()
 
     def cleanupPicks(self): 
-
         self.picky.cleanup()
 
     def setup(self):
@@ -108,9 +106,12 @@ class Plugman:
             # except Exception as e:
             #     print('Error in plug loading: ', n)
             #     print(e)
+        self.on_plugsLoaded(self.plugs)
+
+    def on_plugsLoaded(self, plugs): 
+        pass
 
     def add(self, plug):
-
         self.plugs[plug.name]=plug
 
     def set(self, mode='normal'):

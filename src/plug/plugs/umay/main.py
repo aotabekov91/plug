@@ -43,8 +43,11 @@ class Umay(Handler):
                     'plugman', 
                     None)
             if plugman:
-                plugman.plugsLoaded.connect(
-                    self.load)
+                if hasattr(plugman, 'plugsLoaded'):
+                    plugman.plugsLoaded.connect(
+                        self.load)
+                elif hasattr(plugman, 'on_plugsLoaded'):
+                    plugman.on_plugsLoaded=self.load
 
     def getKeywords(self, obj):
 
@@ -58,6 +61,7 @@ class Umay(Handler):
 
     def load(self, plugs):
 
+        raise
         data={
             'kind':'PUSH', 
             'mode': self.name,

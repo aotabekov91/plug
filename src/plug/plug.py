@@ -3,10 +3,7 @@ import tomli
 import inspect
 
 from plug.utils import Plugman
-from plug.utils.plug_utils import (
-        createFolder, 
-        setKeys,
-        )
+from plug.utils.plug_utils import createFolder, setKeys
 
 class Plug:
 
@@ -16,6 +13,7 @@ class Plug:
         self.files={}
         self.actions={}
         self.kwargs=kwargs
+        self.app=kwargs.get('app', None)
         self.name=kwargs.get('name', None)
         self.config=kwargs.get('config', {})
         self.setup()
@@ -28,7 +26,7 @@ class Plug:
         self.setSettings()
         self.setActions()
 
-    def setPlugman(self, plugman=Plugman): 
+    def setPlugman(self, plugman=Plugman):
         self.plugman=plugman(self)
 
     def setActions(self):

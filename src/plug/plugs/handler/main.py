@@ -31,8 +31,10 @@ class Handler(Plug):
 
     def stop(self):
         self.running=False
+        self.connect.stop()
 
     def run(self):
+
         self.running=True
         self.connect.run()
 
