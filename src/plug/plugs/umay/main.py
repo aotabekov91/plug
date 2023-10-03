@@ -39,17 +39,30 @@ class Umay(Handler):
 
         if self.app:
             plugman=getattr(
-                    self.app, 'plugman', None)
+                    self.app, 
+                    'plugman', 
+                    None)
             if plugman:
                 plugman.plugsLoaded.connect(
                     self.load)
+
+    def getKeywords(self, obj):
+
+        keywords=getattr(
+                obj, 'keywords', [])
+        if not keywords:
+            keywords=obj.kwargs.get(
+                    'keywords', [])
+        keywords.insert(0, obj.name)
+        return keywords
 
     def load(self, plugs):
 
         data={
             'kind':'PUSH', 
-            'name': self.name,
+            'mode': self.name,
             'port': self.connect.port,
+            'keywords': self.getKeywords(self.app),
             }
 
         units={}
@@ -65,9 +78,11 @@ class Umay(Handler):
         paths=self.getFiles(plug)
         for path in paths:
             units+=self.readYaml(path)
+        punits=[]
         for unit in units:
-            self.adjustName(plug, unit)
-        return units
+            punits+=[self.setPlugData(
+                    plug, unit)]
+        return punits
 
     def readYaml(self, path):
 
@@ -75,7 +90,7 @@ class Umay(Handler):
             yunits = yaml.safe_load_all(f)
             return list(yunits)
 
-    def adjustName(self, plug, unit):
+    def setPlugData(self, plug, unit):
 
         t=unit.get('type', None)
         n=unit.get('name', None)
@@ -83,7 +98,11 @@ class Umay(Handler):
             pref=[self.name, plug.name, n]
             new_name='_'.join(pref)
             unit['name']=new_name
-        return unit
+
+        return {
+                'unit': unit, 
+                'keywords': self.getKeywords(plug)
+                }
             
     def getFiles(self, plug):
 
@@ -94,10 +113,6 @@ class Umay(Handler):
             paths+=[umay_yaml]
         return paths
 
-    def getKeyword(self, plug):
-
-        return plug.kwargs.get(
-                'keyword', plug.name)
 
     def handle(self, request):
 

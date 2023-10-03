@@ -12,10 +12,12 @@ class FileBrowser(TreePlug):
                      'command': 'f',
                      'FileBrowser': '<c-u>'
                      }, 
+                 keywords=['files', 'file browser'],
                  **kwargs):
 
         super().__init__(
                 position=position,
+                keywords=keywords,
                 prefix_keys=prefix_keys,
                 **kwargs)
         self.setPath()
