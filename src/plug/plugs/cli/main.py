@@ -34,7 +34,6 @@ class CLI(Plug):
     def act(self, action, request={}):
 
         cmd={action: request}
-        print(cmd)
         self.socket.send_json(cmd)
 
     def run(self):

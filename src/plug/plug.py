@@ -27,7 +27,7 @@ class Plug:
         self.setActions()
 
     def setPlugman(self, plugman=Plugman):
-        self.plugman=plugman(self)
+        self.plugman=plugman(app=self)
 
     def setActions(self):
 

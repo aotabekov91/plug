@@ -15,6 +15,7 @@ class Plugman:
         self.actions={}
         self.all_actions={}
         self.plugs=dotdict()
+        self.initial_install=False
         self.install_requirements=True
         super(Plugman, self).__init__()
         self.setup()
@@ -22,13 +23,15 @@ class Plugman:
                 self.picky,
                 self.folder,
                 self.base)
-        self.installPicks()
+
+        if self.initial_install:
+            self.installPicks()
+            self.installRequirements()
 
     def installPicks(self): 
 
         self.picky.install()
-        if self.install_requirements:
-            self.installRequirements()
+        self.installRequirements()
 
     def installRequirements(self):
         self.picky.installRequirements()
@@ -45,6 +48,8 @@ class Plugman:
             'Plugman', {}))
         self.picky=c.Picky
         self.base=c.Settings.get('base')
+        self.initial_install=c.Settings.get(
+                'initial_install', False)
         self.folder=os.path.expanduser(
                 c.Settings.get('folder'))
         self.app.createFolder(
@@ -56,19 +61,24 @@ class Plugman:
         for n, f in self.picky.rtp.items():
             if os.path.exists(f):
                 sys.path.insert(0, f)
-                try:
-                    m=importlib.import_module(n)
-                    k=getattr(m, 'get_plug_class', None)
-                    if k: plugs+=[k()]
-                except Exception as e:
-                    msg='Error in plug importing: '
-                    print(msg, n)
-                    print(e)
+
+                # try:
+
+                m=importlib.import_module(n, f)
+                k=getattr(m, 'get_plug_class', None)
+                if k: plugs+=[k()]
+
+                # except Exception as e:
+                #     msg='Error in plug importing: '
+                #     print(msg, n)
+                #     print(e)
+
         return plugs
 
-    def loadPicks(self):
+    def loadPicks(self, plugs=[]):
 
-        plugs=self.getPicks()
+        if not plugs:
+            plugs=self.getPicks()
         self.loadPlugs(plugs)
         normal=self.plugs.get('normal')
         if normal:
@@ -89,7 +99,7 @@ class Plugman:
                 if p.__class__==plug_class:
                     return True
             return False
-
+        
         for p in plugs: 
 
             if isLoaded(p) and not force: 
@@ -114,10 +124,15 @@ class Plugman:
     def add(self, plug):
         self.plugs[plug.name]=plug
 
-    def set(self, mode='normal'):
+    def get(self, mode):
 
         if type(mode)==str:
             mode=self.plugs.get(mode)
+        return mode
+
+    def set(self, mode='normal'):
+
+        mode=self.get(mode)
         if self.current!=mode:
             if self.current: 
                 self.current.delisten()

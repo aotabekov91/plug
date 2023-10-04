@@ -84,6 +84,12 @@ class Plug(Base, QtCore.QObject):
         else:
             self.deactivate()
 
+    def setMode(self, mode):
+
+        if self.app:
+            mode=self.app.plugman.get(mode)
+            if mode: mode.activate()
+        
     def activate(self):
 
         self.activated=True

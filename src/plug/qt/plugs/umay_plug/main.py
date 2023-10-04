@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
-from plug.plugs.umay import Umay as Base
 from plug.qt.plugs.connect import Connect
+from plug.plugs.umay_plug import Umay as Base
 
 class Umay(Base, QtCore.QObject):
 

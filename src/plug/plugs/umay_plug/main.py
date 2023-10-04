@@ -6,11 +6,10 @@ class Umay(Handler):
 
     def __init__(self, 
                  *args, 
-                 app=None,
                  umay_port=None,
                  **kwargs):
 
-        self.app=app
+        self.current=None
         self.umay_port=umay_port
         super(Umay, self).__init__(
                 *args, **kwargs)
@@ -57,14 +56,14 @@ class Umay(Handler):
             keywords=obj.kwargs.get(
                     'keywords', [])
         keywords.insert(0, obj.name)
+        keywords.insert(1, obj.name.lower())
         return keywords
 
     def load(self, plugs):
 
-        raise
         data={
             'kind':'PUSH', 
-            'mode': self.name,
+            'app': self.name,
             'port': self.connect.port,
             'keywords': self.getKeywords(self.app),
             }
@@ -117,14 +116,22 @@ class Umay(Handler):
             paths+=[umay_yaml]
         return paths
 
-
     def handle(self, request):
 
-        for k, d in request.items():
-            l=k.split('_')
-            name, action = l[0], l[1]
+        print('Umay handling request: ', request)
+        for n, d in request.items():
+            l=n.split('_')
+            mode, action = l[0], l[1]
             plug=self.app.plugman.plugs.get(
-                    name, None)
+                    mode, None)
+            if not plug:
+                plug=self.app.plugman.current
             if plug:
                 func=getattr(plug, action, None)
-                if func: func(**d)
+                if func: 
+                    func(**d)
+                else:
+                    handle=getattr(
+                            plug, 'handle', None)
+                    if handle:
+                        handle(request)
