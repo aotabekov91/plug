@@ -61,18 +61,14 @@ class Plugman:
         for n, f in self.picky.rtp.items():
             if os.path.exists(f):
                 sys.path.insert(0, f)
-
-                # try:
-
-                m=importlib.import_module(n, f)
-                k=getattr(m, 'get_plug_class', None)
-                if k: plugs+=[k()]
-
-                # except Exception as e:
-                #     msg='Error in plug importing: '
-                #     print(msg, n)
-                #     print(e)
-
+                try:
+                    m=importlib.import_module(n, f)
+                    k=getattr(m, 'get_plug_class', None)
+                    if k: plugs+=[k()]
+                except Exception as e:
+                    msg='Error in plug importing: '
+                    print(msg, n)
+                    print(e)
         return plugs
 
     def loadPicks(self, plugs=[]):
@@ -94,28 +90,22 @@ class Plugman:
     def loadPlugs(self, plugs, force=False):
 
         def isLoaded(plug_class):
-
             for p in self.plugs:
                 if p.__class__==plug_class:
                     return True
             return False
         
         for p in plugs: 
-
             if isLoaded(p) and not force: 
                 continue
-
             n=p.__name__
             c=self.app.config.get(n, {})
-
-            # try:
-
-            plug=p(app=self.app, config=c)
-            self.add(plug)
-
-            # except Exception as e:
-            #     print('Error in plug loading: ', n)
-            #     print(e)
+            try:
+                plug=p(app=self.app, config=c)
+                self.add(plug)
+            except Exception as e:
+                print('Error in plug loading: ', n)
+                print(e)
         self.on_plugsLoaded(self.plugs)
 
     def on_plugsLoaded(self, plugs): 
