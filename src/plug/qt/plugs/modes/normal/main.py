@@ -135,7 +135,7 @@ class Normal(Plug):
                 view.zoomOut()
 
     @register(key='g')
-    def gotoPage(self, digit=1):
+    def goto(self, digit=1):
 
         view=self.currentView()
         if view: 

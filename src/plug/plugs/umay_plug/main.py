@@ -57,7 +57,7 @@ class Umay(Handler):
                     'keywords', [])
         keywords.insert(0, obj.name)
         keywords.insert(1, obj.name.lower())
-        return keywords
+        return tuple(keywords)
 
     def load(self, plugs):
 
@@ -119,19 +119,69 @@ class Umay(Handler):
     def handle(self, request):
 
         print('Umay handling request: ', request)
-        for n, d in request.items():
+        for n, prm in request.items():
             l=n.split('_')
-            mode, action = l[0], l[1]
-            plug=self.app.plugman.plugs.get(
-                    mode, None)
-            if not plug:
-                plug=self.app.plugman.current
-            if plug:
-                func=getattr(plug, action, None)
-                if func: 
-                    func(**d)
-                else:
-                    handle=getattr(
-                            plug, 'handle', None)
-                    if handle:
-                        handle(request)
+            if len(l)==2:
+                m, a = l[0], l[1]
+                plug=self.app.plugman.plugs.get(
+                        m, self.app.plugman.current)
+                if plug:
+                    f=getattr(plug, a, None)
+                    h=getattr(plug, 'handle', None)
+                    if f: 
+                        self.adjustParameters(prm)
+                        f(**prm)
+                    elif h:
+                        h(request)
+                    else:
+                        self.checkEars(a, prm)
+
+    def adjustParameters(self, prm):
+
+        if 'digit' in prm:
+            prm['digit']=int(prm['digit'])
+
+    def checkEars(self, action, prm):
+
+        def checkEar(ear, action):
+
+            if ear and ear.listening:
+                func=ear.methods.get(
+                        action, None)
+                if func:
+                    return func 
+
+        def checkParent(cobj, eobj):
+
+            print(cobj, eobj)
+            if eobj.parent() is None:
+                return False
+            elif cobj==eobj:
+                return True
+            elif eobj.parent()==cobj:
+                return True
+            return checkParent(
+                    cobj, eobj.parent())
+
+        if self.app:
+            uiman=getattr(self.app, 'uiman')
+            c=uiman.current
+            if uiman.current:
+                f=checkEar(c, action)
+                if f:
+                    return f(**prm)
+                cand=[]
+                for e in uiman.ears:
+                    if not e.listening:
+                        continue
+                    v=getattr(e.obj, 'isVisible', None)
+                    if v and v():
+                        f=checkEar(e, action)
+                        if f: cand+=[(e, f)]
+                if len(cand)==1:
+                    e, f = cand[0]
+                    return f(**prm)
+                elif len(cand)>1:
+                    for e, f in cand:
+                        if checkParent(c.obj, e.obj):
+                            return f(**prm)

@@ -14,7 +14,7 @@ gitpython = ">=3.1.32"
 PyQt5 = { version = ">=5.15.6", optional = true}
 pynput = { version = ">=1.7.6", optional = true}
 gizmo = {git = "https://github.com/aotabekov91/gizmo", branch='main'}
-# gizmo = {path = "/home/adama/code/gizmo", develop = true, optional = true}
+# gizmo = {path = "/home/adam/code/gizmo", develop = true, optional = true}
 
 [tool.poetry.extras]
 qt=["gizmo", "PyQt5", "pynput"]

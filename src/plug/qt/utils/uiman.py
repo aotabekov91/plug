@@ -1,9 +1,9 @@
 import sys
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 
 from plug.utils import setKeys
-from gizmo.ui import StackWindow
 from gizmo.widget import CommandStack 
+from gizmo.ui import StackWindow, Application
 
 class UIMan(QtCore.QObject):
 
@@ -17,18 +17,30 @@ class UIMan(QtCore.QObject):
         self.obj=obj
         self.app=app
         self.ui=None
+        self.ears=[]
         self.qapp=None
         self.window=None
+        self.current=None
         self.kwargs=kwargs
         self.command_activated=False
         self.position=kwargs.get('position', None)
 
     def setApp(self):
 
-        self.qapp=QtWidgets.QApplication([])
+        self.qapp=Application([])
         self.qapp.setApplicationName(
                 self.obj.name)
         self.obj.setParent(self.qapp)
+        self.qapp.earSet.connect(
+                self.on_earSet)
+        self.qapp.earGained.connect(
+                self.on_earGained)
+
+    def on_earSet(self, ear):
+        self.ears+=[ear]
+
+    def on_earGained(self, ear):
+        self.current=ear
 
     def setAppUI(self, display_class, buffer_class):
 
@@ -45,7 +57,6 @@ class UIMan(QtCore.QObject):
 
         if ui is None: 
             ui=CommandStack()
-
         self.ui=ui
         self.obj.ui=self.ui
         self.ui.setObjectName(self.obj.name)
@@ -79,14 +90,15 @@ class UIMan(QtCore.QObject):
             ear=getattr(widget, 'ear', None)
             if ear:
                 m=ear.matches.get(name, None)
-                ear.commands.pop(m)
+                ear.commands.pop(m, None)
 
         def setWidgetKeys(keys, widget):
 
             for k, v in keys.items():
                 if type(v)==dict:
                     widget=getattr(widget, k, None)
-                    if widget: setWidgetKeys(v, widget)
+                    if widget: 
+                        setWidgetKeys(v, widget)
                     return
                 cleanPrevious(widget, k)
             setKeys(widget, keys)
@@ -100,7 +112,7 @@ class UIMan(QtCore.QObject):
         if ui and ui_keys:
             setWidgetKeys(ui_keys, ui)
 
-    def on_uiFocusGained(self):
+    def on_uiFocusGained(self, widget=None):
 
         if self.obj.follow_mouse: 
             self.obj.modeWanted.emit(self.obj)

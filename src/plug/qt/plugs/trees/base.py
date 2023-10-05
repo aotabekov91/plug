@@ -38,7 +38,7 @@ class TreePlug(Plug):
                 self.on_outlineCollapsed)
         self.ui.main.tree.returnPressed.connect(
                 self.on_outlineClicked)
-        self.ui.installEventFilter(self)
+        # self.ui.installEventFilter(self)
 
     @register('t', modes=['command'])
     def toggle(self): super().toggle()
