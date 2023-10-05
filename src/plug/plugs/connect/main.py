@@ -42,20 +42,19 @@ class Connect(Plug):
         return zmq.Context().socket(
                 getattr(zmq, kind))
 
-    def send(self, data, with_poller=True):
+    def send(self, data, socket):
 
-        if with_poller:
-            poller=zmq.Poller()
-            poller.register(self.psocket, 
-                            flags=zmq.POLLIN)
-        for d in data:
-            self.psocket.send_json(d)
-            if with_poller:
-                if poller.poll(timeout=1000):
-                    self.psocket.recv_json()
-                else:
-                    self.psocket.setsockopt(
-                            zmq.LINGER, 1)
+        poller=zmq.Poller()
+        poller.register(
+                socket, flags=zmq.POLLIN)
+        socket.send_json(data)
+        if poller.poll(timeout=1000):
+            return socket.recv_json()
+        else:
+            socket.setsockopt(
+                    zmq.LINGER, 1)
+            return {'status': 'nok', 
+                    'info': 'no response'}
 
     def stop(self):
         self.running=False

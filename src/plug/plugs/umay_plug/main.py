@@ -63,10 +63,9 @@ class Umay(Handler):
         data={
             'kind':'PUSH', 
             'app': self.name,
-            'port': self.connect.port,
-            'app_keys': self.getKeywords(self.app),
-            }
-
+            'port': self.connect.port }
+        data['app_keys']=self.getKeywords(
+                self.app)
         mode_keys=[] 
         for n, p in plugs.items(): 
             mode_keys+=[self.getKeywords(p)]
@@ -75,8 +74,10 @@ class Umay(Handler):
         for n, p in plugs.items(): 
             units[n]=self.getUnits(p)
         data['units']=units
-        self.usocket.send_json(
-                {'register': data})
+        res=self.connect.send(
+                {'register': data},
+                self.usocket)
+        print(res)
 
     def getUnits(self, plug):
 
