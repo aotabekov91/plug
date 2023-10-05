@@ -16,17 +16,20 @@ class CLI(Plug):
 
         super().setup()
         self.setParser()
-        self.setConnection()
+        self.setConnect()
+        self.setHandlerConnect()
 
     def setParser(self):
 
         self.parser=ArgumentParser()
         self.parser.add_argument('command')
 
-    def setConnection(self): 
+    def setConnect(self, connect=Connect): 
+        self.connect=connect()
+
+    def setHandlerConnect(self):
 
         if self.handler_port:
-            self.connect=Connect()
             self.socket=self.connect.get('PUSH')
             self.socket.connect(
                     f'tcp://localhost:{self.handler_port}')

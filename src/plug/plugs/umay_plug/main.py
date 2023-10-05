@@ -30,7 +30,7 @@ class Umay(Handler):
 
     def setUmayConnect(self):
 
-        self.usocket=self.connect.get('PUSH')
+        self.usocket=self.connect.get('REQ')
         self.usocket.connect(
                 f'tcp://localhost:{self.umay_port}')
 
