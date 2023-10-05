@@ -52,12 +52,11 @@ class Umay(Handler):
 
         keywords=getattr(
                 obj, 'keywords', [])
-        if not keywords:
-            keywords=obj.kwargs.get(
-                    'keywords', [])
+        keywords+=obj.kwargs.get(
+                'keywords', [])
         keywords.insert(0, obj.name)
         keywords.insert(1, obj.name.lower())
-        return tuple(keywords)
+        return keywords
 
     def load(self, plugs):
 
@@ -118,7 +117,8 @@ class Umay(Handler):
 
     def handle(self, request):
 
-        print('Umay handling request: ', request)
+        # print('Umay handling request: ', request)
+        print('Umay handling request')
         for n, prm in request.items():
             l=n.split('_')
             if len(l)==2:
@@ -153,7 +153,6 @@ class Umay(Handler):
 
         def checkParent(cobj, eobj):
 
-            print(cobj, eobj)
             if eobj.parent() is None:
                 return False
             elif cobj==eobj:

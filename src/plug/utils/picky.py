@@ -37,7 +37,6 @@ class Picky:
 
         for name in self.repos:
             path=os.path.join(self.folder, name)
-            print('Updating', path)
             repo = git.Repo(path)
             repo.remotes.origin.pull()
 
