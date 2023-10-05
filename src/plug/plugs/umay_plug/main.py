@@ -64,9 +64,13 @@ class Umay(Handler):
             'kind':'PUSH', 
             'app': self.name,
             'port': self.connect.port,
-            'keywords': self.getKeywords(self.app),
+            'app_keys': self.getKeywords(self.app),
             }
 
+        mode_keys=[] 
+        for n, p in plugs.items(): 
+            mode_keys+=[self.getKeywords(p)]
+        data['mode_keys']=mode_keys
         units={}
         for n, p in plugs.items(): 
             units[n]=self.getUnits(p)
@@ -80,11 +84,9 @@ class Umay(Handler):
         paths=self.getFiles(plug)
         for path in paths:
             units+=self.readYaml(path)
-        punits=[]
         for unit in units:
-            punits+=[self.setPlugData(
-                    plug, unit)]
-        return punits
+            self.setPlugData(plug, unit)
+        return units
 
     def readYaml(self, path):
 
@@ -100,12 +102,8 @@ class Umay(Handler):
             pref=[self.name, plug.name, n]
             new_name='_'.join(pref)
             unit['name']=new_name
+        return unit 
 
-        return {
-                'unit': unit, 
-                'keywords': self.getKeywords(plug)
-                }
-            
     def getFiles(self, plug):
 
         paths=[]
@@ -118,7 +116,6 @@ class Umay(Handler):
     def handle(self, request):
 
         # print('Umay handling request: ', request)
-        print('Umay handling request')
         for n, prm in request.items():
             l=n.split('_')
             if len(l)==2:

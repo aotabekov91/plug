@@ -61,7 +61,7 @@ class Handler(Plug):
 
     def handle(self, req):
 
-        print(f'{self.name} received request')
+        print(f'{self.name} received {req.keys()}')
         res={}
         for name, args in req.items():
             res[name]=self.runFunc(name, args)
