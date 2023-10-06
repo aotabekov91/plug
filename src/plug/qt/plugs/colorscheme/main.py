@@ -14,11 +14,12 @@ class Colorscheme(Plug):
 
     def addColorscheme(self, plugs):
 
-        styler=plugs.get('Styler', None)
-        file=self.files.get('colorscheme.css', None)
+        styler=plugs.get(
+                'styler', None)
+        file=self.files.get(
+                'colorscheme.css', None)
         if styler and file:
-
-            style=styler.readColorscheme(file)
+            style=styler.read(file)
             styler.addColorscheme(
                     self.name, 
                     style,

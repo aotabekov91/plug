@@ -83,24 +83,25 @@ class Styler(Plug):
 
             file=plug.files.get('style.css', None)
             if file:
-                style=self.readColorscheme(file)
+                style=self.read(file)
                 self.updateStyle(default, style)
 
         file=self.app.files.get('style.css', None)
         if file:
-            style=self.readColorscheme(file)
+            style=self.read(file)
             self.updateStyle(default, style)
         css=self.dictToCSS(default)
         self.styles['default']=(default, css)
 
-    def readColorscheme(self, path):
+    def read(self, path):
 
         with open(path, 'r') as y:
             lines=' '.join(y.readlines())
             css=re.sub(r'[\n\t]', ' ', lines)
             return self.cssToDict(css)
 
-    def addColorscheme(self, name, cs, update=True):
+    def addColorscheme(
+            self, name, cs, update=True):
 
         if update:
             cs=self.updateColorscheme(cs)

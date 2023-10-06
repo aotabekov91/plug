@@ -77,7 +77,7 @@ class Umay(Handler):
         res=self.connect.send(
                 {'register': data},
                 self.usocket)
-        print(res)
+        print('Umay plug:', res)
 
     def getUnits(self, plug):
 

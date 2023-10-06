@@ -15,8 +15,15 @@ class Render(Plug):
     def readFile(self, path):
         pass
 
+    def setId(self, path, model):
+        pass
+
     def getView(self, model):
         return self.readModel(model)
 
     def getModel(self, path):
-        return self.readFile(path)
+
+        m=self.readFile(path)
+        if m: 
+            self.setId(path, m)
+        return m

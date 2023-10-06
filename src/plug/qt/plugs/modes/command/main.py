@@ -20,8 +20,3 @@ class Command(Plug):
                 delisten_on_exec=delisten_on_exec,
                 **kwargs,
                 )
-
-    @register('<c-q>', modes=['any'])
-    def exit(self):
-
-        if self.app: self.app.exit()

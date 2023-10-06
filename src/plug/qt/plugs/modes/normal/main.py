@@ -7,7 +7,6 @@ class Normal(Plug):
 
     def __init__(self, 
                  app=None,
-                 name='normal',
                  listen_leader='@',
                  delisten_on_exec=False,
                  **kwargs,
@@ -17,7 +16,6 @@ class Normal(Plug):
 
         super(Normal, self).__init__(
                 app=app, 
-                name=name, 
                 listen_leader=listen_leader,
                 delisten_on_exec=delisten_on_exec, 
                 **kwargs,)
@@ -255,3 +253,9 @@ class Normal(Plug):
                 event.accept()
                 return True
         return False
+
+    @register('<c-q>', modes=['any'])
+    def exit(self):
+
+        if self.app: 
+            self.app.exit()

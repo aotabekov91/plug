@@ -31,13 +31,9 @@ class Buffer(QtCore.QObject):
             return self.buffers[path]
         model=self.getModel(path)
         if model and model.readSuccess():
-            self.setID(path, model)
             self.buffers[path]=model
             self.bufferCreated.emit(model)
             return model
-
-    def setID(self, path, model):
-        pass
 
     def on_fileChanged(self, path): 
         pass

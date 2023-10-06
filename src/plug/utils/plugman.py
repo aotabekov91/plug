@@ -7,7 +7,10 @@ from .miscel import dotdict
 
 class Plugman:
 
-    def __init__(self, app=None):
+    def __init__(
+            self, 
+            app=None, 
+            default='normal'):
 
         self.app=app
         self.prev=None
@@ -15,18 +18,13 @@ class Plugman:
         self.actions={}
         self.all_actions={}
         self.plugs=dotdict()
-        self.initial_install=False
-        self.install_requirements=True
+        self.default=default
         super(Plugman, self).__init__()
         self.setup()
         self.picky=Picky(
                 self.picky,
                 self.folder,
                 self.base)
-
-        if self.initial_install:
-            self.installPicks()
-            self.installRequirements()
 
     def installPicks(self): 
 
@@ -48,8 +46,6 @@ class Plugman:
             'Plugman', {}))
         self.picky=c.Picky
         self.base=c.Settings.get('base')
-        self.initial_install=c.Settings.get(
-                'initial_install', False)
         self.folder=os.path.expanduser(
                 c.Settings.get('folder'))
         self.app.createFolder(
@@ -76,16 +72,7 @@ class Plugman:
         if not plugs:
             plugs=self.getPicks()
         self.loadPlugs(plugs)
-        normal=self.plugs.get('normal')
-        if normal:
-            self.set(normal)
-        else:
-            self.installPicks()
-            if not self.install_requirements:
-                self.installRequirements()
-            plugs=self.getPicks()
-            self.loadPlugs(plugs)
-            self.set('normal')
+        self.set()
 
     def loadPlugs(self, plugs, force=False):
 
@@ -100,19 +87,25 @@ class Plugman:
                 continue
             n=p.__name__
             c=self.app.config.get(n, {})
-            try:
-                plug=p(app=self.app, config=c)
-                self.add(plug)
-            except Exception as e:
-                print('Error in plug loading: ', n)
-                print(e)
+
+            # try:
+
+            plug=p(app=self.app, config=c)
+            self.add(plug)
+
+            # except Exception as e:
+            #     print('Error in plug loading: ', n)
+            #     print(e)
+
         self.on_plugsLoaded(self.plugs)
 
     def on_plugsLoaded(self, plugs): 
         pass
 
     def add(self, plug):
-        self.plugs[plug.name]=plug
+
+        name=plug.name.lower()
+        self.plugs[name]=plug
 
     def get(self, mode):
 
@@ -120,8 +113,10 @@ class Plugman:
             mode=self.plugs.get(mode)
         return mode
 
-    def set(self, mode='normal'):
+    def set(self, mode=None):
 
+        if not mode:
+            mode=self.default
         mode=self.get(mode)
         if self.current!=mode:
             if self.current: 
@@ -131,7 +126,7 @@ class Plugman:
             if self.current:
                 self.current.listen()
 
-    def saveActions(self, plug, actions): 
+    def save(self, plug, actions): 
 
         self.actions[plug]=actions
         for n, a in actions.items():

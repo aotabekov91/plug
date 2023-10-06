@@ -23,7 +23,7 @@ class Plugman(Base, QtCore.QObject):
         a={}
         for f in funcs:
             a[('Plugman', f)]=getattr(self, f)
-        self.saveActions(self, a)
+        self.save(self, a)
 
     def add(self, picked):
 
@@ -40,7 +40,7 @@ class Plugman(Base, QtCore.QObject):
         if hasattr(picked, 'keysChanged'):
             picked.keysChanged.connect(
                     self.keysChanged)
-        self.saveActions(picked, picked.actions)
+        self.save(picked, picked.actions)
         self.plugAdded.emit(picked)
 
     def loadPlugs(self, plugs):
@@ -53,10 +53,11 @@ class Plugman(Base, QtCore.QObject):
         super().set(listener)
         self.modeChanged.emit(self.current)
 
-    def saveActions(self, plug, actions):
+    def save(self, plug, actions):
 
-        super().saveActions(plug, actions)
-        self.actionsRegistered.emit(plug, actions)
+        super().save(plug, actions)
+        self.actionsRegistered.emit(
+                plug, actions)
 
     @register(modes=['exec'])
     def installPicks(self): 

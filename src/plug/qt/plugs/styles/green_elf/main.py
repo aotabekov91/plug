@@ -7,6 +7,7 @@ class GreenElf(Colorscheme):
                  update=False,
                  **kwargs):
 
-        super().__init__(*args, 
-                         update=update, 
-                         **kwargs)
+        super().__init__(
+                *args, 
+                update=update, 
+                **kwargs)

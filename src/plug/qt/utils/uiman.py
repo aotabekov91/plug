@@ -1,9 +1,12 @@
 import sys
-from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5 import QtCore
 
+from gizmo.ui import Display
 from plug.utils import setKeys
 from gizmo.widget import CommandStack 
 from gizmo.ui import StackWindow, Application
+
+from .buffer import Buffer
 
 class UIMan(QtCore.QObject):
 
@@ -13,7 +16,6 @@ class UIMan(QtCore.QObject):
                  **kwargs):
 
         super().__init__(obj)
-
         self.obj=obj
         self.app=app
         self.ui=None
@@ -23,7 +25,8 @@ class UIMan(QtCore.QObject):
         self.current=None
         self.kwargs=kwargs
         self.command_activated=False
-        self.position=kwargs.get('position', None)
+        self.position=kwargs.get(
+                'position', None)
 
     def setApp(self):
 
@@ -42,7 +45,11 @@ class UIMan(QtCore.QObject):
     def on_earGained(self, ear):
         self.current=ear
 
-    def setAppUI(self, display_class, buffer_class):
+    def setAppUI(
+            self, 
+            buffer_class=Buffer,
+            display_class=Display,
+            ):
 
         self.window=StackWindow()
         self.buffer=buffer_class(self)
