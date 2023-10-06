@@ -8,12 +8,13 @@ from .parser import ArgumentParser
 
 class Exec(Plug):
 
-    special=['return', 
-             'tab', 
-             'carriage', 
-             'escape', 
-             'escape_bracket']
-
+    special=[
+            'return', 
+            'tab', 
+            'carriage', 
+            'escape', 
+            'escape_bracket'
+            ]
     tabPressed=QtCore.pyqtSignal()
     textChanged=QtCore.pyqtSignal()
 
@@ -76,17 +77,23 @@ class Exec(Plug):
 
     def on_keysSet(self, commands):
 
-        self.commands = self.ear.methods
-        for c, m in self.commands.items():
+        for c, m in self.ear.methods.items():
+            if c in self.commands: 
+                continue
+            self.commands[c]=m
             prmts=signature(m).parameters
             parser=self.subparser.add_parser(c)
             for n, p in prmts.items():
-                if p.default==Parameter.empty:
-                    parser.add_argument(n)
-                else:
-                    parser.add_argument(
-                            f'--{n}',
-                            default=p.default)
+                try:
+
+                    if p.default==Parameter.empty:
+                        parser.add_argument(n)
+                    else:
+                        parser.add_argument(
+                                f'--{n}',
+                                default=p.default)
+                except:
+                    pass
 
     def on_tabPressed(self): pass
 
