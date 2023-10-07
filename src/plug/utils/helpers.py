@@ -35,5 +35,6 @@ def setKeys(obj, keys):
 
 def pretty_json(data, indent=4):
 
-    parsed = json.loads(data)
-    return json.dumps(parsed, indent=4)
+    if type(data)==str:
+        data = json.loads(data)
+    return json.dumps(data, indent=4)
