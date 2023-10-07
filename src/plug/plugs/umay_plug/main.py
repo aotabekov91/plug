@@ -8,20 +8,16 @@ class Umay(Handler):
                  *args, 
                  umay_port=None,
                  wait_time=5000,
+                 pollerize=True,
                  **kwargs):
 
         self.current=None
         self.umay_port=umay_port
+        self.pollerize=pollerize
         self.wait_time=wait_time
         super(Umay, self).__init__(
                 *args, **kwargs)
         self.run()
-
-    def setName(self):
-
-        super().setName()
-        if self.app:
-            self.name=self.app.name
 
     def setup(self):
 
@@ -66,7 +62,8 @@ class Umay(Handler):
             'kind':'PUSH', 
             'app': self.name,
             'port': self.connect.port }
-        data['app_keys']=self.getKeywords(self)
+        data['app_keys']=self.getKeywords(
+                self.app)
         mode_keys=[] 
         for n, p in plugs.items(): 
             mode_keys+=[self.getKeywords(p)]
@@ -77,8 +74,10 @@ class Umay(Handler):
         data['units']=units
         res=self.connect.send(
                 {'register': data},
-                self.usocket,
-                wait_time=self.wait_time)
+                socket=self.usocket,
+                wait_time=self.wait_time,
+                pollerize=self.pollerize,
+                )
         print('Umay plug:', res)
 
     def getUnits(self, plug):

@@ -13,6 +13,7 @@ class Connect(Plug):
 
         self.port=port
         self.handler=handler
+        self.poller=zmq.Poller()
         self.parent_port=parent_port
         self.socket=kwargs.get('socket', None)
         super().__init__(*args, **kwargs)
@@ -42,19 +43,27 @@ class Connect(Plug):
         return zmq.Context().socket(
                 getattr(zmq, kind))
 
-    def send(self, data, socket, wait_time=500):
+    def send(self, 
+             data, 
+             socket, 
+             wait_time=2500,
+             pollerize=True, 
+            ):
 
-        poller=zmq.Poller()
-        poller.register(
-                socket, flags=zmq.POLLIN)
         socket.send_json(data)
-        if poller.poll(timeout=wait_time):
+        if not pollerize:
             return socket.recv_json()
         else:
-            socket.setsockopt(
-                    zmq.LINGER, 1)
-            return {'status': 'nok', 
+            self.poller.register(
+                    socket, flags=zmq.POLLIN)
+            if self.poller.poll(timeout=wait_time):
+                res=socket.recv_json()
+            else:
+                socket.setsockopt(zmq.LINGER, 1)
+                res={'status': 'nok', 
                     'info': 'no response'}
+            self.poller.unregister(socket)
+            return res
 
     def stop(self):
         self.running=False

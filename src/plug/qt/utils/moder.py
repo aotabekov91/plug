@@ -33,9 +33,9 @@ class Moder(Base, QObject):
                     self.keysChanged)
         self.plugAdded.emit(plug)
 
-    def load(self, plugs=set()):
+    def load(self, *args, **kwargs):
 
-        super().load(plugs)
+        super().load(*args, **kwargs)
         self.plugsLoaded.emit(self.plugs)
 
     def set(self, mode=None):

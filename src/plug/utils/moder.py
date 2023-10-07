@@ -63,7 +63,7 @@ class Moder:
                     print(e)
         return plugs
 
-    def load(self, plugs=set()):
+    def load(self, plugs=set(), plug_prmts={}):
 
         def isLoaded(plug_class):
             for p in self.plugs:
@@ -77,8 +77,11 @@ class Moder:
                 config=self.app.config.get(
                         p.__name__, {})
                 # try:
+                kwargs=plug_prmts.get(
+                        p.__name__, {})
                 plug=p(app=self.app, 
-                       config=config)
+                       config=config,
+                       **kwargs)
                 self.add(plug)
                 # except Exception as e:
                 #     print('Error in plug loading: ', n)
