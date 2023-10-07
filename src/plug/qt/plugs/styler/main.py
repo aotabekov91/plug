@@ -12,7 +12,7 @@ class Styler(Plug):
         self.current=None
         self.style='default'
         super().__init__(*args, **kwargs)
-        self.app.plugman.plugsLoaded.connect(
+        self.app.moder.plugsLoaded.connect(
                 self.on_plugsLoaded)
 
     def cssToDict(self, css):
@@ -113,7 +113,7 @@ class Styler(Plug):
     def addToExecList(self):
 
         execlist=getattr(
-                self.app.plugman.plugs, 'ExecList')
+                self.app.moder.plugs, 'ExecList')
         if execlist:
             execlist.setArgOptions(
                     'colorscheme', 'name', self.styles)

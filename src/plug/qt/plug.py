@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore 
 
 from gizmo.utils import Ear
 from plug import Plug as Base
@@ -6,31 +6,39 @@ from plug.qt.utils import UIMan
 
 class Plug(Base, QtCore.QObject):
 
-    forceDelisten=QtCore.pyqtSignal()
-    delistenWanted=QtCore.pyqtSignal()
-    modeWanted=QtCore.pyqtSignal(object)
-    listenWanted=QtCore.pyqtSignal(object)
     escapePressed=QtCore.pyqtSignal()
     returnPressed=QtCore.pyqtSignal()
-    keysChanged=QtCore.pyqtSignal(str)
-    keyPressed=QtCore.pyqtSignal(object, object)
-    endedListening=QtCore.pyqtSignal(object)
-    startedListening=QtCore.pyqtSignal(object)
+    forceDelisten=QtCore.pyqtSignal()
+    delistenWanted=QtCore.pyqtSignal()
+    modeWanted=QtCore.pyqtSignal(
+            object)
+    listenWanted=QtCore.pyqtSignal(
+            object)
+    keysChanged=QtCore.pyqtSignal(
+            str)
+    keyPressed=QtCore.pyqtSignal(
+            object, object)
+    endedListening=QtCore.pyqtSignal(
+            object)
+    startedListening=QtCore.pyqtSignal(
+            object)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+            self, *args, **kwargs):
 
         self.running = False
         self.activated = False
-        self.position=kwargs.get('position', None)
-        self.follow_mouse=kwargs.get('follow_mouse', False)
-        super(Plug, self).__init__(*args, **kwargs)
-        self.initialize()
+        self.position=kwargs.get(
+                'position', None)
+        self.follow_mouse=kwargs.get(
+                'follow_mouse', False)
+        super(Plug, self).__init__(
+                *args, **kwargs)
 
     def initialize(self):
 
         self.uiman.setUIKeys()
-        if self.uiman.qapp:
-            self.plugman.loadPicks()
+        super().initialize()
 
     def setup(self):
 
@@ -38,7 +46,7 @@ class Plug(Base, QtCore.QObject):
         self.setUIMan()
         self.setEar()
         if self.app:
-            self.app.plugman.add(self)
+            self.app.moder.add(self)
 
     def getUpdatedArgs(self):
 
@@ -87,7 +95,7 @@ class Plug(Base, QtCore.QObject):
     def setMode(self, mode):
 
         if self.app:
-            mode=self.app.plugman.get(mode)
+            mode=self.app.moder.get(mode)
             if mode: mode.activate()
         
     def activate(self):

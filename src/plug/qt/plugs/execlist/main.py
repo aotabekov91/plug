@@ -31,7 +31,7 @@ class ExecList(Plug):
 
     def setConnect(self):
 
-        self.app.plugman.plugsLoaded.connect(
+        self.app.moder.plugsLoaded.connect(
                 self.on_plugsLoaded)
         self.ear.tabPressed.connect(
                 self.select)

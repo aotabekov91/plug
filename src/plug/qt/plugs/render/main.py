@@ -4,26 +4,36 @@ class Render(Plug):
 
     def initialize(self):
 
-        d=getattr(self.app, 'display', None)
-        if d: d.addViewer(self)
-        b=getattr(self.app, 'buffer', None)
-        if b: b.addModeller(self)
+        display=getattr(
+                self.app, 
+                'display', 
+                None)
+        if display: 
+            display.addViewer(self)
+        buffer=getattr(
+                self.app, 
+                'buffer', 
+                None)
+        if buffer: 
+            buffer.addModeller(self)
+
+    def getModel(self, path):
+
+        model=self.readFile(path)
+        if model: 
+            self.setId(path, model)
+        return model
+
+    def setId(self, path, model):
+
+        if model:
+            model.setId(id(model))
+
+    def getView(self, model):
+        return self.readModel(model)
 
     def readModel(self, model):
         pass
 
     def readFile(self, path):
         pass
-
-    def setId(self, path, model):
-        pass
-
-    def getView(self, model):
-        return self.readModel(model)
-
-    def getModel(self, path):
-
-        m=self.readFile(path)
-        if m: 
-            self.setId(path, m)
-        return m

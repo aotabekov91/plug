@@ -47,7 +47,7 @@
 !_TAG_ROLE_DESCRIPTION!Python!unknown	imported	/imported from the other module/
 !_TAG_ROLE_DESCRIPTION!Python!unknown	indirectlyImported	/classes\/variables\/functions\/modules imported in alternative name/
 BASE_DIR	tests/conftest.py	/^BASE_DIR = Path(__file__).parent.parent$/;"	v
-Base	src/plug/qt/utils/plugman.py	/^from plug.utils import Plugman as Base$/;"	Y	nameref:unknown:Plugman
+Base	src/plug/qt/utils/moder.py	/^from plug.utils import Moder as Base$/;"	Y	nameref:unknown:Moder
 BaseListener	src/plug/qt/utils/listener_key.py	/^from plug.utils.listener_key import KeyListener as BaseListener$/;"	Y	nameref:unknown:KeyListener
 BasePlug	src/plug/qt/base.py	/^from plug import Plug as BasePlug$/;"	Y	nameref:unknown:Plug
 Buffer	src/plug/qt/utils/buffer.py	/^class Buffer(QtCore.QObject):$/;"	c
@@ -66,9 +66,9 @@ Plug	src/plug/qt/base.py	/^class Plug(BasePlug):$/;"	c
 PlugApp	src/plug/qt/app.py	/^class PlugApp(Plug, QtWidgets.QApplication):$/;"	c
 Plug	src/plug/qt/obj.py	/^class Plug(Plug, QtCore.QObject):$/;"	c
 Plugin	README.md	/^# Plugin$/;"	c
-Plugman	src/plug/qt/utils/plugman.py	/^class Plugman(Base, QtCore.QObject):$/;"	c
-Plugman	src/plug/utils/dotdict.py	/^class Plugman:$/;"	c
-Plugman	src/plug/utils/plugman.py	/^class Plugman:$/;"	c
+Moder	src/plug/qt/utils/moder.py	/^class Moder(Base, QtCore.QObject):$/;"	c
+Moder	src/plug/utils/dotdict.py	/^class Moder:$/;"	c
+Moder	src/plug/utils/moder.py	/^class Moder:$/;"	c
 Powerline	src/plug/qt/plugs/powerline/main.py	/^class Powerline(Plug):$/;"	c
 PowerlineWidget	src/plug/qt/plugs/powerline/widget.py	/^class PowerlineWidget(QtWidgets.QWidget):$/;"	c
 QLabel#Statusbar_colon	src/plug/qt/plugs/powerline/style.css	/^QLabel#Statusbar_colon {$/;"	i
@@ -80,8 +80,8 @@ Search	src/plug/qt/modes/search/main.py	/^class Search(Mode):$/;"	c
 TreePlug	src/plug/qt/plugs/trees/base.py	/^class TreePlug(Plug):$/;"	c
 Visual	src/plug/qt/modes/visual/main.py	/^class Visual(Mode):$/;"	c
 ZMQListener	src/plug/qt/utils/listener_zmq.py	/^class ZMQListener(QtCore.QObject):$/;"	c
-__delattr__	src/plug/utils/plugman.py	/^    __delattr__ = dict.__delitem__$/;"	v	class:dotdict	file:
-__getattr__	src/plug/utils/plugman.py	/^    __getattr__ = dict.get$/;"	v	class:dotdict	file:
+__delattr__	src/plug/utils/moder.py	/^    __delattr__ = dict.__delitem__$/;"	v	class:dotdict	file:
+__getattr__	src/plug/utils/moder.py	/^    __getattr__ = dict.get$/;"	v	class:dotdict	file:
 __init__	src/plug/plug.py	/^    def __init__(self, $/;"	m	class:Plug
 __init__	src/plug/qt/app.py	/^    def __init__(self, $/;"	m	class:PlugApp
 __init__	src/plug/qt/base.py	/^    def __init__(self, $/;"	m	class:Plug
@@ -100,11 +100,11 @@ __init__	src/plug/qt/plugs/trees/base.py	/^    def __init__(self, **kwargs):$/;"
 __init__	src/plug/qt/plugs/trees/file.py	/^    def __init__(self, **kwargs):$/;"	m	class:FileBrowser
 __init__	src/plug/qt/utils/buffer.py	/^    def __init__(self, app):$/;"	m	class:Buffer
 __init__	src/plug/qt/utils/listener_zmq.py	/^    def __init__(self, parent):$/;"	m	class:ZMQListener
-__init__	src/plug/utils/dotdict.py	/^    def __init__(self, app=None):$/;"	m	class:Plugman
+__init__	src/plug/utils/dotdict.py	/^    def __init__(self, app=None):$/;"	m	class:Moder
 __init__	src/plug/utils/listener_key.py	/^    def __init__(self, parent):$/;"	m	class:KeyListener
 __init__	src/plug/utils/picky.py	/^    def __init__(self, picks, folder, base):$/;"	m	class:Picky
-__init__	src/plug/utils/plugman.py	/^    def __init__(self, app=None):$/;"	m	class:Plugman
-__setattr__	src/plug/utils/plugman.py	/^    __setattr__ = dict.__setitem__$/;"	v	class:dotdict	file:
+__init__	src/plug/utils/moder.py	/^    def __init__(self, app=None):$/;"	m	class:Moder
+__setattr__	src/plug/utils/moder.py	/^    __setattr__ = dict.__setitem__$/;"	v	class:dotdict	file:
 _command	src/plug/utils/command.py	/^    def _command(func):$/;"	f	function:command	file:
 _onExecuteMatch	src/plug/qt/modes/base.py	/^    def _onExecuteMatch(self): $/;"	m	class:Mode
 _register	src/plug/qt/utils/register.py	/^    def _register(func):$/;"	f	function:register	file:
@@ -113,9 +113,9 @@ act	src/plug/qt/base.py	/^    def act(self, request):$/;"	m	class:Plug
 activate	src/plug/plug.py	/^    def activate(self):$/;"	m	class:Plug
 activate	src/plug/qt/obj.py	/^    def activate(self):$/;"	m	class:Plug
 activateCommandMode	src/plug/qt/base.py	/^    def activateCommandMode(self):$/;"	m	class:Plug
-add	src/plug/qt/utils/plugman.py	/^    def add(self, picked, kind):$/;"	m	class:Plugman
-add	src/plug/utils/dotdict.py	/^    def add(self, picked, kind):$/;"	m	class:Plugman
-add	src/plug/utils/plugman.py	/^    def add(self, picked, kind):$/;"	m	class:Plugman
+add	src/plug/qt/utils/moder.py	/^    def add(self, picked, kind):$/;"	m	class:Moder
+add	src/plug/utils/dotdict.py	/^    def add(self, picked, kind):$/;"	m	class:Moder
+add	src/plug/utils/moder.py	/^    def add(self, picked, kind):$/;"	m	class:Moder
 addKeys	src/plug/qt/modes/base.py	/^    def addKeys(self, event, widget=None):$/;"	m	class:Mode
 bufferCreated	src/plug/qt/utils/buffer.py	/^    bufferCreated=QtCore.pyqtSignal(object)$/;"	v	class:Buffer
 center	src/plug/qt/plugs/trees/base.py	/^    def center(self):$/;"	m	class:TreePlug
@@ -126,9 +126,9 @@ checkSpecialCharacters	src/plug/qt/modes/base.py	/^    def checkSpecialCharacter
 checkSpecialCharacters	src/plug/qt/modes/exec/main.py	/^    def checkSpecialCharacters(self, event):$/;"	m	class:Exec
 checkSpecialCharacters	src/plug/qt/modes/input/main.py	/^    def checkSpecialCharacters(self, event):$/;"	m	class:Input
 cleanup	src/plug/utils/picky.py	/^    def cleanup(self):$/;"	m	class:Picky
-cleanupPicks	src/plug/qt/utils/plugman.py	/^    def cleanupPicks(self): super().cleanupPicks()$/;"	m	class:Plugman
-cleanupPicks	src/plug/utils/dotdict.py	/^    def cleanupPicks(self): self.picky.cleanup()$/;"	m	class:Plugman
-cleanupPicks	src/plug/utils/plugman.py	/^    def cleanupPicks(self): self.picky.cleanup()$/;"	m	class:Plugman
+cleanupPicks	src/plug/qt/utils/moder.py	/^    def cleanupPicks(self): super().cleanupPicks()$/;"	m	class:Moder
+cleanupPicks	src/plug/utils/dotdict.py	/^    def cleanupPicks(self): self.picky.cleanup()$/;"	m	class:Moder
+cleanupPicks	src/plug/utils/moder.py	/^    def cleanupPicks(self): self.picky.cleanup()$/;"	m	class:Moder
 clear	src/plug/qt/modes/search/main.py	/^    def clear(self):$/;"	m	class:Search
 clearKeys	src/plug/qt/modes/base.py	/^    def clearKeys(self):$/;"	m	class:Mode
 closeCurrentView	src/plug/qt/modes/normal/main.py	/^    def closeCurrentView(self): $/;"	m	class:Normal
@@ -145,7 +145,7 @@ delisten	src/plug/qt/modes/visual/main.py	/^    def delisten(self):$/;"	m	class:
 delisten	src/plug/qt/obj.py	/^    def delisten(self): self.listening=False$/;"	m	class:Plug
 delistenWanted	src/plug/qt/obj.py	/^    delistenWanted=QtCore.pyqtSignal()$/;"	v	class:Plug
 delocateUI	src/plug/qt/obj.py	/^    def delocateUI(self):$/;"	m	class:Plug
-dotdict	src/plug/utils/plugman.py	/^class dotdict(dict):$/;"	c
+dotdict	src/plug/utils/moder.py	/^class dotdict(dict):$/;"	c
 down	src/plug/qt/modes/normal/main.py	/^    def down(self, digit=1): $/;"	m	class:Normal
 escapePressed	src/plug/qt/modes/exec/main.py	/^    escapePressed=QtCore.pyqtSignal()$/;"	v	class:Exec
 escapePressed	src/plug/qt/modes/input/main.py	/^    escapePressed=QtCore.pyqtSignal()$/;"	v	class:Input
@@ -171,10 +171,10 @@ getInfo	src/plug/utils/picky.py	/^    def getInfo(self, gid): $/;"	m	class:Picky
 getKeys	src/plug/qt/modes/base.py	/^    def getKeys(self):$/;"	m	class:Mode
 getLine	src/plug/qt/modes/search/main.py	/^    def getLine(self, text, page, rectF):$/;"	m	class:Search
 getMatches	src/plug/qt/modes/base.py	/^    def getMatches(self, key, digit):$/;"	m	class:Mode
-getModes	src/plug/utils/dotdict.py	/^    def getModes(self): return self.modes$/;"	m	class:Plugman
-getModes	src/plug/utils/plugman.py	/^    def getModes(self): return self.modes$/;"	m	class:Plugman
+getModes	src/plug/utils/dotdict.py	/^    def getModes(self): return self.modes$/;"	m	class:Moder
+getModes	src/plug/utils/moder.py	/^    def getModes(self): return self.modes$/;"	m	class:Moder
 getPath	src/plug/qt/plugs/trees/file.py	/^    def getPath(self, index=None):$/;"	m	class:FileBrowser
-getPlugs	src/plug/utils/dotdict.py	/^    def getPlugs(self): return self.plugs$/;"	m	class:Plugman
+getPlugs	src/plug/utils/dotdict.py	/^    def getPlugs(self): return self.plugs$/;"	m	class:Moder
 get_plug_class	src/plug/qt/modes/command/__init__.py	/^def get_plug_class(): return Command$/;"	f
 get_plug_class	src/plug/qt/modes/exec/__init__.py	/^def get_plug_class(): return Exec$/;"	f
 get_plug_class	src/plug/qt/modes/input/__init__.py	/^def get_plug_class(): return Input$/;"	f
@@ -196,13 +196,13 @@ inner	src/plug/qt/utils/register.py	/^        def inner(self, *args, **kwargs): 
 inner	src/plug/utils/command.py	/^        def inner(self, *args, **kwargs):$/;"	f	function:command._command	file:
 install	src/plug/utils/picky.py	/^    def install(self):$/;"	m	class:Picky
 installDirect	src/plug/utils/picky.py	/^    def installDirect(self, gid):$/;"	m	class:Picky
-installPicks	src/plug/qt/utils/plugman.py	/^    def installPicks(self): super().installPicks()$/;"	m	class:Plugman
-installPicks	src/plug/utils/dotdict.py	/^    def installPicks(self): self.picky.install()$/;"	m	class:Plugman
-installPicks	src/plug/utils/plugman.py	/^    def installPicks(self): self.picky.install()$/;"	m	class:Plugman
+installPicks	src/plug/qt/utils/moder.py	/^    def installPicks(self): super().installPicks()$/;"	m	class:Moder
+installPicks	src/plug/utils/dotdict.py	/^    def installPicks(self): self.picky.install()$/;"	m	class:Moder
+installPicks	src/plug/utils/moder.py	/^    def installPicks(self): self.picky.install()$/;"	m	class:Moder
 jump	src/plug/qt/modes/search/main.py	/^    def jump(self, increment=1, match=None):$/;"	m	class:Search
 keyPressed	src/plug/qt/obj.py	/^    keyPressed=QtCore.pyqtSignal(object, object)$/;"	v	class:Plug
 keysChanged	src/plug/qt/modes/base.py	/^    keysChanged=QtCore.pyqtSignal(str)$/;"	v	class:Mode
-keysChanged	src/plug/qt/utils/plugman.py	/^    keysChanged=QtCore.pyqtSignal(str)$/;"	v	class:Plugman
+keysChanged	src/plug/qt/utils/moder.py	/^    keysChanged=QtCore.pyqtSignal(str)$/;"	v	class:Moder
 left	src/plug/qt/modes/normal/main.py	/^    def left(self, digit=1): $/;"	m	class:Normal
 listen	src/plug/qt/modes/base.py	/^    def listen(self):$/;"	m	class:Mode
 listen	src/plug/qt/modes/exec/main.py	/^    def listen(self):$/;"	m	class:Exec
@@ -214,16 +214,16 @@ listen	src/plug/qt/obj.py	/^    def listen(self): $/;"	m	class:Plug
 listen	src/plug/utils/listener_key.py	/^    def listen(self, key, func): $/;"	m	class:KeyListener
 listenWanted	src/plug/qt/obj.py	/^    listenWanted=QtCore.pyqtSignal(object)$/;"	v	class:Plug
 load	src/plug/qt/utils/buffer.py	/^    def load(self, filePath): pass $/;"	m	class:Buffer
-load	src/plug/utils/dotdict.py	/^    def load(self):$/;"	m	class:Plugman
-load	src/plug/utils/plugman.py	/^    def load(self):$/;"	m	class:Plugman
-loadModes	src/plug/utils/dotdict.py	/^    def loadModes(self, modes):$/;"	m	class:Plugman
-loadModes	src/plug/utils/plugman.py	/^    def loadModes(self, modes):$/;"	m	class:Plugman
-loadPlugs	src/plug/utils/dotdict.py	/^    def loadPlugs(self, plugs):$/;"	m	class:Plugman
-loadPlugs	src/plug/utils/plugman.py	/^    def loadPlugs(self, plugs):$/;"	m	class:Plugman
+load	src/plug/utils/dotdict.py	/^    def load(self):$/;"	m	class:Moder
+load	src/plug/utils/moder.py	/^    def load(self):$/;"	m	class:Moder
+loadModes	src/plug/utils/dotdict.py	/^    def loadModes(self, modes):$/;"	m	class:Moder
+loadModes	src/plug/utils/moder.py	/^    def loadModes(self, modes):$/;"	m	class:Moder
+loadPlugs	src/plug/utils/dotdict.py	/^    def loadPlugs(self, plugs):$/;"	m	class:Moder
+loadPlugs	src/plug/utils/moder.py	/^    def loadPlugs(self, plugs):$/;"	m	class:Moder
 locateUI	src/plug/qt/obj.py	/^    def locateUI(self):$/;"	m	class:Plug
 loop	src/plug/qt/utils/listener_zmq.py	/^    def loop(self):$/;"	m	class:ZMQListener
 loop	src/plug/utils/listener_key.py	/^    def loop(self): self.listener.start()$/;"	m	class:KeyListener
-modeChanged	src/plug/qt/utils/plugman.py	/^    modeChanged=QtCore.pyqtSignal(object)$/;"	v	class:Plugman
+modeChanged	src/plug/qt/utils/moder.py	/^    modeChanged=QtCore.pyqtSignal(object)$/;"	v	class:Moder
 modeKey	src/plug/qt/base.py	/^    def modeKey(self, mode): $/;"	m	class:Plug
 modeWanted	src/plug/qt/obj.py	/^    modeWanted=QtCore.pyqtSignal(object)$/;"	v	class:Plug
 next	src/plug/qt/modes/normal/main.py	/^    def next(self, digit=1): $/;"	m	class:Normal
@@ -275,8 +275,8 @@ register	src/plug/plug.py	/^        def register(paths, kind):$/;"	f	member:Plug
 register	src/plug/plug.py	/^    def register(self, request): pass$/;"	m	class:Plug
 register	src/plug/qt/obj.py	/^    def register(self):$/;"	m	class:Plug
 register	src/plug/qt/utils/register.py	/^def register(key=None, info=None, modes=[], command=True):$/;"	f
-register	src/plug/utils/dotdict.py	/^    def register(self, plug, actions): $/;"	m	class:Plugman
-register	src/plug/utils/plugman.py	/^    def register(self, plug, actions): $/;"	m	class:Plugman
+register	src/plug/utils/dotdict.py	/^    def register(self, plug, actions): $/;"	m	class:Moder
+register	src/plug/utils/moder.py	/^    def register(self, plug, actions): $/;"	m	class:Moder
 registerByParent	src/plug/plug.py	/^    def registerByParent(self, kind='PUSH'):$/;"	m	class:Plug
 registerByUmay	src/plug/plug.py	/^    def registerByUmay(self, paths=None, kind='PUSH'):$/;"	m	class:Plug
 registerKey	src/plug/qt/modes/base.py	/^    def registerKey(self, event):$/;"	m	class:Mode
@@ -293,9 +293,9 @@ saveCommands	src/plug/qt/modes/base.py	/^    def saveCommands(self, plug, method
 saveCommands	src/plug/qt/modes/exec/main.py	/^    def saveCommands(self, plug, method, key):$/;"	m	class:Exec
 search	src/plug/qt/modes/search/main.py	/^        def search(text, view, found=[]):$/;"	f	member:Search.find	file:
 set	src/plug/qt/base.py	/^        def set():$/;"	f	member:Plug.setLeaders	file:
-set	src/plug/qt/utils/plugman.py	/^    def set(self, listener='normal', kind='mode'):$/;"	m	class:Plugman
-set	src/plug/utils/dotdict.py	/^    def set(self, listener='normal', kind='mode'):$/;"	m	class:Plugman
-set	src/plug/utils/plugman.py	/^    def set(self, listener='normal', kind='mode'):$/;"	m	class:Plugman
+set	src/plug/qt/utils/moder.py	/^    def set(self, listener='normal', kind='mode'):$/;"	m	class:Moder
+set	src/plug/utils/dotdict.py	/^    def set(self, listener='normal', kind='mode'):$/;"	m	class:Moder
+set	src/plug/utils/moder.py	/^    def set(self, listener='normal', kind='mode'):$/;"	m	class:Moder
 setActions	src/plug/plug.py	/^    def setActions(self, obj=None):$/;"	m	class:Plug
 setBasePath	src/plug/plug.py	/^    def setBasePath(self):$/;"	m	class:Plug
 setConnection	src/plug/plug.py	/^    def setConnection(self, kind='PULL'):$/;"	m	class:Plug
@@ -316,8 +316,8 @@ setOSListener	src/plug/qt/base.py	/^    def setOSListener(self):$/;"	m	class:Plu
 setParser	src/plug/plug.py	/^    def setParser(self): self.parser = argparse.ArgumentParser()$/;"	m	class:Plug
 setPath	src/plug/qt/plugs/trees/file.py	/^    def setPath(self, path=None):$/;"	m	class:FileBrowser
 setPlugData	src/plug/qt/modes/base.py	/^    def setPlugData(self):$/;"	m	class:Mode
-setPlugman	src/plug/plug.py	/^    def setPlugman(self): self.plugman=Plugman(self)$/;"	m	class:Plug
-setPlugman	src/plug/qt/app.py	/^    def setPlugman(self): self.plugman=Plugman(self)$/;"	m	class:PlugApp
+setModer	src/plug/plug.py	/^    def setModer(self): self.moder=Moder(self)$/;"	m	class:Plug
+setModer	src/plug/qt/app.py	/^    def setModer(self): self.moder=Moder(self)$/;"	m	class:PlugApp
 setSettings	src/plug/plug.py	/^    def setSettings(self):$/;"	m	class:Plug
 setShortcuts	src/plug/qt/base.py	/^    def setShortcuts(self):$/;"	m	class:Plug
 setSystemShortcut	src/plug/plug.py	/^    def setSystemShortcut(self):$/;"	m	class:Plug
@@ -333,9 +333,9 @@ setup	src/plug/plug.py	/^    def setup(self):$/;"	m	class:Plug
 setup	src/plug/qt/modes/base.py	/^    def setup(self):$/;"	m	class:Mode
 setup	src/plug/qt/modes/input/widget.py	/^    def setup(self):$/;"	m	class:InputWidget
 setup	src/plug/qt/obj.py	/^    def setup(self):$/;"	m	class:Plug
-setup	src/plug/qt/utils/plugman.py	/^    def setup(self):$/;"	m	class:Plugman
-setup	src/plug/utils/dotdict.py	/^    def setup(self):$/;"	m	class:Plugman
-setup	src/plug/utils/plugman.py	/^    def setup(self):$/;"	m	class:Plugman
+setup	src/plug/qt/utils/moder.py	/^    def setup(self):$/;"	m	class:Moder
+setup	src/plug/utils/dotdict.py	/^    def setup(self):$/;"	m	class:Moder
+setup	src/plug/utils/moder.py	/^    def setup(self):$/;"	m	class:Moder
 showField	src/plug/qt/modes/input/main.py	/^    def showField(self, field=True, label=False):$/;"	m	class:Input
 showList	src/plug/qt/modes/exec/main.py	/^    def showList(self, text=None): $/;"	m	class:Exec
 test_app_initiated	tests/test_zmq.py	/^def test_app_initiated(plug): $/;"	f
@@ -348,9 +348,9 @@ toggleCursor	src/plug/qt/modes/normal/main.py	/^    def toggleCursor(self): $/;"
 toggleList	src/plug/qt/modes/search/main.py	/^    def toggleList(self):$/;"	m	class:Search
 up	src/plug/qt/modes/normal/main.py	/^    def up(self, digit=1): $/;"	m	class:Normal
 update	src/plug/utils/picky.py	/^    def update(self): pass$/;"	m	class:Picky
-updatePicks	src/plug/qt/utils/plugman.py	/^    def updatePicks(self): super().updatePicks()$/;"	m	class:Plugman
-updatePicks	src/plug/utils/dotdict.py	/^    def updatePicks(self): self.picky.update()$/;"	m	class:Plugman
-updatePicks	src/plug/utils/plugman.py	/^    def updatePicks(self): self.picky.update()$/;"	m	class:Plugman
+updatePicks	src/plug/qt/utils/moder.py	/^    def updatePicks(self): super().updatePicks()$/;"	m	class:Moder
+updatePicks	src/plug/utils/dotdict.py	/^    def updatePicks(self): self.picky.update()$/;"	m	class:Moder
+updatePicks	src/plug/utils/moder.py	/^    def updatePicks(self): self.picky.update()$/;"	m	class:Moder
 updatePosition	src/plug/qt/modes/input/widget.py	/^    def updatePosition(self):$/;"	m	class:InputWidget
 watchFile	src/plug/qt/utils/buffer.py	/^    def watchFile(self, filePath): $/;"	m	class:Buffer
 yankText	src/plug/qt/modes/input/main.py	/^    def yankText(self):$/;"	m	class:Input

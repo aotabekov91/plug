@@ -19,7 +19,7 @@ class Move(Plug):
 
     def move(self, direction, kind):
 
-        prev=self.app.plugman.prev
+        prev=self.app.moder.prev
         # Todo add dock resizing here also
         # bar=self.app.window.bar
         display=self.app.display

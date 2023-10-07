@@ -21,7 +21,7 @@ class FileBrowser(TreePlug):
                 prefix_keys=prefix_keys,
                 **kwargs)
         self.setPath()
-        self.app.plugman.plugsLoaded.connect(
+        self.app.moder.plugsLoaded.connect(
                 self.on_plugsLoaded)
 
     def on_plugsLoaded(self, plugs):

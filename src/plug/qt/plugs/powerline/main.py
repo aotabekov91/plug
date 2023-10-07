@@ -12,9 +12,9 @@ class Powerline(Plug):
         super().__init__(
                 prefix_keys=prefix_keys,
                 **kwargs)
-        self.app.plugman.modeChanged.connect(
+        self.app.moder.modeChanged.connect(
                 self.on_modeChanged)
-        self.app.plugman.keysChanged.connect(
+        self.app.moder.keysChanged.connect(
                 self.on_keysChanged)
         self.app.display.itemChanged.connect(
                 self.on_itemChanged)

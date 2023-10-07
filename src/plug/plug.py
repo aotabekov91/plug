@@ -2,21 +2,34 @@ import os
 import tomli
 import inspect
 
-from plug.utils import Plugman
-from plug.utils.plug_utils import createFolder, setKeys
+from plug.utils import (
+        Moder, setKeys, createFolder)
 
 class Plug:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+            self, *args, **kwargs):
 
         super().__init__()
         self.files={}
         self.actions={}
         self.kwargs=kwargs
-        self.app=kwargs.get('app', None)
-        self.name=kwargs.get('name', None)
-        self.config=kwargs.get('config', {})
+        self.app=kwargs.get(
+                'app', None)
+        self.name=kwargs.get(
+                'name', None)
+        self.config=kwargs.get(
+                'config', {})
         self.setup()
+        self.initialize()
+
+    def initialize(self):
+        self.loadModer()
+
+    def loadModer(self, *args, **kwargs):
+
+        if hasattr(self, 'moder'):
+            self.moder.load(*args, **kwargs)
 
     def setup(self):
 
@@ -26,8 +39,8 @@ class Plug:
         self.setSettings()
         self.setActions()
 
-    def setPlugman(self, plugman=Plugman):
-        self.plugman=plugman(app=self)
+    def setModer(self, moder=Moder):
+        self.moder=moder(app=self)
 
     def setActions(self):
 

@@ -37,16 +37,16 @@ class Umay(Handler):
     def setApp(self):
 
         if self.app:
-            plugman=getattr(
+            moder=getattr(
                     self.app, 
-                    'plugman', 
+                    'moder', 
                     None)
-            if plugman:
-                if hasattr(plugman, 'plugsLoaded'):
-                    plugman.plugsLoaded.connect(
+            if moder:
+                if hasattr(moder, 'plugsLoaded'):
+                    moder.plugsLoaded.connect(
                         self.load)
-                elif hasattr(plugman, 'on_plugsLoaded'):
-                    plugman.on_plugsLoaded=self.load
+                elif hasattr(moder, 'on_plugsLoaded'):
+                    moder.on_plugsLoaded=self.load
 
     def getKeywords(self, obj):
 
@@ -121,8 +121,8 @@ class Umay(Handler):
             l=n.split('_')
             if len(l)==2:
                 m, a = l[0], l[1]
-                plug=self.app.plugman.plugs.get(
-                        m, self.app.plugman.current)
+                plug=self.app.moder.plugs.get(
+                        m, self.app.moder.current)
                 if plug:
                     f=getattr(plug, a, None)
                     h=getattr(plug, 'handle', None)

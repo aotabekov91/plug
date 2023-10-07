@@ -9,7 +9,7 @@ class Colorscheme(Plug):
 
         self.update=update
         super().__init__(*args, **kwargs)
-        self.app.plugman.plugsLoaded.connect(
+        self.app.moder.plugsLoaded.connect(
                 self.addColorscheme)
 
     def addColorscheme(self, plugs):
