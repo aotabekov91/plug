@@ -64,8 +64,7 @@ class Umay(Handler):
             'kind':'PUSH', 
             'app': self.name,
             'port': self.connect.port }
-        data['app_keys']=self.getKeywords(
-                self.app)
+        data['app_keys']=self.getKeywords(self)
         mode_keys=[] 
         for n, p in plugs.items(): 
             mode_keys+=[self.getKeywords(p)]

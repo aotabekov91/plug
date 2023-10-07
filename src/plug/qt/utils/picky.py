@@ -23,6 +23,10 @@ class Picky(Base, QtCore.QObject):
         self.moder.save(self, a)
 
     @register(modes=['exec'])
+    def reloadPicks(self): 
+        self.moder.load()
+
+    @register(modes=['exec'])
     def installPicks(self): 
         super().installPicks()
 

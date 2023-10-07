@@ -67,6 +67,13 @@ class Normal(Plug):
         view=self.currentView()
         if view: 
             view.gotoBegin()
+            
+    @register(key='G')
+    def goto(self, digit=1):
+
+        view=self.currentView()
+        if view: 
+            view.goto(digit)
 
     @register(key=']')
     def next(self, digit=1): 
@@ -131,13 +138,6 @@ class Normal(Plug):
         if view:
             for d in range(digit): 
                 view.zoomOut()
-
-    @register(key='g')
-    def goto(self, digit=1):
-
-        view=self.currentView()
-        if view: 
-            view.goto(digit)
 
     @register(key='K')
     def pageUp(self, digit=1): 
