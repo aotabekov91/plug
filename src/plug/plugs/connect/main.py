@@ -42,13 +42,13 @@ class Connect(Plug):
         return zmq.Context().socket(
                 getattr(zmq, kind))
 
-    def send(self, data, socket):
+    def send(self, data, socket, wait_time=500):
 
         poller=zmq.Poller()
         poller.register(
                 socket, flags=zmq.POLLIN)
         socket.send_json(data)
-        if poller.poll(timeout=1000):
+        if poller.poll(timeout=wait_time):
             return socket.recv_json()
         else:
             socket.setsockopt(

@@ -1,4 +1,5 @@
 import os
+import json
 from pathlib import Path
 
 def createFolder(
@@ -31,3 +32,8 @@ def setKeys(obj, keys):
                 setattr(func, a, v)
             actions[(obj.name, m.name)]=m
     return actions
+
+def pretty_json(data, indent=4):
+
+    parsed = json.loads(data)
+    return json.dumps(parsed, indent=4)

@@ -7,10 +7,12 @@ class Umay(Handler):
     def __init__(self, 
                  *args, 
                  umay_port=None,
+                 wait_time=5000,
                  **kwargs):
 
         self.current=None
         self.umay_port=umay_port
+        self.wait_time=wait_time
         super(Umay, self).__init__(
                 *args, **kwargs)
         self.run()
@@ -75,7 +77,8 @@ class Umay(Handler):
         data['units']=units
         res=self.connect.send(
                 {'register': data},
-                self.usocket)
+                self.usocket,
+                wait_time=self.wait_time)
         print('Umay plug:', res)
 
     def getUnits(self, plug):
