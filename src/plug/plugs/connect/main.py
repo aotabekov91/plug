@@ -7,11 +7,13 @@ class Connect(Plug):
     def __init__(self, 
                  *args, 
                  port=None,
+                 kind=None,
                  handler=None,
                  parent_port=None,
                  **kwargs):
 
         self.port=port
+        self.kind=kind
         self.handler=handler
         self.poller=zmq.Poller()
         self.parent_port=parent_port
@@ -26,10 +28,12 @@ class Connect(Plug):
             ):
 
         if self.parent_port:
-            self.psocket = self.get(parent_kind)
+            self.psocket = self.get(
+                    parent_kind)
             s=f'tcp://localhost:{self.parent_port}'
             self.psocket.connect(s)
         if socket_kind=='bind':
+            self.kind=kind
             self.socket = self.get(kind)
             if self.port:
                 socket=f'tcp://*:{self.port}'

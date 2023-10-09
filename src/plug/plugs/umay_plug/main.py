@@ -22,7 +22,10 @@ class Umay(Handler):
     def setup(self):
 
         super().setup()
-        self.setConnect(socket_kind='bind')
+        self.setConnect(
+                port=self.port,
+                socket_kind='bind'
+                )
         self.setUmayConnect()
         self.setApp()
 
@@ -42,9 +45,9 @@ class Umay(Handler):
             if moder:
                 if hasattr(moder, 'plugsLoaded'):
                     moder.plugsLoaded.connect(
-                        self.load)
+                        self.register)
                 elif hasattr(moder, 'on_plugsLoaded'):
-                    moder.on_plugsLoaded=self.load
+                    moder.on_plugsLoaded=self.register
 
     def getKeywords(self, obj):
 
@@ -56,12 +59,13 @@ class Umay(Handler):
         keywords.insert(1, obj.name.lower())
         return keywords
 
-    def load(self, plugs):
+    def register(self, plugs):
 
         data={
             'kind':'PUSH', 
-            'app': self.name,
-            'port': self.connect.port }
+            'app': self.app.name,
+            'port': self.connect.port,
+            }
         data['app_keys']=self.getKeywords(
                 self.app)
         mode_keys=[] 
@@ -72,13 +76,17 @@ class Umay(Handler):
         for n, p in plugs.items(): 
             units[n]=self.getUnits(p)
         data['units']=units
-        res=self.connect.send(
-                {'register': data},
+        res=self.send({'register': data})
+        print('Umay plug:', res)
+
+    def send(self, data):
+
+        return self.connect.send(
+                data=data,
                 socket=self.usocket,
                 wait_time=self.wait_time,
-                pollerize=self.pollerize,
+                pollerize=self.pollerize
                 )
-        print('Umay plug:', res)
 
     def getUnits(self, plug):
 
@@ -98,12 +106,15 @@ class Umay(Handler):
 
     def setPlugData(self, plug, unit):
 
-        t=unit.get('type', None)
-        n=unit.get('name', None)
-        if t=='intent' and n:
-            pref=[self.name, plug.name, n]
-            new_name='_'.join(pref)
-            unit['name']=new_name
+        kind=unit.get('type', None)
+        name=unit.get('name', None)
+        if kind=='intent' and name:
+            unit['name']='_'.join(
+                    [
+                     self.app.name, 
+                     plug.name, 
+                     name
+                    ])
         return unit 
 
     def getFiles(self, plug):
@@ -117,16 +128,18 @@ class Umay(Handler):
 
     def handle(self, request):
 
-        # print('Umay handling request: ', request)
+        print('Umay handling request: ', request)
         for n, prm in request.items():
             l=n.split('_')
             if len(l)==2:
                 m, a = l[0], l[1]
-                plug=self.app.moder.plugs.get(
+                plugs=self.app.moder.plugs
+                p=plugs.get(
                         m, self.app.moder.current)
-                if plug:
-                    f=getattr(plug, a, None)
-                    h=getattr(plug, 'handle', None)
+                p=plugs.get(m.lower(), p)
+                if p:
+                    f=getattr(p, a, None)
+                    h=getattr(p, 'handle', None)
                     if f: 
                         self.adjustParameters(prm)
                         f(**prm)

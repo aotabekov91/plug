@@ -255,7 +255,7 @@ class Normal(Plug):
         return False
 
     @register('<c-q>', modes=['any'])
-    def exit(self):
+    def quit(self):
 
         if self.app: 
             self.app.exit()

@@ -30,6 +30,7 @@ class Handler(Plug):
         self.connect.set(**kwargs)
 
     def stop(self):
+        
         self.running=False
         self.connect.stop()
 
