@@ -34,7 +34,7 @@ class Plug(Base, QtCore.QObject):
         super(Plug, self).__init__(
                 *args, **kwargs)
 
-    def initialize(self):
+    def initiate(self):
 
         self.uiman.setUIKeys()
         super().initiate()

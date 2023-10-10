@@ -40,10 +40,12 @@ class Moder(Plug):
                     print(e)
         return plugs
 
-    def load(self, 
-             plugs=set(), 
-             plug_prmts={},
-             ):
+    def load(
+            self, 
+            params={},
+            plugs=set(), 
+            **kwargs,
+            ):
 
         def isLoaded(plug_class):
             for p in self.plugs:
@@ -57,7 +59,7 @@ class Moder(Plug):
                 config=self.app.config.get(
                         p.__name__, {})
                 # try:
-                kwargs=plug_prmts.get(
+                kwargs=params.get(
                         p.__name__, {})
                 plug=p(app=self.app, 
                        config=config,

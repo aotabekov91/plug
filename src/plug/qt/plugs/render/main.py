@@ -2,8 +2,9 @@ from plug.qt import Plug
 
 class Render(Plug):
 
-    def initialize(self):
+    def initiate(self):
 
+        super().initiate()
         display=getattr(
                 self.app, 
                 'display', 

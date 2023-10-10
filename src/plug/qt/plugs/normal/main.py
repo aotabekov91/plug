@@ -54,26 +54,26 @@ class Normal(Plug):
             for d in range(digit): 
                 view.incrementRight()
 
-    @register(key='G')
     def gotoEnd(self):
 
         view=self.currentView()
-        if view: 
-            view.gotoEnd()
+        if view: view.gotoEnd()
 
     @register(key='gg')
     def gotoBegin(self):
 
         view=self.currentView()
-        if view: 
-            view.gotoBegin()
+        if view: view.gotoBegin()
             
     @register(key='G')
-    def goto(self, digit=1):
+    def goto(self, digit=None):
 
         view=self.currentView()
         if view: 
-            view.goto(digit)
+            if not digit:
+                self.gotoEnd()
+            else:
+                view.goto(digit)
 
     @register(key=']')
     def next(self, digit=1): 

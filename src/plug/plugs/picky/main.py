@@ -2,7 +2,6 @@ import os
 import git
 import shutil
 from plug import Plug
-from plug.utils.miscel import dotdict
 from pip._internal import main as pipmain
 
 class Picky(Plug):
@@ -26,6 +25,7 @@ class Picky(Plug):
 
         super().setup()
         self.updateRTP()
+        self.installPicks()
 
     def setSettings(self):
 
@@ -40,16 +40,15 @@ class Picky(Plug):
         if self.app.moder:
             self.app.moder.rtp=self.rtp
 
-    def getRTP(self):
-        return self.rtp
-
     def updateRTP(self):
 
         picks=self.config.get(
                 'Picks', [])
         for data in picks:
-            repo = data.get('pick', None)
-            subdirs = data.get('subdir', [])
+            repo = data.get(
+                    'pick', None)
+            subdirs = data.get(
+                    'subdir', [])
             if repo:
                 n, p, f = self.getInfo(repo)
                 self.rtp[n] = f

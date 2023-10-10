@@ -8,7 +8,8 @@ class Plug:
     def __init__(
             self, 
             *args, 
-            **kwargs):
+            **kwargs
+            ):
 
         super().__init__()
         self.files={}
@@ -33,6 +34,16 @@ class Plug:
         self.setFiles()
         self.setSettings()
         self.setActions()
+
+    def setModer(self, moder, **kwargs):
+
+        config=self.config.get(
+                'Moder', {})
+        self.moder=moder(
+                app=self,
+                config=config,
+                **kwargs,
+                )
 
     def setActions(self):
 
@@ -59,7 +70,7 @@ class Plug:
             folder=None, 
             fname='folder'
             ):
-
+        
         if not folder: 
             folder=f'~/{self.name.lower()}'
         p=createFolder(folder)
@@ -84,6 +95,7 @@ class Plug:
             self.files[f]=path
             if f=='config.toml':
                 with open(path, 'rb') as y:
+                    print(path)
                     toml_data=tomli.load(y)
                 self.config.update(toml_data)
 
