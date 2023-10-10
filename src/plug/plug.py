@@ -1,14 +1,14 @@
 import os
 import tomli
-import inspect
-
-from plug.utils import (
-        Moder, setKeys, createFolder)
+from inspect import getfile
+from plug.utils import setKeys, createFolder
 
 class Plug:
 
     def __init__(
-            self, *args, **kwargs):
+            self, 
+            *args, 
+            **kwargs):
 
         super().__init__()
         self.files={}
@@ -21,15 +21,10 @@ class Plug:
         self.config=kwargs.get(
                 'config', {})
         self.setup()
-        self.initialize()
+        self.initiate()
 
-    def initialize(self):
-        self.loadModer()
-
-    def loadModer(self, *args, **kwargs):
-
-        if hasattr(self, 'moder'):
-            self.moder.load(*args, **kwargs)
+    def initiate(self):
+        pass
 
     def setup(self):
 
@@ -38,9 +33,6 @@ class Plug:
         self.setFiles()
         self.setSettings()
         self.setActions()
-
-    def setModer(self, moder=Moder):
-        self.moder=moder(app=self)
 
     def setActions(self):
 
@@ -62,14 +54,16 @@ class Plug:
         saveSetKeys()
         saveOwnKeys()
 
-    def createFolder(self, 
-                     folder=None, 
-                     fname='folder'):
+    def createFolder(
+            self, 
+            folder=None, 
+            fname='folder'
+            ):
 
         if not folder: 
             folder=f'~/{self.name.lower()}'
-        path=createFolder(folder)
-        setattr(self, fname, path)
+        p=createFolder(folder)
+        setattr(self, fname, p)
 
     def setName(self):
 
@@ -78,10 +72,10 @@ class Plug:
 
     def setBasePath(self):
 
-        file_path=os.path.abspath(
-                inspect.getfile(self.__class__))
+        p=os.path.abspath(
+                getfile(self.__class__))
         self.path=os.path.dirname(
-                file_path).replace('\\', '/')
+                p).replace('\\', '/')
 
     def setFiles(self):
 
@@ -95,7 +89,6 @@ class Plug:
 
     def setSettings(self):
 
-        if self.config.get('Settings', None):
-            settings=self.config['Settings']
-            for name, value in settings.items():
-                setattr(self, name, value)
+        s=self.config.get('Settings', {})
+        for n, v in s.items():
+            setattr(self, n, v)

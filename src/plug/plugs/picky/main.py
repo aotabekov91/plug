@@ -1,45 +1,50 @@
 import os
 import git
 import shutil
+from plug import Plug
+from plug.utils.miscel import dotdict
 from pip._internal import main as pipmain
 
-from plug.utils.miscel import dotdict
-
-class Picky:
+class Picky(Plug):
 
     def __init__(
-            self, app, moder):
+            self,
+            *args,
+            **kwargs,
+            ):
 
-        self.app=app
+        self.rtp={}
         self.repos=[]
         self.folder='~'
-        self.moder=moder
         self.base='https://github.com'
-        super().__init__()
-        self.setup()
+        super().__init__(
+                *args, 
+                **kwargs
+                )
 
     def setup(self):
 
-        self.config=self.app.config.get(
-                'Picky', {})
-        self.setSettings()
+        super().setup()
         self.updateRTP()
 
     def setSettings(self):
 
-        s=self.config.get('Settings', {})
-        for k, v in s.items():
-            setattr(self, k, v)
+        super().setSettings()
         self.base=os.path.expanduser(
                 self.base)
         self.folder=os.path.expanduser(
                 self.folder) 
         self.app.createFolder(
-                self.folder, 'picky_folder')
+                self.folder, 
+                'picky_folder')
+        if self.app.moder:
+            self.app.moder.rtp=self.rtp
+
+    def getRTP(self):
+        return self.rtp
 
     def updateRTP(self):
 
-        rtp={}
         picks=self.config.get(
                 'Picks', [])
         for data in picks:
@@ -47,12 +52,11 @@ class Picky:
             subdirs = data.get('subdir', [])
             if repo:
                 n, p, f = self.getInfo(repo)
-                rtp[n] = f
+                self.rtp[n] = f
                 for subdir in subdirs: 
                     url=f"{repo}/{subdir}"
                     n, p, f=self.getInfo(url)
-                    rtp[n]=f
-        self.moder.rtp.update(rtp)
+                    self.rtp[n]=f
 
     def install(self):
 
@@ -69,14 +73,14 @@ class Picky:
         if len(t)>2:
             h='/'.join(t[1:-1])
             h+='/'
-        folder=f"{self.folder}/{h}"
-        path=f"{folder}/{n}"
-        return n, path, folder
+        f=f"{self.folder}/{h}"
+        p=f"{f}/{n}"
+        return n, p, f
 
     def installRepo(self, repo):
 
         n, p, f=self.getInfo(repo)
-        self.moder.rtp[n]=f
+        self.rtp[n]=f
         if not n in self.repos: 
             self.repos+=[n]
         if not os.path.exists(p):
@@ -91,7 +95,7 @@ class Picky:
     def installRequirements(self):
 
         reqs=[]
-        for n, p in self.moder.rtp.items():
+        for n, p in self.rtp.items():
             p=os.path.join(p, n)
             for r in self.getReqs(p):
                 if not r in reqs:
@@ -102,7 +106,9 @@ class Picky:
 
         reqs=[]
         r=os.path.join(
-                path, "requirements.txt")
+                path, 
+                "requirements.txt"
+                )
         if os.path.exists(r):
             with open(r, 'r') as f:
                 for i in f.readlines():
@@ -122,13 +128,15 @@ class Picky:
     def updatePicks(self): 
 
         for name in self.repos:
-            path=os.path.join(self.folder, name)
-            repo = git.Repo(path)
+            p=os.path.join(
+                    self.folder, name)
+            repo = git.Repo(p)
             repo.remotes.origin.pull()
 
     def cleanupPicks(self):
 
         for d in os.listdir(self.folder):
             if not d in self.repos:
-                path=os.path.join(self.folder, d)
-                shutil.rmtree(path)
+                p=os.path.join(
+                        self.folder, d)
+                shutil.rmtree(p)

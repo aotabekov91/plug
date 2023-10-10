@@ -1,51 +1,28 @@
 import os
 import sys
 import importlib
-from plug.utils.picky import Picky
+from plug import Plug
 from plug.utils.miscel import dotdict
 
-class Moder:
+class Moder(Plug):
 
     def __init__(
             self, 
-            app=None, 
-            config={},
+            *args,
+            rtp={},
             plugs=dotdict(),
             default='normal',
+            **kwargs,
             ):
 
-        self.rtp={}
-        self.app=app
+        self.rtp=rtp
         self.prev=None
-        self.actions={}
-        self.plugs=plugs
         self.current=None
-        self.config=config
-        self.all_actions={}
+        self.plugs=plugs
         self.default=default
-        super().__init__()
-        self.setup()
-
-    def setup(self):
-
-        self.config=dotdict(
-                self.app.config.get(
-                    'Moder', {}))
-        self.setSettings()
-        self.setPicky()
-
-    def setPicky(self, picky_class=None):
-
-        if not picky_class:
-            picky_class=Picky
-        self.picky=picky_class(
-                self.app, self)
-
-    def setSettings(self):
-
-        s=self.config.get('Settings', {})
-        for k, v in s.items():
-            setattr(self, k, v)
+        super().__init__(
+                *args, **kwargs)
+        self.actions={}
 
     def getPlugs(self, plugs=set()):
 
@@ -63,7 +40,10 @@ class Moder:
                     print(e)
         return plugs
 
-    def load(self, plugs=set(), plug_prmts={}):
+    def load(self, 
+             plugs=set(), 
+             plug_prmts={},
+             ):
 
         def isLoaded(plug_class):
             for p in self.plugs:
@@ -94,6 +74,15 @@ class Moder:
         name=plug.name.lower()
         self.plugs[name]=plug
         self.save(plug, plug.actions)
+        if hasattr(plug, 'modeWanted'):
+            plug.modeWanted.connect(
+                    self.set)
+        if hasattr(plug, 'forceDelisten'):
+            plug.forceDelisten.connect(
+                    self.set)
+        if hasattr(plug, 'delistenWanted'):
+            plug.delistenWanted.connect(
+                    self.set)
 
     def get(self, mode):
 
@@ -115,11 +104,11 @@ class Moder:
                 self.current.listen()
 
     def save(self, plug, actions): 
-
         self.actions[plug]=actions
-        for n, a in actions.items():
-            name='_'.join(n)
-            self.all_actions[name]=a
+
+        # for n, a in actions.items():
+        #     name='_'.join(n)
+        #     self.all_actions[name]=a
 
     def on_plugsLoaded(self, plugs): 
         pass

@@ -1,5 +1,4 @@
 from PyQt5 import QtCore 
-
 from gizmo.utils import Ear
 from plug import Plug as Base
 from plug.qt.utils import UIMan
@@ -38,7 +37,7 @@ class Plug(Base, QtCore.QObject):
     def initialize(self):
 
         self.uiman.setUIKeys()
-        super().initialize()
+        super().initiate()
 
     def setup(self):
 

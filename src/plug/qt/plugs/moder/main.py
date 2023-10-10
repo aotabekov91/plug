@@ -1,33 +1,23 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from gizmo.utils import register
-from plug.utils import Moder as Base
-from plug.qt.utils.picky import Picky
+from plug.plugs.moder import Moder as Base
 
 class Moder(Base, QObject):
 
-    keysChanged=pyqtSignal(str)
-    modeChanged=pyqtSignal(object)
-    plugAdded=pyqtSignal(object)
-    plugsLoaded=pyqtSignal(object)
+    keysChanged=pyqtSignal(
+            str)
+    modeChanged=pyqtSignal(
+            object)
+    plugAdded=pyqtSignal(
+            object)
+    plugsLoaded=pyqtSignal(
+            object)
     actionsRegistered=pyqtSignal(
             object, object)
-
-    def setPicky(self, picky_class=None):
-        super().setPicky(picky_class=Picky)
 
     def add(self, plug):
 
         super().add(plug)
-        if hasattr(plug, 'modeWanted'):
-            plug.modeWanted.connect(
-                    self.set)
-        if hasattr(plug, 'forceDelisten'):
-            plug.forceDelisten.connect(
-                    self.set)
-        if hasattr(plug, 'delistenWanted'):
-            plug.delistenWanted.connect(
-                    self.set)
         if hasattr(plug, 'keysChanged'):
             plug.keysChanged.connect(
                     self.keysChanged)

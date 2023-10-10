@@ -3,7 +3,7 @@ from plug.qt import Plug
 class Visual(Plug):
 
     def __init__(self, 
-                 app=None,
+                 *args,
                  name='visual',
                  show_statusbar=True,
                  listen_leader='<c-v>',
@@ -14,13 +14,14 @@ class Visual(Plug):
         self.hints=None
         self.hinting=False
 
-        super().__init__(app=app, 
-                         name=name,
-                         listen_leader=listen_leader,
-                         show_statusbar=show_statusbar,
-                         delisten_on_exec=delisten_on_exec, 
-                         **kwargs,
-                         )
+        super().__init__(
+                *args,
+                name=name, 
+                listen_leader=listen_leader, 
+                show_statusbar=show_statusbar, 
+                delisten_on_exec=delisten_on_exec, 
+                **kwargs
+                )
 
     def delisten(self):
 
