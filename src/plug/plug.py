@@ -114,17 +114,15 @@ class Plug:
             setattr(self, n, v)
 
     def activate(self):
-        self.listen()
-
-    def deactivate(self):
-        self.delisten()
-
-    def listen(self):
 
         if self.app and self.app.moder:
             self.app.moder.set(self)
 
-    def delisten(self):
+    def deactivate(self):
 
         if self.app and self.app.moder:
             self.app.moder.set()
+
+    def listen(self): pass
+
+    def delisten(self): pass

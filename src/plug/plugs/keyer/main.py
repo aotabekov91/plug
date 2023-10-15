@@ -51,7 +51,8 @@ class Keyer(Plug):
             c_keys=self.keys.get(
                     self.current, {})
             keys=self.keys.get(
-                    self.default, {}).copy()
+                    self.default, {})
+            keys=keys.copy()
             keys.update(c_keys)
         else:
             keys=self.keys
@@ -69,6 +70,7 @@ class Keyer(Plug):
                 cmd+=f'type {key}'
             else:
                 cmd+=key
+            print(self.__class__.__name__, key, action, cmd)
             self.runCommand(cmd)
 
     def actOnKeyPre(self, key, action):

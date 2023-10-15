@@ -111,9 +111,5 @@ class Moder(Plug):
     def save(self, plug, actions): 
         self.actions[plug]=actions
 
-        # for n, a in actions.items():
-        #     name='_'.join(n)
-        #     self.all_actions[name]=a
-
     def on_plugsLoaded(self, plugs): 
         pass
