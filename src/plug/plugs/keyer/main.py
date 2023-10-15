@@ -65,8 +65,7 @@ class Keyer(Plug):
         if key:
             self.actOnKeyPre(key, action)
             if len(key)==1:
-                cmd='xdotool type --clearmodifiers '
-                cmd+=f'type {key}'
+                cmd=f'xdotool type --clearmodifiers {key}'
                 for i in range(digit):
                     self.runCommand(cmd) 
             else:
