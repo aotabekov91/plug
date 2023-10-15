@@ -70,8 +70,8 @@ class Keyer(Plug):
                 cmd+=f'type {key}'
             else:
                 cmd+=key
+            self.runCommand(cmd) 
             print(self.__class__.__name__, key, action, cmd)
-            self.runCommand(cmd)
 
     def actOnKeyPre(self, key, action):
 

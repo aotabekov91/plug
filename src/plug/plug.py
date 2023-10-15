@@ -49,8 +49,7 @@ class Plug:
     def setMode(self, mode=None):
 
         if self.app and self.app.moder:
-            mode=self.app.moder.get(mode)
-            if mode: mode.activate()
+            self.app.moder.set(mode)
 
     def setActions(self):
 
@@ -112,16 +111,6 @@ class Plug:
         s=self.config.get('Settings', {})
         for n, v in s.items():
             setattr(self, n, v)
-
-    def activate(self):
-
-        if self.app and self.app.moder:
-            self.app.moder.set(self)
-
-    def deactivate(self):
-
-        if self.app and self.app.moder:
-            self.app.moder.set()
 
     def listen(self): pass
 

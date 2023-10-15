@@ -97,16 +97,13 @@ class Moder(Plug):
 
     def set(self, mode=None):
 
-        if not mode:
-            mode=self.default
         mode=self.get(mode)
-        if self.current!=mode:
+        if mode and self.current!=mode:
             if self.current: 
                 self.current.delisten()
             self.prev=self.current
             self.current=mode
-            if self.current:
-                self.current.listen()
+            self.current.listen()
 
     def save(self, plug, actions): 
         self.actions[plug]=actions
