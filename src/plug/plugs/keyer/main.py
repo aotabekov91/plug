@@ -64,14 +64,15 @@ class Keyer(Plug):
                     toggler, None)
         if key:
             self.actOnKeyPre(key, action)
-            cmd='xdotool key --clearmodifiers '
-            cmd+=f'--repeat {digit} '
             if len(key)==1:
+                cmd='xdotool type --clearmodifiers '
                 cmd+=f'type {key}'
+                for i in range(digit):
+                    self.runCommand(cmd) 
             else:
-                cmd+=key
-            self.runCommand(cmd) 
-            print(self.__class__.__name__, key, action, cmd)
+                cmd='xdotool key --clearmodifiers '
+                cmd+=f'--repeat {digit} {key}'
+                self.runCommand(cmd) 
 
     def actOnKeyPre(self, key, action):
 
