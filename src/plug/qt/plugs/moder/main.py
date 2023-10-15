@@ -1,6 +1,5 @@
-from PyQt5.QtCore import QObject, pyqtSignal
-
 from plug.plugs.moder import Moder as Base
+from PyQt5.QtCore import QObject, pyqtSignal
 
 class Moder(Base, QObject):
 

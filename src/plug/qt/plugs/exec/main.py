@@ -18,14 +18,16 @@ class Exec(Plug):
     tabPressed=QtCore.pyqtSignal()
     textChanged=QtCore.pyqtSignal()
 
-    def __init__(self, 
-                 app=None, 
-                 name='exec',
-                 special=special,
-                 listen_leader='<c-.>',
-                 **kwargs
-                 ):
+    def __init__(
+            self, 
+            app=None, 
+            name='exec', 
+            special=special, 
+            listen_leader='<c-.>', 
+            **kwargs
+            ):
 
+        self.commands={}
         super().__init__(
                 app=app, 
                 name=name, 
@@ -34,8 +36,7 @@ class Exec(Plug):
                 **kwargs
                 )
 
-        self.commands={}
-        self.ear=self.ear
+        # self.ear=self.ear
         self.ear.returnPressed.connect(
                 self.on_returnPressed)
         self.ear.carriageReturnPressed.connect(
@@ -49,6 +50,15 @@ class Exec(Plug):
 
         super().setup()
         self.setParser()
+        if self.app:
+            self.app.moder.plugsLoaded.connect(
+                    self.on_plugsLoaded
+                    )
+
+    def on_plugsLoaded(self, plugs):
+
+        self.functions.update(
+                self.commands)
 
     def delisten(self):
 
@@ -151,7 +161,8 @@ class Exec(Plug):
         a=vars(a)
         n=a.pop('command', None)
         m=self.commands.get(n, None)
-        if m: return (n, m, a, u)
+        if m: 
+            return (n, m, a, u)
 
     def getMethods(self, raise_error=True):
 

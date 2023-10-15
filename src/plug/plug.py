@@ -14,6 +14,7 @@ class Plug:
         super().__init__()
         self.files={}
         self.actions={}
+        self.functions={}
         self.kwargs=kwargs
         self.app=kwargs.get(
                 'app', None)
@@ -45,6 +46,12 @@ class Plug:
                 **kwargs,
                 )
 
+    def setMode(self, mode=None):
+
+        if self.app and self.app.moder:
+            mode=self.app.moder.get(mode)
+            if mode: mode.activate()
+
     def setActions(self):
 
         def saveSetKeys():
@@ -57,6 +64,8 @@ class Plug:
 
             for f in self.__dir__():
                 m=getattr(self, f)
+                if not f.startswith('__'):
+                    self.functions[f]=m
                 if hasattr(m, 'modes'):
                     d=(self.name, m.name)
                     if not d in self.actions:
@@ -95,7 +104,6 @@ class Plug:
             self.files[f]=path
             if f=='config.toml':
                 with open(path, 'rb') as y:
-                    print(path)
                     toml_data=tomli.load(y)
                 self.config.update(toml_data)
 
@@ -104,3 +112,19 @@ class Plug:
         s=self.config.get('Settings', {})
         for n, v in s.items():
             setattr(self, n, v)
+
+    def activate(self):
+        self.listen()
+
+    def deactivate(self):
+        self.delisten()
+
+    def listen(self):
+
+        if self.app and self.app.moder:
+            self.app.moder.set(self)
+
+    def delisten(self):
+
+        if self.app and self.app.moder:
+            self.app.moder.set()

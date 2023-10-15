@@ -15,6 +15,7 @@ class Picky(Plug):
         self.rtp={}
         self.repos=[]
         self.folder='~'
+        self.install_picks=False
         self.base='https://github.com'
         super().__init__(
                 *args, 
@@ -25,7 +26,8 @@ class Picky(Plug):
 
         super().setup()
         self.updateRTP()
-        self.installPicks()
+        if self.install_picks:
+            self.installPicks()
 
     def setSettings(self):
 
@@ -63,7 +65,8 @@ class Picky(Plug):
                 'Picks', [])
         for data in picks:
             r = data.get('pick', None)
-            if r: self.installRepo(r)
+            if r: 
+                self.installRepo(r)
 
     def getInfo(self, gid): 
 

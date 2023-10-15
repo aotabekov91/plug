@@ -88,8 +88,11 @@ class Moder(Plug):
 
     def get(self, mode):
 
+        if mode is None:
+            mode=self.default
         if type(mode)==str:
-            mode=self.plugs.get(mode)
+            name=mode.lower()
+            mode=self.plugs.get(name)
         return mode
 
     def set(self, mode=None):

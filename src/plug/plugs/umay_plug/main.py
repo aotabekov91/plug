@@ -9,9 +9,11 @@ class Umay(Handler):
                  umay_port=None,
                  wait_time=5000,
                  pollerize=True,
+                 adjuster={'digit':int},
                  **kwargs):
 
         self.current=None
+        self.adjuster=adjuster
         self.umay_port=umay_port
         self.pollerize=pollerize
         self.wait_time=wait_time
@@ -129,29 +131,51 @@ class Umay(Handler):
     def handle(self, request):
 
         print('Umay handling request: ', request)
-        for n, prm in request.items():
-            l=n.split('_')
-            if len(l)==2:
-                m, a = l[0], l[1]
-                plugs=self.app.moder.plugs
-                p=plugs.get(
-                        m, self.app.moder.current)
-                p=plugs.get(m.lower(), p)
-                if p:
-                    f=getattr(p, a, None)
-                    h=getattr(p, 'handle', None)
-                    if f: 
-                        self.adjustParameters(prm)
-                        f(**prm)
-                    elif h:
-                        h(request)
-                    else:
-                        self.checkEars(a, prm)
+        for name, params in request.items():
+            parsed=self.parseName(name)
+            if parsed:
+                mode, action = parsed 
+                plug=self.app.moder.plugs.get(
+                        mode.lower(), 
+                        self.app.moder.current
+                        )
+                self.runPlugAction(
+                        plug, 
+                        action, 
+                        params,
+                        request,
+                        )
+
+    def parseName(self, name):
+
+        l=name.split('_')
+        if len(l)==2:
+            return l[0], l[1]
+
+    def runPlugAction(
+            self, 
+            plug, 
+            action, 
+            params, 
+            request
+            ):
+
+        if plug:
+            f=plug.functions.get(action, None)
+            h=getattr(plug, 'handleRequest', None)
+            self.adjustParameters(params)
+            if f: 
+                f(**params)
+            elif h:
+                h(request)
+            else:
+                self.checkEars(action, params)
 
     def adjustParameters(self, prm):
 
-        if 'digit' in prm:
-            prm['digit']=int(prm['digit'])
+        for n, f in self.adjuster.items():
+            if n in prm:
+                prm[n]=f(prm[n])
 
     def checkEars(self, action, prm):
 
@@ -175,10 +199,12 @@ class Umay(Handler):
                     cobj, eobj.parent())
 
         if self.app:
-            uiman=getattr(self.app, 'uiman')
-            c=uiman.current
-            if uiman.current:
-                f=checkEar(c, action)
+            current=None
+            uiman=getattr(self.app, 'uiman', None)
+            if uiman:
+                current=uiman.current
+            if current:
+                f=checkEar(current, action)
                 if f:
                     return f(**prm)
                 cand=[]
@@ -194,5 +220,5 @@ class Umay(Handler):
                     return f(**prm)
                 elif len(cand)>1:
                     for e, f in cand:
-                        if checkParent(c.obj, e.obj):
+                        if checkParent(current.obj, e.obj):
                             return f(**prm)

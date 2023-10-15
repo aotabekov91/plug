@@ -84,11 +84,11 @@ class Connect(Plug):
 
         if self.socket:
             self.running=True
-            thread=threading.Thread(
+            self.thread=threading.Thread(
                     target=listen)
-            thread.deamon=True
-            thread.start()
-            return thread
+            self.thread.deamon=True
+            self.thread.start()
+            return self.thread
 
     def handle(self, r):
 
