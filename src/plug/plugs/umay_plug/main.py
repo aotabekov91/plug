@@ -21,12 +21,13 @@ class Umay(Handler):
                 *args, **kwargs)
         self.run()
 
-    def setup(self):
+    def setup(self,
+              socket_kind='bind'):
 
         super().setup()
         self.setConnect(
                 port=self.port,
-                socket_kind='bind'
+                socket_kind=socket_kind,
                 )
         self.setUmayConnect()
         self.setApp()
@@ -41,9 +42,7 @@ class Umay(Handler):
 
         if self.app:
             moder=getattr(
-                    self.app, 
-                    'moder', 
-                    None)
+                    self.app, 'moder', None)
             if moder:
                 if hasattr(moder, 'plugsLoaded'):
                     moder.plugsLoaded.connect(
