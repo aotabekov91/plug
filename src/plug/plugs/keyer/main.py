@@ -27,10 +27,12 @@ class Keyer(Plug):
         def assignKeys(keys):
 
             for n, k in keys.items():
-                f=partial(self.actOnKey, n)
+                f=getattr(self, n, None)
+                if not f:
+                    f=partial(self.actOnKey, n)
                 self.functions[n]=f
 
-        self.functions={}
+        # self.functions={}
         self.keys=getattr(
                 self, 'Keys', {})
         if len(self.modes)==0:
@@ -40,12 +42,7 @@ class Keyer(Plug):
                 keys=self.keys.get(m, {})
                 assignKeys(keys)
 
-    def actOnKey(
-            self, 
-            action, 
-            digit=1,
-            **kwargs,
-            ):
+    def getKey(self, action):
 
         if self.modes:
             c_keys=self.keys.get(
@@ -56,7 +53,16 @@ class Keyer(Plug):
             keys.update(c_keys)
         else:
             keys=self.keys
-        key=keys.get(action, None)
+        return keys.get(action, None)
+
+    def actOnKey(
+            self, 
+            action, 
+            digit=1,
+            **kwargs,
+            ):
+
+        key=self.getKey(action)
         if type(key)==dict:
             toggler=kwargs.get(
                     'toggler', None)
