@@ -1,7 +1,7 @@
 from PyQt5 import QtCore 
-from gizmo.utils import Ear
 from plug import Plug as Base
 from plug.qt.utils import UIMan
+from gizmo.utils import Ear, register
 
 class Plug(Base, QtCore.QObject):
 
@@ -84,6 +84,7 @@ class Plug(Base, QtCore.QObject):
 
         return p in self.ear.listen_leader
 
+    @register('t', modes=['command'])
     def toggle(self):
 
         if not self.activated:

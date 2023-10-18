@@ -184,7 +184,7 @@ class Normal(Plug):
 
         self.display.decrementFold()
 
-    @register(key='tc', modes=['normal', 'command'])
+    @register(key='tc', modes=['command'])
     def toggleCursor(self): 
 
         if self.cursor_visible:
@@ -192,7 +192,8 @@ class Normal(Plug):
         else:
             c=QtGui.QCursor(QtCore.Qt.ArrowCursor)
         self.cursor_visible=not self.cursor_visible
-        self.app.setOverrideCursor(c)
+        if self.app.uiman.qapp:
+            self.app.uiman.qapp.setOverrideCursor(c)
 
     @register(key='<c-w>sv', modes=['normal', 'command'])
     def splitVertical(self): 

@@ -51,8 +51,17 @@ QAbstractScrollArea {
 	background-color: red;
 }
 
-#ViewContainer QWidget:focus{
+#ViewContainer QWidget:focus {
 	border-color: red;
 	border-width: 25px;
 	border-style: solid;
+}
+
+QWidget#Input {
+	color: white;
+	font-size: 16px;
+	border-radius: 15px;
+	border-style: outset;
+	padding: 15px 15px 15px 15px;
+	background-color: rgba(0, 0, 0, .8); 
 }

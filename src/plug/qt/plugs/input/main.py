@@ -11,12 +11,13 @@ class Input(Plug):
     def __init__(self, 
                  app=None, 
                  name='input',
-                 listen_leader='Ctrl+;',  
+                 listen_leader='<c+;>',
                  delisten_on_exec=False,
                  **kwargs
                  ):
 
-        super().__init__(
+        self.client=None
+        super(Input, self).__init__(
                 app=app, 
                 name=name, 
                 listen_leader=listen_leader, 
@@ -24,16 +25,22 @@ class Input(Plug):
                 **kwargs
                 )
 
-        self.client=None
+    def setup(self):
+
+        super().setup()
         self.widget=InputWidget(self.app)
         self.widget.hide()
 
     def listen(self):
 
         super().listen()
-        self.client=QtWidgets.QApplication.focusWidget()
-        self.yankText()
-        self.showField()
+        self.setFocusedWidget()
+        self.showWidget()
+
+    def setFocusedWidget(self):
+
+        qapp=QtWidgets.QApplication
+        self.client=qapp.focusWidget()
 
     def yankText(self):
 
@@ -45,14 +52,17 @@ class Input(Plug):
             text=f()
             self.widget.setText(text)
 
-    def showField(self, field=True, label=False):
+    def showWidget(
+            self, 
+            field=True, 
+            label=False
+            ):
 
+        if label:
+            self.widget.label.show()
         self.widget.show()
         if field:
             self.widget.field.show()
-        if label:
-            self.widget.label.show()
-
         self.widget.field.setFocus()
 
     def hideClearField(self):
@@ -60,7 +70,6 @@ class Input(Plug):
         self.widget.hide()
         self.widget.label.hide()
         self.widget.field.hide()
-
         self.widget.field.clear()
         self.widget.label.clear()
 
@@ -79,7 +88,6 @@ class Input(Plug):
     def setText(self):
 
         if self.client:
-
             f=getattr(self.client, 'setText', None)
             if not f:
                 f=getattr(self.client, 'setPlainText', None)

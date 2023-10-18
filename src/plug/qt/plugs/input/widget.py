@@ -1,24 +1,16 @@
 from PyQt5 import QtWidgets, QtCore 
 
-from gizmo.widget import Editor, NVim
+from gizmo.widget import VimEditor, NVim
 
 class InputWidget(QtWidgets.QWidget):
 
     def __init__(self, parent):
 
         self.app=parent
-        super().__init__(self.app.window.main)
-
-        self.setStyleSheet('''
-            QWidget{
-                font-size: 16px;
-                color: white;
-                border-radius: 15px;
-                border-style: outset;
-                background-color: rgba(0, 0, 0, .8); 
-                padding: 15px 15px 15px 15px;
-                }
-            ''')
+        super().__init__(
+                objectName='Input',
+                parent=self.app.window.main,
+                )
 
         self.setup()
         self.parent().installEventFilter(self)
@@ -31,9 +23,11 @@ class InputWidget(QtWidgets.QWidget):
     def setup(self):
 
         self.nvim=NVim()
-
         self.label=QtWidgets.QLabel()
-        self.field=Editor(self.nvim, self.app.window.bar)
+        self.field=VimEditor(
+                nvim=self.nvim, 
+                bar=self.app.window.bar
+                )
 
         layout=QtWidgets.QVBoxLayout()
         layout.setSpacing(5)

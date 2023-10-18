@@ -6,18 +6,17 @@ authors = ["A O <adhambek.otabekov.post@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 tomli = ">=2.0.1"
 pyyaml = ">=6.0.1"
 pyzmq = ">=25.0.2" 
 gitpython = ">=3.1.32"
-PyQt5 = { version = ">=5.15.6", optional = true}
 pynput = { version = ">=1.7.6", optional = true}
 # gizmo = {path = "/home/adam/code/gizmo", develop = true, optional = true}
 gizmo = {git = "https://github.com/aotabekov91/gizmo", branch='main', optional=true}
 
 [tool.poetry.extras]
-qt=["gizmo", "PyQt5", "pynput"]
+qt=["gizmo", "pynput"]
 
 [tool.poetry.group.test.dependencies]
 pytest = "^6.0.0"
