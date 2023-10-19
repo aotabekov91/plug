@@ -7,6 +7,8 @@ class Moder(Base, QObject):
             str)
     modeChanged=pyqtSignal(
             object)
+    detailChanged=pyqtSignal(
+            object)
     plugAdded=pyqtSignal(
             object)
     plugsLoaded=pyqtSignal(

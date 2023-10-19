@@ -26,7 +26,6 @@ class InputWidget(QtWidgets.QWidget):
         self.label=QtWidgets.QLabel()
         self.field=VimEditor(
                 nvim=self.nvim, 
-                bar=self.app.window.bar
                 )
 
         layout=QtWidgets.QVBoxLayout()

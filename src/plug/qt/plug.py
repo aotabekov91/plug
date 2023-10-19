@@ -5,6 +5,7 @@ from gizmo.utils import Ear, register
 
 class Plug(Base, QtCore.QObject):
 
+    tabPressed=QtCore.pyqtSignal()
     escapePressed=QtCore.pyqtSignal()
     returnPressed=QtCore.pyqtSignal()
     forceDelisten=QtCore.pyqtSignal()

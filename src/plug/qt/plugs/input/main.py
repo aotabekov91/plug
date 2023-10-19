@@ -6,15 +6,22 @@ from .widget import InputWidget
 
 class Input(Plug):
 
-    escapePressed=QtCore.pyqtSignal()
+    special=[
+            'carriage', 
+            'escape_bracket'
+            ]
+    tabPressed=QtCore.pyqtSignal()
+    textChanged=QtCore.pyqtSignal()
 
-    def __init__(self, 
-                 app=None, 
-                 name='input',
-                 listen_leader='<c+;>',
-                 delisten_on_exec=False,
-                 **kwargs
-                 ):
+    def __init__(
+            self, 
+            app=None, 
+            name='input',
+            special=special,
+            listen_leader='<c-I>',
+            delisten_on_exec=False,
+            **kwargs
+            ):
 
         self.client=None
         super(Input, self).__init__(
@@ -28,14 +35,31 @@ class Input(Plug):
     def setup(self):
 
         super().setup()
-        self.widget=InputWidget(self.app)
-        self.widget.hide()
+        self.ui=InputWidget(self.app)
+        self.ui.hide()
+        self.ear.carriageReturnPressed.connect(
+                self.on_returnPressed)
+        self.ear.escapePressed.connect(
+                self.on_escapePressed)
 
     def listen(self):
 
         super().listen()
         self.setFocusedWidget()
         self.showWidget()
+
+    def showWidget(
+            self, 
+            field=True, 
+            label=False
+            ):
+
+        if label:
+            self.ui.label.show()
+        self.ui.show()
+        if field:
+            self.ui.field.show()
+        self.ui.field.setFocus()
 
     def setFocusedWidget(self):
 
@@ -50,28 +74,15 @@ class Input(Plug):
 
         if f:
             text=f()
-            self.widget.setText(text)
-
-    def showWidget(
-            self, 
-            field=True, 
-            label=False
-            ):
-
-        if label:
-            self.widget.label.show()
-        self.widget.show()
-        if field:
-            self.widget.field.show()
-        self.widget.field.setFocus()
+            self.ui.setText(text)
 
     def hideClearField(self):
 
-        self.widget.hide()
-        self.widget.label.hide()
-        self.widget.field.hide()
-        self.widget.field.clear()
-        self.widget.label.clear()
+        self.ui.hide()
+        self.ui.label.hide()
+        self.ui.field.hide()
+        self.ui.field.clear()
+        self.ui.label.clear()
 
     def eventFilter(self, w, e):
 
@@ -88,33 +99,33 @@ class Input(Plug):
     def setText(self):
 
         if self.client:
-            f=getattr(self.client, 'setText', None)
+            f=getattr(
+                    self.client, 
+                    'setText', 
+                    None
+                    )
             if not f:
-                f=getattr(self.client, 'setPlainText', None)
+                f=getattr(
+                        self.client, 
+                        'setPlainText', 
+                        None
+                        )
 
             if f: 
-                text=self.widget.field.text()
+                text=self.ui.field.text()
                 if text: f(text)
-
-    def checkSpecialCharacters(self, event):
-
-        r=super().checkSpecialCharacters(event)
-        if r in ['escape_bracket', 'carriage']:
-            return True
-        else:
-            return False
 
     def on_escapePressed(self): 
 
-        super().on_escapePressed()
-        self.forceDelisten.emit()
         self.client=None
-        if self.widget.isVisible(): self.hideClearField()
+        self.deactivate()
+        self.hideClearField()
+        self.escapePressed.emit()
 
-    def on_carriagePressed(self): 
+    def on_returnPressed(self): 
 
         self.setText()
-        self.returnPressed.emit()
-        self.forceDelisten.emit()
         self.client=None
-        if self.widget.isVisible(): self.hideClearField()
+        self.deactivate()
+        self.hideClearField()
+        self.returnPressed.emit()

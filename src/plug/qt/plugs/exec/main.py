@@ -15,7 +15,6 @@ class Exec(Plug):
             'escape', 
             'escape_bracket'
             ]
-    tabPressed=QtCore.pyqtSignal()
     textChanged=QtCore.pyqtSignal()
 
     def __init__(
@@ -36,7 +35,6 @@ class Exec(Plug):
                 **kwargs
                 )
 
-        # self.ear=self.ear
         self.ear.returnPressed.connect(
                 self.on_returnPressed)
         self.ear.carriageReturnPressed.connect(

@@ -64,12 +64,8 @@ class ListWidget(QtWidgets.QWidget):
             y=p.height()-self.height()
 
             bar=self.parent().bar
-            dh=22*bar.container_layout.count()
+            dh=22*bar.clayout.count()
             y-=dh
-            # print(bar.rect())
-            # if bar.isVisible():
-                # yy-=bar.container.size().height()
-            # y=-25
             self.setGeometry(x, y, w, h)
 
     def eventFilter(self, widget, event):
