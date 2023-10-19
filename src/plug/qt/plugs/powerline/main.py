@@ -13,8 +13,8 @@ class Powerline(Plug):
 
         super().__init__(
                 prefix_keys=prefix_keys,
-                **kwargs
-                )
+                **kwargs)
+        self.setUI()
         self.app.moder.modeChanged.connect(
                 self.on_modeChanged)
         self.app.moder.keysChanged.connect(
@@ -27,26 +27,19 @@ class Powerline(Plug):
                 self.on_viewChanged)
         self.activate()
 
-    def setup(self):
-
-        super().setup()
-        self.setUI()
-
     def on_detailChanged(self, name):
-        pass
+
+        if name: name=name.title()
+        self.ui.setText('detail', name) 
 
     def on_keysChanged(self, keys):
-
-        if keys:
-            self.ui.setText('keys', keys)
+        self.ui.setText('keys', keys)
 
     def on_modeChanged(self, mode):
 
-        if mode:
-            self.ui.setText(
-                    'mode', 
-                    mode.name.title()
-                    )
+        name=None
+        if mode: name=mode.name.title()
+        self.ui.setText('mode', name) 
 
     def setUI(self):
 

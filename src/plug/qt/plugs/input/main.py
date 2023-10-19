@@ -37,6 +37,8 @@ class Input(Plug):
         super().setup()
         self.ui=InputWidget(self.app)
         self.ui.hide()
+        self.ui.modeChanged.connect(
+                self.app.moder.detailChanged)
         self.ear.carriageReturnPressed.connect(
                 self.on_returnPressed)
         self.ear.escapePressed.connect(
@@ -83,6 +85,7 @@ class Input(Plug):
         self.ui.field.hide()
         self.ui.field.clear()
         self.ui.label.clear()
+        self.ui.modeChanged.emit(None)
 
     def eventFilter(self, w, e):
 

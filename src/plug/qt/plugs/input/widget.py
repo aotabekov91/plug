@@ -4,6 +4,8 @@ from gizmo.widget import VimEditor, NVim
 
 class InputWidget(QtWidgets.QWidget):
 
+    modeChanged=QtCore.pyqtSignal(object)
+
     def __init__(self, parent):
 
         self.app=parent
@@ -11,7 +13,6 @@ class InputWidget(QtWidgets.QWidget):
                 objectName='Input',
                 parent=self.app.window.main,
                 )
-
         self.setup()
         self.parent().installEventFilter(self)
 
@@ -27,17 +28,15 @@ class InputWidget(QtWidgets.QWidget):
         self.field=VimEditor(
                 nvim=self.nvim, 
                 )
-
+        self.field.modeChanged.connect(
+                self.modeChanged)
         layout=QtWidgets.QVBoxLayout()
         layout.setSpacing(5)
-
         layout.addWidget(self.label)
         layout.addWidget(self.field)
-
         self.setLayout(layout)
-
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
-
+        self.setAttribute(
+                QtCore.Qt.WA_TranslucentBackground)
         self.label.hide()
         self.field.hide()
 
