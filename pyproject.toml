@@ -12,7 +12,8 @@ pyyaml = ">=6.0.1"
 pyzmq = ">=25.0.2" 
 gitpython = ">=3.1.32"
 pynput = { version = ">=1.7.6", optional = true}
-gizmo = {path = "/home/adam/code/gizmo", develop = true, optional = true}
+# gizmo = {path = "/home/adam/code/gizmo", develop = true, optional = true}
+gizmo = {path = "/home/adama/code/gizmo", develop = true, optional = true}
 # gizmo = {git = "https://github.com/aotabekov91/gizmo", branch='main', optional=true}
 
 [tool.poetry.extras]

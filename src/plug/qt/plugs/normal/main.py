@@ -12,16 +12,13 @@ class Normal(Plug):
                  **kwargs,
                  ):
 
-        self.cursor_visible=True
-
+        self.cursor_visible=False
         super(Normal, self).__init__(
                 app=app, 
                 listen_leader=listen_leader,
                 delisten_on_exec=delisten_on_exec, 
-                **kwargs,)
-
+                **kwargs)
         self.display=self.app.display
-        self.app.installEventFilter(self)
 
     def currentView(self):
         return self.display.currentView()
@@ -171,29 +168,15 @@ class Normal(Plug):
 
     @register(key='<c-w>c')
     def closeCurrentView(self): 
-
         self.display.closeView()
 
     @register('fi')
     def incrementFold(self): 
-
         self.display.incrementFold()
 
     @register('fd')
     def decrementFold(self): 
-
         self.display.decrementFold()
-
-    @register(key='tc', modes=['command'])
-    def toggleCursor(self): 
-
-        if self.cursor_visible:
-            c=QtGui.QCursor(QtCore.Qt.BlankCursor)
-        else:
-            c=QtGui.QCursor(QtCore.Qt.ArrowCursor)
-        self.cursor_visible=not self.cursor_visible
-        if self.app.uiman.qapp:
-            self.app.uiman.qapp.setOverrideCursor(c)
 
     @register(key='<c-w>sv', modes=['normal', 'command'])
     def splitVertical(self): 
@@ -209,54 +192,40 @@ class Normal(Plug):
 
     @register('<c-w>k')
     def focusUpView(self): 
-
         self.display.focus('up')
 
     @register('<c-w>j')
     def focusDownView(self): 
-
         self.display.focus('down')
 
     @register('<c-w>l')
     def focusLeftView(self): 
-
         self.display.focus('right')
 
     @register('<c-w>h')
     def focusRightView(self): 
-
         self.display.focus('left')
 
     @register('<c-w>gg')
     def focusFirstView(self): 
-
         self.display.focus('first')
 
     @register('<c-w>G')
     def focusLastView(self): 
-
         self.display.focus('last')
 
     @register('<c-w>n')
     def focusNextView(self): 
-
         self.display.focus('next')
 
     @register('<c-w>p')
     def focusPrevView(self): 
-
         self.display.focus('prev')
-
-    def eventFilter(self, widget, event):
-
-        if event.type()==QtCore.QEvent.MouseMove:
-            if not self.cursor_visible:
-                event.accept()
-                return True
-        return False
 
     @register('<c-q>', modes=['any'])
     def quit(self):
+        self.app.exit()
 
-        if self.app: 
-            self.app.exit()
+    @register(key='tc')
+    def toggleCursor(self):
+        self.cursor_visible=not self.cursor_visible

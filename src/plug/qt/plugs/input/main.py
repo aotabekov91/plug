@@ -10,8 +10,10 @@ class Input(Plug):
             'carriage', 
             'escape_bracket'
             ]
+
     tabPressed=QtCore.pyqtSignal()
     textChanged=QtCore.pyqtSignal()
+    textCreated=QtCore.pyqtSignal(object)
 
     def __init__(
             self, 
@@ -40,7 +42,7 @@ class Input(Plug):
         self.ui.modeChanged.connect(
                 self.app.moder.detailChanged)
         self.ear.carriageReturnPressed.connect(
-                self.on_returnPressed)
+                self.on_carriagePressed)
         self.ear.escapePressed.connect(
                 self.on_escapePressed)
 
@@ -99,36 +101,38 @@ class Input(Plug):
                     return True
         return False 
 
-    def setText(self):
+    def setText(self, text):
+        self.ui.setText(text)
 
+    def setClientText(self):
+
+        text=self.ui.field.text()
+        self.textCreated.emit(text)
         if self.client:
-            f=getattr(
+            gunc=getattr(
+                    self.client, 
+                    'setPlainText', 
+                    None)
+            func=getattr(
                     self.client, 
                     'setText', 
-                    None
-                    )
-            if not f:
-                f=getattr(
-                        self.client, 
-                        'setPlainText', 
-                        None
-                        )
-
-            if f: 
-                text=self.ui.field.text()
-                if text: f(text)
+                    gunc)
+            if func and text: 
+                func(text)
 
     def on_escapePressed(self): 
 
-        self.client=None
         self.deactivate()
-        self.hideClearField()
         self.escapePressed.emit()
 
-    def on_returnPressed(self): 
+    def on_carriagePressed(self): 
 
-        self.setText()
-        self.client=None
+        self.setClientText()
         self.deactivate()
+        self.carraigePressed.emit()
+
+    def deactivate(self):
+        
+        self.client=None
         self.hideClearField()
-        self.returnPressed.emit()
+        super().deactivate()

@@ -78,6 +78,9 @@ class Moder(Plug):
         self.save(plug, plug.actions)
         if hasattr(plug, 'modeWanted'):
             plug.modeWanted.connect(
+                    self.on_focusGained)
+        if hasattr(plug, 'focusGained'):
+            plug.focusGained.connect(
                     self.set)
         if hasattr(plug, 'forceDelisten'):
             plug.forceDelisten.connect(
@@ -85,6 +88,16 @@ class Moder(Plug):
         if hasattr(plug, 'delistenWanted'):
             plug.delistenWanted.connect(
                     self.set)
+
+    def on_focusGained(self, mode=None):
+
+        print(mode)
+        self.set(mode)
+
+        # if not self.current:
+        #     self.set(mode)
+        # elif self.current.follow_focus:
+        #     self.set(mode)
 
     def get(self, mode):
 

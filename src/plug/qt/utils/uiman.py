@@ -10,10 +10,12 @@ from .buffer import Buffer
 
 class UIMan(QtCore.QObject):
 
-    def __init__(self, 
-                 obj, 
-                 app=None,
-                 **kwargs):
+    def __init__(
+            self, 
+            obj, 
+            app=None,
+            **kwargs
+            ):
 
         super().__init__(obj)
         self.obj=obj
@@ -124,7 +126,8 @@ class UIMan(QtCore.QObject):
     def on_uiFocusGained(self, widget=None):
 
         if self.obj.follow_mouse: 
-            self.obj.modeWanted.emit(self.obj)
+            # self.obj.modeWanted.emit(self.obj)
+            self.obj.focusGained.emit(self.obj)
 
     def on_uiHideWanted(self):
 

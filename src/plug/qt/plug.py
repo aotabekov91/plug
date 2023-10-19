@@ -9,7 +9,10 @@ class Plug(Base, QtCore.QObject):
     escapePressed=QtCore.pyqtSignal()
     returnPressed=QtCore.pyqtSignal()
     forceDelisten=QtCore.pyqtSignal()
+    carraigePressed=QtCore.pyqtSignal()
     delistenWanted=QtCore.pyqtSignal()
+    focusGained=QtCore.pyqtSignal(
+            object)
     modeWanted=QtCore.pyqtSignal(
             object)
     listenWanted=QtCore.pyqtSignal(
@@ -24,10 +27,14 @@ class Plug(Base, QtCore.QObject):
             object)
 
     def __init__(
-            self, *args, **kwargs):
+            self, 
+            *args, 
+            follow_focus=True,
+            **kwargs):
 
         self.running = False
         self.activated = False
+        self.follow_focus=follow_focus
         self.position=kwargs.get(
                 'position', None)
         self.follow_mouse=kwargs.get(
