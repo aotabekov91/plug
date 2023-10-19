@@ -53,7 +53,9 @@ class UIMan(QtCore.QObject):
 
         self.window=StackWindow()
         self.buffer=buffer_class(self)
-        self.display=display_class(self)
+        self.display=display_class(
+                window=self.window,
+                )
         self.window.main.m_layout.addWidget(
                 self.display)
         self.obj.buffer=self.buffer
@@ -189,5 +191,5 @@ class UIMan(QtCore.QObject):
 
     def delisten(self):
 
-        if self.app:
+        if self.app: 
             self.app.window.setFocus()

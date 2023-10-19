@@ -59,18 +59,21 @@ class FileBrowser(TreePlug):
     def toggle(self): super().toggle()
 
     @register(modes=['exec'])
-    def openFile(self, 
-                 path, 
-                 how=None, 
-                 focus=True):
-
+    def openFile(
+            self, 
+            path, 
+            how=None, 
+            focus=True
+            ):
         self.open(path, how, focus)
 
     @register('o')
-    def open(self, 
-             path=None, 
-             how=None, 
-             focus=False):
+    def open(
+            self, 
+            path=None, 
+            how=None, 
+            focus=False
+            ):
 
         tree=self.ui.main.tree
         if not path:
@@ -83,5 +86,6 @@ class FileBrowser(TreePlug):
                 self.app.open(
                         path, 
                         how=how, 
-                        focus=focus)
+                        focus=focus,
+                        )
             super().open(how, focus)
