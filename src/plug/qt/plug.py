@@ -9,8 +9,10 @@ class Plug(Base, QtCore.QObject):
     escapePressed=QtCore.pyqtSignal()
     returnPressed=QtCore.pyqtSignal()
     forceDelisten=QtCore.pyqtSignal()
-    carraigePressed=QtCore.pyqtSignal()
+    carriagePressed=QtCore.pyqtSignal()
     delistenWanted=QtCore.pyqtSignal()
+    focusLost=QtCore.pyqtSignal(
+            object)
     focusGained=QtCore.pyqtSignal(
             object)
     modeWanted=QtCore.pyqtSignal(

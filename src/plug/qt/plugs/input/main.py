@@ -1,7 +1,6 @@
 from PyQt5 import QtCore, QtWidgets
 
 from plug.qt import Plug
-
 from .widget import InputWidget
 
 class Input(Plug):
@@ -20,6 +19,7 @@ class Input(Plug):
             app=None, 
             name='input',
             special=special,
+            position='overlay',
             listen_leader='<c-I>',
             delisten_on_exec=False,
             **kwargs
@@ -29,6 +29,7 @@ class Input(Plug):
         super(Input, self).__init__(
                 app=app, 
                 name=name, 
+                position=position,
                 listen_leader=listen_leader, 
                 delisten_on_exec=delisten_on_exec, 
                 **kwargs
@@ -37,20 +38,23 @@ class Input(Plug):
     def setup(self):
 
         super().setup()
-        self.ui=InputWidget(self.app)
-        self.ui.hide()
-        self.ui.modeChanged.connect(
-                self.app.moder.detailChanged)
         self.ear.carriageReturnPressed.connect(
                 self.on_carriagePressed)
         self.ear.escapePressed.connect(
                 self.on_escapePressed)
+        self.setUI()
+
+    def setUI(self):
+
+        self.uiman.setUI(InputWidget())
+        self.ui.modeChanged.connect(
+                self.app.moder.detailChanged)
 
     def listen(self):
 
         super().listen()
-        self.setFocusedWidget()
         self.showWidget()
+        self.setFocusedWidget()
 
     def showWidget(
             self, 
@@ -60,7 +64,6 @@ class Input(Plug):
 
         if label:
             self.ui.label.show()
-        self.ui.show()
         if field:
             self.ui.field.show()
         self.ui.field.setFocus()
@@ -72,17 +75,21 @@ class Input(Plug):
 
     def yankText(self):
 
-        f=getattr(self.client, 'text', None)
-        if not f:
-            f=getattr(self.client, 'toPlainText', None)
-
+        g=getattr(
+                self.client, 
+                'toPlainText',
+                None
+                )
+        f=getattr(
+                self.client, 
+                'text',
+                g
+                )
         if f:
-            text=f()
-            self.ui.setText(text)
+            self.ui.setText(f())
 
     def hideClearField(self):
 
-        self.ui.hide()
         self.ui.label.hide()
         self.ui.field.hide()
         self.ui.field.clear()
@@ -96,13 +103,16 @@ class Input(Plug):
                 e.accept()
                 return True
             elif  e.type()==QtCore.QEvent.KeyPress:
-                if self.checkSpecialCharacters(e):
+                if self.checkSpecial(e):
                     e.accept()
                     return True
         return False 
 
     def setText(self, text):
         self.ui.setText(text)
+
+    def setRatio(self, w=None, h=None):
+        self.ui.setRatio(w, h)
 
     def setClientText(self):
 
@@ -122,14 +132,14 @@ class Input(Plug):
 
     def on_escapePressed(self): 
 
-        self.deactivate()
         self.escapePressed.emit()
+        self.deactivate()
 
     def on_carriagePressed(self): 
 
+        self.carriagePressed.emit()
         self.setClientText()
         self.deactivate()
-        self.carraigePressed.emit()
 
     def deactivate(self):
         

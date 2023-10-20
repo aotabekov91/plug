@@ -6,14 +6,16 @@ from plug.qt.plugs.trees.base import TreePlug
 
 class FileBrowser(TreePlug):
 
-    def __init__(self, 
-                 position='left',
-                 prefix_keys={
-                     'command': 'f',
-                     'FileBrowser': '<c-u>'
-                     }, 
-                 keywords=['files', 'file browser'],
-                 **kwargs):
+    def __init__(
+            self, 
+            position='left',
+            prefix_keys={
+                'command': 'f', 
+                'FileBrowser': '<c-u>'
+                }, 
+            keywords=['files', 'file browser'], 
+            **kwargs
+            ):
 
         super().__init__(
                 position=position,
@@ -51,12 +53,8 @@ class FileBrowser(TreePlug):
         tree.model().setRootPath(path)
         index=tree.model().index(path)
         tree.setRootIndex(index)
-
         for i in range(1, 4): 
             self.ui.main.tree.hideColumn(i)
-
-    @register('t', modes=['command'])
-    def toggle(self): super().toggle()
 
     @register(modes=['exec'])
     def openFile(

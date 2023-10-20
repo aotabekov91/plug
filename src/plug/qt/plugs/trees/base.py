@@ -6,54 +6,49 @@ from gizmo.widget import InputTree
 
 class TreePlug(Plug):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+            self, 
+            *args, 
+            **kwargs
+            ):
 
         self.follow_index=True
-        super().__init__(*args, **kwargs)
-
-    def setup(self):
-
-        super().setup()
+        super().__init__(
+                *args, 
+                **kwargs
+                )
         self.setUI()
 
     def setUI(self):
 
         self.uiman.setUI()
-        input_tree=InputTree(set_base_style=False)
-        input_tree.tree.setSelectionBehavior(
-                QtWidgets.QAbstractItemView.SelectRows)
+        ui=InputTree()
         self.ui.addWidget(
-                input_tree, 'main', main=True)
-        self.ui.main.tree.clicked.connect(
-                self.on_outlineClicked)
-        self.ui.main.tree.itemChanged.connect(
+                ui, 'main', main=True)
+        ui.tree.setSelectionBehavior(
+                QtWidgets.QAbstractItemView.SelectRows)
+        ui.tree.itemChanged.connect(
                 self.on_itemChanged)
-        self.ui.main.tree.expanded.connect(
+        ui.tree.expanded.connect(
                 self.on_outlineExpanded)
-        self.ui.main.tree.openWanted.connect(
+        ui.tree.openWanted.connect(
                 self.on_outlineClicked)
-        self.ui.main.tree.indexChanged.connect(
+        ui.tree.indexChanged.connect(
                 self.on_indexChanged)
-        self.ui.main.tree.collapsed.connect(
+        ui.tree.collapsed.connect(
                 self.on_outlineCollapsed)
-        self.ui.main.tree.returnPressed.connect(
+        ui.tree.returnPressed.connect(
                 self.on_outlineClicked)
-        # self.ui.installEventFilter(self)
-
-    @register('t', modes=['command'])
-    def toggle(self): super().toggle()
+        ui.tree.clicked.connect(
+                self.on_outlineClicked)
 
     @register('i')
     def openBelow(self): 
-
         self.open(how='below', focus=False)
-        self.ui.show()
 
     @register('O')
     def openReset(self): 
-
         self.open(how='reset', focus=False)
-        self.ui.show()
 
     @register('s')
     def center(self):
@@ -74,24 +69,30 @@ class TreePlug(Plug):
         else:
             self.ui.show()
 
-    def on_outlineCollapsed(self, index): pass
+    def setData(self): 
+        pass
 
-    def on_outlineExpanded(self, index): pass
+    def on_outlineCollapsed(self, index): 
+        pass
 
-    def on_outlineClicked(self, index=None): pass
+    def on_outlineExpanded(self, index): 
+        pass
 
-    def setData(self): pass
+    def on_outlineClicked(self, index): 
+        pass
 
-    def on_indexChanged(self, index): pass
+    def on_indexChanged(self, index): 
+        pass
 
-    def on_itemChanged(self, item): pass
+    def on_itemChanged(self, item):
+        pass
 
-    def on_viewChanged(self, view, prev): self.setData()
+    def on_viewChanged(self, view, prev): 
+        self.setData()
 
     def find(self, item, model, parent=None):
 
         root=model.invisibleRootItem()
-
         if root.rowCount()>0: 
             if not parent: 
                 parent=model.indexFromItem(root.child(0,0))

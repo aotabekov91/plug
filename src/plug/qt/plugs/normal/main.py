@@ -5,8 +5,14 @@ from gizmo.utils import register
 
 class Normal(Plug):
 
+    special=[
+            'escape',
+            'escape_bracket'
+            ]
+
     def __init__(self, 
                  app=None,
+                 special=special,
                  listen_leader='@',
                  delisten_on_exec=False,
                  **kwargs,
@@ -15,10 +21,21 @@ class Normal(Plug):
         self.cursor_visible=False
         super(Normal, self).__init__(
                 app=app, 
+                special=special,
                 listen_leader=listen_leader,
                 delisten_on_exec=delisten_on_exec, 
                 **kwargs)
         self.display=self.app.display
+        self.ear.escapePressed.connect(
+                self.on_escapePressed
+                )
+
+    def on_escapePressed(self):
+
+        view=self.currentView()
+        if view: 
+            view.select()
+            view.update()
 
     def currentView(self):
         return self.display.currentView()

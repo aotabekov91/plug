@@ -1,20 +1,34 @@
 from PyQt5 import QtWidgets, QtCore 
-
 from gizmo.widget import VimEditor, NVim
 
 class InputWidget(QtWidgets.QWidget):
 
     modeChanged=QtCore.pyqtSignal(object)
 
-    def __init__(self, parent):
+    def __init__(
+            self, 
+            *args, 
+            objectName='Input',
+            **kwargs
+            ):
 
-        self.app=parent
+        self.w_ratio=0.7
+        self.h_ratio=0.7
+        self.w_dratio=0.7
+        self.h_dratio=0.7
         super().__init__(
-                objectName='Input',
-                parent=self.app.window.main,
+                *args,
+                objectName=objectName,
+                **kwargs
                 )
         self.setup()
-        self.parent().installEventFilter(self)
+
+    def setRatio(self, w=None, h=None):
+
+        self.w_ratio=self.w_dratio
+        if w: self.w_ratio=w
+        self.h_ratio=self.h_dratio
+        if h: self.h_ratio=h
 
     def setText(self, text):
 
@@ -40,31 +54,20 @@ class InputWidget(QtWidgets.QWidget):
         self.label.hide()
         self.field.hide()
 
+    def show(self):
+
+        super().show()
+        self.updatePosition()
+
     def updatePosition(self):
 
-        parent_rect = self.parent().rect()
-
-        if parent_rect:
-
-            pwidth=parent_rect.width()
-            pheight=parent_rect.height()
-
-            w=int(pwidth*0.7)
-            h=int(pheight*0.7)
-
-            self.setFixedSize(w, h)
-
-            x=int(pwidth/2-self.width()/2)
-            y=int(pheight/2-self.height()/2)
-
+        r = self.parent().rect()
+        if r:
+            pw=r.width()
+            ph=r.height()
+            w=int(pw*self.w_ratio)
+            h=int(ph*self.h_ratio)
+            x=int(pw/2-w/2)
+            y=int(ph/2-h/2)
+            # self.setFixedSize(w, h)
             self.setGeometry(x, y, w, h)
-
-    def eventFilter(self, widget, event):
-
-        c1=event.type()==QtCore.QEvent.Resize
-        if c1:
-            if widget==self.parent():
-                self.updatePosition()
-                event.accept()
-                return True
-        return False

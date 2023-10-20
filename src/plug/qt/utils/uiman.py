@@ -4,9 +4,8 @@ from PyQt5 import QtCore
 from gizmo.ui import Display
 from plug.utils import setKeys
 from gizmo.widget import CommandStack 
+from plug.qt.utils.buffer import Buffer
 from gizmo.ui import StackWindow, Application
-
-from .buffer import Buffer
 
 class UIMan(QtCore.QObject):
 
@@ -17,7 +16,6 @@ class UIMan(QtCore.QObject):
             **kwargs
             ):
 
-        super().__init__(obj)
         self.obj=obj
         self.app=app
         self.ui=None
@@ -29,6 +27,7 @@ class UIMan(QtCore.QObject):
         self.command_activated=False
         self.position=kwargs.get(
                 'position', None)
+        super().__init__(obj)
 
     def setApp(self):
 
@@ -56,27 +55,36 @@ class UIMan(QtCore.QObject):
         self.window=StackWindow()
         self.buffer=buffer_class(self)
         self.display=display_class(
-                window=self.window,
-                )
+                window=self.window)
         self.window.main.m_layout.addWidget(
                 self.display)
         self.obj.buffer=self.buffer
         self.obj.window=self.window
         self.obj.display=self.display
 
+    def on_focusGained(self, widget=None):
+        self.obj.focusGained.emit(self.obj)
+
+    def on_focusLost(self, widget=None):
+        self.obj.focusLost.emit(self.obj)
+
     def setUI(self, ui=None): 
 
         if ui is None: 
             ui=CommandStack()
+        ui.hide()
         self.ui=ui
         self.obj.ui=self.ui
         self.ui.setObjectName(self.obj.name)
         if hasattr(self.ui, 'hideWanted'):
             self.ui.hideWanted.connect(
-                    self.on_uiHideWanted)
+                    self.obj.deactivate)
         if hasattr(self.ui, 'focusGained'):
             self.ui.focusGained.connect(
-                    self.on_uiFocusGained)
+                    self.on_focusGained)
+        if hasattr(self.ui, 'focusLost'):
+            self.ui.focusLost.connect(
+                    self.on_focusLost)
         if hasattr(self.ui, 'keyPressed'):
             self.ui.keyPressed.connect(
                     self.obj.keyPressed)
@@ -123,29 +131,19 @@ class UIMan(QtCore.QObject):
         if ui and ui_keys:
             setWidgetKeys(ui_keys, ui)
 
-    def on_uiFocusGained(self, widget=None):
-
-        if self.obj.follow_mouse: 
-            # self.obj.modeWanted.emit(self.obj)
-            self.obj.focusGained.emit(self.obj)
-
-    def on_uiHideWanted(self):
-
-        self.obj.deactivate()
-        self.obj.delistenWanted.emit()
-
     def locate(self):
 
         if self.ui:
             dock=['left', 'right', 'top', 'bottom']
             if self.position=='window':
-                self.app.window.add(
+                self.app.window.stack.addWidget(
                         self.ui, self.name) 
             elif self.position in dock:
                 self.app.window.docks.setTab(
                         self.ui, self.position)
             elif self.position=='overlay':
-                pass
+                self.ui.setParent(
+                        self.app.window.overlay)
 
     def delocate(self):
 

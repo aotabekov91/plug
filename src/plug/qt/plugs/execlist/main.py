@@ -13,21 +13,20 @@ class ExecList(Plug):
                  **kwargs,
                  ):
 
+        self.args={}
+        self.exec=None
         super().__init__(
                 app=app, 
                 special=special,
                 **kwargs,
                 )
-
-        self.setUI()
-        self.args={}
-        self.exec=None
         self.filler=Filler()
 
     def setup(self):
 
         super().setup()
         self.setConnect()
+        self.setUI()
 
     def setConnect(self):
 

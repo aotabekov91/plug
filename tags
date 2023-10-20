@@ -122,9 +122,9 @@ center	src/plug/qt/plugs/trees/base.py	/^    def center(self):$/;"	m	class:TreeP
 checkKey	src/plug/qt/base.py	/^    def checkKey(self, event, kind='listen_leader'):$/;"	m	class:Plug
 checkListen	src/plug/qt/obj.py	/^    def checkListen(self, event):$/;"	m	class:Plug
 checkMode	src/plug/qt/obj.py	/^    def checkMode(self, widget, event):$/;"	m	class:Plug
-checkSpecialCharacters	src/plug/qt/modes/base.py	/^    def checkSpecialCharacters(self, event):$/;"	m	class:Mode
-checkSpecialCharacters	src/plug/qt/modes/exec/main.py	/^    def checkSpecialCharacters(self, event):$/;"	m	class:Exec
-checkSpecialCharacters	src/plug/qt/modes/input/main.py	/^    def checkSpecialCharacters(self, event):$/;"	m	class:Input
+checkSpecial	src/plug/qt/modes/base.py	/^    def checkSpecial(self, event):$/;"	m	class:Mode
+checkSpecial	src/plug/qt/modes/exec/main.py	/^    def checkSpecial(self, event):$/;"	m	class:Exec
+checkSpecial	src/plug/qt/modes/input/main.py	/^    def checkSpecial(self, event):$/;"	m	class:Input
 cleanup	src/plug/utils/picky.py	/^    def cleanup(self):$/;"	m	class:Picky
 cleanupPicks	src/plug/qt/utils/moder.py	/^    def cleanupPicks(self): super().cleanupPicks()$/;"	m	class:Moder
 cleanupPicks	src/plug/utils/dotdict.py	/^    def cleanupPicks(self): self.picky.cleanup()$/;"	m	class:Moder
