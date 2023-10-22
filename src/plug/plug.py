@@ -6,10 +6,7 @@ from plug.utils import setKeys, createFolder
 class Plug:
 
     def __init__(
-            self, 
-            *args, 
-            **kwargs
-            ):
+            self, *args, **kwargs):
 
         super().__init__()
         self.files={}
@@ -34,7 +31,19 @@ class Plug:
         self.setBasePath()
         self.setFiles()
         self.setSettings()
+        self.updateArgs()
         self.setActions()
+        
+    def updateArgs(self):
+
+        settings=self.config.get(
+                'Settings', {})
+        for n, s in settings.items():
+            kw=self.kwargs.get(n, {})
+            if type(s)==dict:
+                kw.update(s)
+                settings[n]=kw
+        self.kwargs.update(settings)
 
     def setModer(self, moder, **kwargs):
 

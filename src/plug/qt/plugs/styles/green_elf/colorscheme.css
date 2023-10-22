@@ -1,3 +1,10 @@
+QMainWindow::separator {
+    width: 0px;
+    height: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
 #Powerline QLabel{
 	color: black;
 	padding: 0 5px 0 5px;
@@ -16,6 +23,7 @@
 }
 
 #DockWidget QWidget {
+	border-width: 0px;
 	background-color: transparent;
 }
 
@@ -57,11 +65,21 @@ QAbstractScrollArea {
 	border-style: solid;
 }
 
-QWidget#Input {
+#Input {
 	color: white;
 	font-size: 16px;
 	border-radius: 15px;
 	border-style: outset;
 	padding: 15px 15px 15px 15px;
 	background-color: rgba(0, 0, 0, .8); 
+}
+
+#InputLineEdit {
+	color: black;
+	background-color: white;
+	border-color: green;
+	border-width: 3px;
+	border-radius: 15px;
+	border-style: outset;
+	padding: 0 0 0 10px;
 }

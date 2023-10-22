@@ -57,26 +57,15 @@ class Plug(Base, QtCore.QObject):
         if self.app:
             self.app.moder.add(self)
 
-    def getUpdatedArgs(self):
-
-        kwargs=self.kwargs.copy()
-        settings=self.config.get('Settings', {})
-        kwargs.update(settings)
-        return kwargs
-
     def setUIMan(self):
 
         self.uiman=UIMan(
-                self,
-                **self.getUpdatedArgs(),
-                )
+                self, **self.kwargs)
 
     def setEar(self):
 
         self.ear=Ear(
-                obj=self, 
-                **self.getUpdatedArgs(),
-                )
+                obj=self, **self.kwargs)
 
     def listen(self): 
 
