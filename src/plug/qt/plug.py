@@ -91,6 +91,7 @@ class Plug(Base, QtCore.QObject):
         else:
             self.deactivate()
 
+    @register('f', modes=['command'])
     def activate(self):
 
         self.activated=True

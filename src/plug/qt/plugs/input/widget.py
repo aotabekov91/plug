@@ -69,5 +69,4 @@ class InputWidget(QtWidgets.QWidget):
             h=int(ph*self.h_ratio)
             x=int(pw/2-w/2)
             y=int(ph/2-h/2)
-            # self.setFixedSize(w, h)
             self.setGeometry(x, y, w, h)
