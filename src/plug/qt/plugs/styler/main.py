@@ -55,7 +55,7 @@ class Styler(Plug):
 
         self.setDefault(plugs)
         self.colorscheme(self.style)
-        self.addToExecList()
+        self.addToRunList()
 
     def updateColorscheme(self, cs):
 
@@ -108,14 +108,14 @@ class Styler(Plug):
         css=self.dictToCSS(cs)
         self.styles[name]=(cs, css)
         self.reloadColorscheme()
-        self.addToExecList()
+        self.addToRunList()
 
-    def addToExecList(self):
+    def addToRunList(self):
 
-        execlist=getattr(
-                self.app.moder.plugs, 'ExecList')
-        if execlist:
-            execlist.setArgOptions(
+        runlist=getattr(
+                self.app.moder.plugs, 'RunList')
+        if runlist:
+            runlist.setArgOptions(
                     'colorscheme', 'name', self.styles)
 
     def reloadColorscheme(self):
@@ -123,7 +123,7 @@ class Styler(Plug):
         if self.current!=self.style:
             self.colorscheme(self.style)
 
-    @register(modes=['exec'])
+    @register(modes=['run'])
     def colorscheme(self, name):
         
         style=self.styles.get(name, None)

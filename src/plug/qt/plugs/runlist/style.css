@@ -1,13 +1,13 @@
-#ExecList QWidget {
+#RunList QWidget {
 	background-color: blue;
 }
 
-#ExecList QListView::item {
+#RunList QListView::item {
 	color: white;
 	background-color: gray;
 }
 
-#ExecList QListView::item:selected {
+#RunList QListView::item:selected {
 	color: red;
 	background-color: yellow;
 }

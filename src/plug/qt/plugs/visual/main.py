@@ -7,7 +7,6 @@ class Visual(Plug):
                  name='visual',
                  show_statusbar=True,
                  listen_leader='<c-v>',
-                 delisten_on_exec=False,
                  **kwargs,
                  ):
 
@@ -19,7 +18,6 @@ class Visual(Plug):
                 name=name, 
                 listen_leader=listen_leader, 
                 show_statusbar=show_statusbar, 
-                delisten_on_exec=delisten_on_exec, 
                 **kwargs
                 )
 

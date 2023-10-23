@@ -6,7 +6,7 @@ from inspect import signature, Parameter
 from plug.qt import Plug
 from .parser import ArgumentParser
 
-class Exec(Plug):
+class Run(Plug):
 
     special=[
             'return', 
@@ -20,9 +20,9 @@ class Exec(Plug):
     def __init__(
             self, 
             app=None, 
-            name='exec', 
+            name='run', 
             special=special, 
-            listen_leader='<c-.>', 
+            listen_leader='<c-r>', 
             **kwargs
             ):
 

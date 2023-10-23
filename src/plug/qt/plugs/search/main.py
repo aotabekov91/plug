@@ -9,7 +9,6 @@ class Search(Plug):
                  name='search',
                  listen_leader='/', 
                  show_statusbar=True,
-                 delisten_on_exec=False,
                  **kwargs,
                  ):
 
@@ -18,7 +17,6 @@ class Search(Plug):
                 name=name,
                 listen_leader=listen_leader, 
                 show_statusbar=show_statusbar, 
-                delisten_on_exec=delisten_on_exec, 
                 **kwargs)
 
         self.index=-1

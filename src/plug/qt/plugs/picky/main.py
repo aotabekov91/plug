@@ -4,22 +4,22 @@ from plug.plugs.picky import Picky as Base
 
 class Picky(Base, QtCore.QObject):
 
-    @register(modes=['exec'])
+    @register(modes=['run'])
     def reloadPicks(self): 
         self.moder.load()
 
-    @register(modes=['exec'])
+    @register(modes=['run'])
     def installPicks(self): 
         super().installPicks()
 
-    @register(modes=['exec'])
+    @register(modes=['run'])
     def installRequirements(self):
         super().installRequirements()
 
-    @register(modes=['exec'])
+    @register(modes=['run'])
     def updatePicks(self): 
         super().updatePicks()
 
-    @register(modes=['exec'])
+    @register(modes=['run'])
     def cleanupPicks(self): 
         super().cleanupPicks()

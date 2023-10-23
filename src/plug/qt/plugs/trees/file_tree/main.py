@@ -28,9 +28,9 @@ class FileBrowser(TreePlug):
 
     def on_plugsLoaded(self, plugs):
 
-        execlist=plugs.get('ExecList', None)
-        if execlist:
-            execlist.setArgOptions(
+        runlist=plugs.get('RunList', None)
+        if runlist:
+            runlist.setArgOptions(
                 'openFile', 'path', 'path')
 
     def getPath(self, index=None):
@@ -56,7 +56,7 @@ class FileBrowser(TreePlug):
         for i in range(1, 4): 
             self.ui.main.tree.hideColumn(i)
 
-    @register(modes=['exec'])
+    @register(modes=['run'])
     def openFile(
             self, 
             path, 

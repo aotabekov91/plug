@@ -15,33 +15,57 @@ class Input(Plug):
 
     def __init__(
             self, 
-            app=None, 
             name='input',
             special=special,
             position='overlay',
             listen_leader='<c-I>',
-            delisten_on_exec=False,
             **kwargs
             ):
 
-        self.client=None
+        self.setter=None
+        self.getter=None
         super(Input, self).__init__(
-                app=app, 
                 name=name,
+                special=special,
                 position=position,
                 listen_leader=listen_leader, 
-                delisten_on_exec=delisten_on_exec, 
                 **kwargs
                 )
 
     def setup(self):
 
         super().setup()
+        self.qapp=self.app.uiman.qapp
         self.ear.carriageReturnPressed.connect(
                 self.on_carriagePressed)
         self.ear.escapePressed.connect(
                 self.on_escapePressed)
+        self.connect()
         self.setUI()
+
+    def connect(self):
+
+        self.qapp.focusChanged.connect(
+                self.on_focusChanged)
+
+    def on_focusChanged(self, old, obj):
+
+        if self.ear.listening:
+            return
+        getter=getattr(
+                obj, 'toPlainText', None)
+        setter=getattr(
+                obj, 'setPlainText', None)
+        if getter:
+            self.getter=getter
+            self.setter=setter
+            return
+        getter=getattr(obj, 'text', None)
+        setter=getattr(obj, 'setText', None)
+        if getter:
+            self.getter=getter
+            self.setter=setter
+            return
 
     def setUI(self):
 
@@ -51,11 +75,17 @@ class Input(Plug):
 
     def listen(self):
 
+        self.yankText()
         super().listen()
-        self.showWidget()
-        self.setFocusedWidget()
+        self.focusWidget()
 
-    def showWidget(
+    def delisten(self):
+
+        self.setter=None
+        self.getter=None
+        super().delisten()
+
+    def focusWidget(
             self, 
             field=True, 
             label=False
@@ -67,25 +97,11 @@ class Input(Plug):
             self.ui.field.show()
         self.ui.field.setFocus()
 
-    def setFocusedWidget(self):
-
-        qapp=QtWidgets.QApplication
-        self.client=qapp.focusWidget()
-
     def yankText(self):
 
-        g=getattr(
-                self.client, 
-                'toPlainText',
-                None
-                )
-        f=getattr(
-                self.client, 
-                'text',
-                g
-                )
-        if f:
-            self.ui.setText(f())
+        if self.getter:
+            text=self.getter()
+            self.ui.setText(text)
 
     def hideClearField(self):
 
@@ -95,39 +111,12 @@ class Input(Plug):
         self.ui.label.clear()
         self.ui.modeChanged.emit(None)
 
-    def eventFilter(self, w, e):
-
-        if self.ear.listening:
-            if  e.type()==QtCore.QEvent.Enter:
-                e.accept()
-                return True
-            elif  e.type()==QtCore.QEvent.KeyPress:
-                if self.checkSpecial(e):
-                    e.accept()
-                    return True
-        return False 
-
-    def setText(self, text):
-        self.ui.setText(text)
-
-    def setRatio(self, w=None, h=None):
-        self.ui.setRatio(w, h)
-
-    def setClientText(self):
+    def pasteText(self):
 
         text=self.ui.field.text()
         self.textCreated.emit(text)
-        if self.client:
-            gunc=getattr(
-                    self.client, 
-                    'setPlainText', 
-                    None)
-            func=getattr(
-                    self.client, 
-                    'setText', 
-                    gunc)
-            if func and text: 
-                func(text)
+        if self.setter:
+            self.setter(text)
 
     def on_escapePressed(self): 
 
@@ -137,11 +126,10 @@ class Input(Plug):
     def on_carriagePressed(self): 
 
         self.carriagePressed.emit()
-        self.setClientText()
+        self.pasteText()
         self.deactivate()
 
     def deactivate(self):
         
-        self.client=None
         self.hideClearField()
         super().deactivate()
