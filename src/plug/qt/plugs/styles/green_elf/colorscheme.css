@@ -84,6 +84,10 @@ QAbstractScrollArea {
 	padding: 5 5 5 5;
 }
 
-QTextEdit[selected=true] {
+QWidget[selected=true] QTextEdit {
+	color: white;
+}
+
+QWidget[selected=true] QLabel {
 	color: white;
 }
