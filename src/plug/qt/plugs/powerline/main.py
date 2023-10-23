@@ -7,7 +7,7 @@ class Powerline(Plug):
 
     def __init__(
             self, 
-            prefix_keys={'command': 'l'}, 
+            prefix_keys={'command': 'P'}, 
             **kwargs
             ):
 
@@ -27,6 +27,14 @@ class Powerline(Plug):
                 self.on_viewChanged)
         self.activate()
 
+    def setUI(self):
+
+        self.ui=PowerlineWidget()
+        bar=self.app.window.bar
+        bar.clayout.insertWidget(
+                0, self.ui)
+        self.app.window.bar.show()
+
     def on_detailChanged(self, name):
 
         if name: name=name.title()
@@ -41,19 +49,10 @@ class Powerline(Plug):
         if mode: name=mode.name.title()
         self.ui.setText('mode', name) 
 
-    def setUI(self):
-
-        self.ui=PowerlineWidget()
-        bar=self.app.window.bar
-        bar.clayout.insertWidget(
-                0, self.ui)
-        self.app.window.bar.show()
-
     def on_viewChanged(self, view, prev): 
 
         uid=''
-        if view:
-            uid=view.model().id()
+        if view: uid=view.model().id()
         self.ui.setText('model', uid)
         self.on_itemChanged(view)
 

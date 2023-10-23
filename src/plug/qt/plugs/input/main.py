@@ -16,6 +16,7 @@ class Input(Plug):
     def __init__(
             self, 
             app=None, 
+            name='input',
             special=special,
             position='overlay',
             listen_leader='<c-I>',
@@ -26,6 +27,7 @@ class Input(Plug):
         self.client=None
         super(Input, self).__init__(
                 app=app, 
+                name=name,
                 position=position,
                 listen_leader=listen_leader, 
                 delisten_on_exec=delisten_on_exec, 

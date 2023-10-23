@@ -26,7 +26,6 @@ class Buffer(QtCore.QObject):
 
     def load(self, path):
 
-        path=os.path.abspath(path)
         if path in self.buffers:
             return self.buffers[path]
         model=self.getModel(path)
