@@ -91,3 +91,7 @@ QWidget[selected=true] QTextEdit {
 QWidget[selected=true] QLabel {
 	color: white;
 }
+
+QWidget {
+	font-size: 16px; 
+}

@@ -97,6 +97,12 @@ class Input(Plug):
             self.ui.field.show()
         self.ui.field.setFocus()
 
+    def setRatio(self, w=None, h=None):
+        self.ui.setRatio(w, h)
+
+    def setText(self, text):
+        self.ui.setText(text)
+
     def yankText(self):
 
         if self.getter:
