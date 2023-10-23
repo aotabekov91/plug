@@ -32,6 +32,7 @@ QListWidget::item:selected {
 	background-color: green;
 }
 
+
 QListView::item:selected {
 	color: white;
 	background-color: green;
@@ -81,4 +82,8 @@ QAbstractScrollArea {
 	background-color: white;
 	border-color: transparent;
 	padding: 5 5 5 5;
+}
+
+QTextEdit[selected=true] {
+	color: white;
 }
