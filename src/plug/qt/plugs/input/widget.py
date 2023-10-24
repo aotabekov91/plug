@@ -26,14 +26,16 @@ class InputWidget(QtWidgets.QWidget):
     def setRatio(self, w=None, h=None):
 
         self.w_ratio=self.w_dratio
-        if w: self.w_ratio=w
         self.h_ratio=self.h_dratio
+        if w: self.w_ratio=w
         if h: self.h_ratio=h
 
     def setText(self, text):
 
         self.nvim.setText(text)
         self.field.setText(text)
+        doc=self.field.document()
+        doc.adjustSize()
 
     def setup(self):
 

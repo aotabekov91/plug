@@ -22,8 +22,6 @@ class Input(Plug):
             **kwargs
             ):
 
-        self.setter=None
-        self.getter=None
         super(Input, self).__init__(
                 name=name,
                 special=special,
@@ -31,6 +29,8 @@ class Input(Plug):
                 listen_leader=listen_leader, 
                 **kwargs
                 )
+        self.setFunctors()
+        self.following=True
 
     def setup(self):
 
@@ -48,41 +48,48 @@ class Input(Plug):
         self.qapp.focusChanged.connect(
                 self.on_focusChanged)
 
+    def setFunctors(
+            self, 
+            getter=None,
+            setter=None,
+            ):
+
+        self.getter=getter
+        self.setter=setter
+
     def on_focusChanged(self, old, obj):
 
-        if self.ear.listening:
+        if not self.following: 
             return
-        getter=getattr(
+        g=getattr(
                 obj, 'toPlainText', None)
-        setter=getattr(
+        s=getattr(
                 obj, 'setPlainText', None)
-        if getter:
-            self.getter=getter
-            self.setter=setter
-            return
-        getter=getattr(obj, 'text', None)
-        setter=getattr(obj, 'setText', None)
-        if getter:
-            self.getter=getter
-            self.setter=setter
-            return
+        if not g: 
+            g=getattr( obj, 'text', None)
+            s=getattr(obj, 'setText', None)
+        self.setFunctors(g, s)
 
     def setUI(self):
 
+        self.uiman.position='overlay'
         self.uiman.setUI(InputWidget())
         self.ui.modeChanged.connect(
                 self.app.moder.detailChanged)
+        self.app.window.resized.connect(
+                self.ui.updatePosition)
 
     def listen(self):
 
+        self.following=False
         self.yankText()
         super().listen()
         self.focusWidget()
 
     def delisten(self):
 
-        self.setter=None
-        self.getter=None
+        self.setFunctors()
+        self.following=True
         super().delisten()
 
     def focusWidget(
@@ -120,9 +127,9 @@ class Input(Plug):
     def pasteText(self):
 
         text=self.ui.field.text()
-        self.textCreated.emit(text)
         if self.setter:
             self.setter(text)
+        self.textCreated.emit(text)
 
     def on_escapePressed(self): 
 
@@ -131,8 +138,8 @@ class Input(Plug):
 
     def on_carriagePressed(self): 
 
-        self.carriagePressed.emit()
         self.pasteText()
+        self.carriagePressed.emit()
         self.deactivate()
 
     def deactivate(self):
