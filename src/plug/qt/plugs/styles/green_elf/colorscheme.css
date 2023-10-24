@@ -2,11 +2,76 @@ QWidget {
 	font-size: 16px; 
 }
 
+QWidget[selected=true] QTextEdit {
+	color: white;
+}
+
+QWidget[selected=true] QLabel {
+	color: white;
+}
+
+QLineEdit {
+	color: black;
+	border-width: 0px;
+	border-radius: 0px;
+	background-color: white;
+	border-color: transparent;
+	background-color: transparent;
+}
+
 QMainWindow::separator {
     width: 0px;
     height: 0px;
     margin: 0px;
     padding: 0px;
+}
+
+QListWidget::item:selected {
+	color: white;
+	background-color: green;
+}
+
+QDockWidget QWidget {
+	border-width: 0px;
+	background-color: transparent;
+}
+
+QDockWidget QLineEdit {
+	padding: 2 5 2 5;
+}
+
+QListView::item:selected {
+	color: white;
+	background-color: green;
+}
+
+QTreeView::branch:selected {
+	background-color: green;
+}
+
+QTreeView::item:selected {
+	color: white;
+	background-color: green;
+}
+
+#View[selected=false] {
+	border-width: 0px;
+}
+
+#View[selected=true] {
+	border-width: 3px;
+	border-style: solid;
+	border-color: green;
+}
+
+#Input {
+	color: white;
+	border-color: green;
+	border-width: 3px;
+	border-radius: 10px;
+	border-style: solid;
+	padding: 15px 15px 15px 15px;
+	background-color: rgba(0, 0, 0, .8); 
 }
 
 #Powerline QLabel{
@@ -24,75 +89,4 @@ QMainWindow::separator {
 #Powerline QLabel#Page{
 	color: white;
 	background-color: green;
-}
-
-#DockWidget QWidget {
-	border-width: 0px;
-	background-color: transparent;
-}
-
-QListWidget::item:selected {
-	color: white;
-	background-color: green;
-}
-
-
-QListView::item:selected {
-	color: white;
-	background-color: green;
-}
-
-QTreeView::branch:selected {
-	background-color: green;
-}
-
-QTreeView::item:selected {
-	color: white;
-	background-color: green;
-}
-
-QAbstractScrollArea {
-	padding: 0 0 0 0;
-	border-width: 0px;
-}
-
-#Statusbar QLineEdit#Edit{
-	border-radius: 0px;
-}
-
-#SearchList QListView {
-	background-color: red;
-}
-
-#ViewContainer QWidget:focus {
-	border-color: red;
-	border-width: 25px;
-	border-style: solid;
-}
-
-#Input {
-	color: white;
-	border-color: green;
-	border-width: 3px;
-	border-radius: 10px;
-	border-style: solid;
-	padding: 15px 15px 15px 15px;
-	background-color: rgba(0, 0, 0, .8); 
-}
-
-#InputLineEdit {
-	color: black;
-	border-width: 0px;
-	border-style: solid;
-	background-color: white;
-	border-color: transparent;
-	padding: 5 5 5 5;
-}
-
-QWidget[selected=true] QTextEdit {
-	color: white;
-}
-
-QWidget[selected=true] QLabel {
-	color: white;
 }

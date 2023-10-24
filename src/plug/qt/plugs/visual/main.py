@@ -6,7 +6,7 @@ class Visual(Plug):
                  *args,
                  name='visual',
                  show_statusbar=True,
-                 listen_leader='<c-v>',
+                 listen_leader='<c-V>',
                  **kwargs,
                  ):
 

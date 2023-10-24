@@ -10,14 +10,15 @@ class Normal(Plug):
             'escape_bracket'
             ]
 
-    def __init__(self, 
-                 app=None,
-                 name='normal',
-                 special=special,
-                 listen_leader='@',
-                 delisten_on_exec=False,
-                 **kwargs,
-                 ):
+    def __init__(
+            self, 
+            app=None, 
+            name='normal',
+            special=special, 
+            listen_leader='@', 
+            delisten_on_exec=False,
+            **kwargs
+            ):
 
         self.cursor_visible=False
         super(Normal, self).__init__(
@@ -33,18 +34,17 @@ class Normal(Plug):
         super().setup()
         self.display=self.app.display
         self.ear.escapePressed.connect(
-                self.on_escapePressed
-                )
-
-    def on_escapePressed(self):
-
-        view=self.currentView()
-        if view: 
-            view.select()
-            view.update()
+                self.on_escapePressed)
 
     def currentView(self):
         return self.display.currentView()
+
+    def on_escapePressed(self):
+
+        v=self.currentView()
+        if v: 
+            v.select()
+            v.update()
 
     def incrementUp(self, digit=1): 
 
@@ -201,17 +201,17 @@ class Normal(Plug):
     def decrementFold(self): 
         self.display.decrementFold()
 
-    @register(key='<c-w>sv', modes=['normal', 'command'])
+    @register(key='<c-w>v')
     def splitVertical(self): 
 
         if self.currentView():
-            self.display.split(False)
+            self.display.split(True)
 
-    @register(key='<c-w>sh', modes=['normal', 'command'])
+    @register(key='<c-w>s') 
     def splitHorizontal(self):
 
         if self.currentView():
-            self.display.split(True)
+            self.display.split(False)
 
     @register('<c-w>k')
     def focusUpView(self): 
