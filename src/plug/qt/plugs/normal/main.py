@@ -204,12 +204,14 @@ class Normal(Plug):
     @register(key='<c-w>v')
     def splitVertical(self): 
 
+        return
         if self.currentView():
             self.display.split(True)
 
     @register(key='<c-w>s') 
     def splitHorizontal(self):
 
+        return
         if self.currentView():
             self.display.split(False)
 

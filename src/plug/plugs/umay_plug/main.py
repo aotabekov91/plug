@@ -4,13 +4,15 @@ from plug.plugs.handler import Handler
 
 class Umay(Handler):
 
-    def __init__(self, 
-                 *args, 
-                 umay_port=None,
-                 wait_time=5000,
-                 pollerize=True,
-                 adjuster={'digit':int},
-                 **kwargs):
+    def __init__(
+            self, 
+            *args, 
+            wait_time=200, 
+            umay_port=None, 
+            pollerize=True, 
+            adjuster={'digit':int}, 
+            **kwargs
+            ):
 
         self.current=None
         self.adjuster=adjuster
