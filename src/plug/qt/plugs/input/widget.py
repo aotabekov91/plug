@@ -32,6 +32,14 @@ class VimEditor(Base):
         y=int(ph/2-h/2)
         self.setGeometry(x, y, w, h)
 
+    # def setText(self, text):
+    #     super().setText(text)
+    #     self.adjustDocSize()
+
+    # def adjustDocSize(self):
+    #     doc=self.document()
+    #     doc.adjustSize()
+
     def setRatio(self, w=None, h=None):
 
         self.w_ratio=self.w_dratio
