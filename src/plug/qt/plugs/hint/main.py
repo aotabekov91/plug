@@ -1,5 +1,4 @@
 from plug.qt import Plug
-
 from gizmo.widget import HintLabel
 
 class Hint(Plug):

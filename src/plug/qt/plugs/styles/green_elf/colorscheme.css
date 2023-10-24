@@ -1,3 +1,7 @@
+QWidget {
+	font-size: 16px; 
+}
+
 QMainWindow::separator {
     width: 0px;
     height: 0px;
@@ -68,9 +72,10 @@ QAbstractScrollArea {
 
 #Input {
 	color: white;
-	font-size: 16px;
-	border-radius: 15px;
-	border-style: outset;
+	border-color: green;
+	border-width: 3px;
+	border-radius: 10px;
+	border-style: solid;
 	padding: 15px 15px 15px 15px;
 	background-color: rgba(0, 0, 0, .8); 
 }
@@ -90,8 +95,4 @@ QWidget[selected=true] QTextEdit {
 
 QWidget[selected=true] QLabel {
 	color: white;
-}
-
-QWidget {
-	font-size: 16px; 
 }
