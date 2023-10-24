@@ -22,9 +22,6 @@ class Plug:
         self.setup()
         self.initiate()
 
-    def initiate(self):
-        pass
-
     def setup(self):
 
         self.setName()
@@ -52,8 +49,7 @@ class Plug:
         self.moder=moder(
                 app=self,
                 config=config,
-                **kwargs,
-                )
+                **kwargs)
 
     def setMode(self, mode=None):
 
@@ -78,7 +74,6 @@ class Plug:
                     d=(self.name, m.name)
                     if not d in self.actions:
                         self.actions[d]=m 
-
         saveSetKeys()
         saveOwnKeys()
 
@@ -108,12 +103,12 @@ class Plug:
     def setFiles(self):
 
         for f in os.listdir(self.path):
-            path=f'{self.path}/{f}'
-            self.files[f]=path
+            p=f'{self.path}/{f}'
+            self.files[f]=p
             if f=='config.toml':
-                with open(path, 'rb') as y:
-                    toml_data=tomli.load(y)
-                self.config.update(toml_data)
+                with open(p, 'rb') as y:
+                    tdata=tomli.load(y)
+                self.config.update(tdata)
 
     def setSettings(self):
 
@@ -121,6 +116,11 @@ class Plug:
         for n, v in s.items():
             setattr(self, n, v)
 
-    def listen(self): pass
+    def listen(self): 
+        pass
 
-    def delisten(self): pass
+    def delisten(self): 
+        pass
+
+    def initiate(self):
+        pass

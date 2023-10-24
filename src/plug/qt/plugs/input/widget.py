@@ -38,3 +38,4 @@ class VimEditor(Base):
         self.h_ratio=self.h_dratio
         if w: self.w_ratio=w
         if h: self.h_ratio=h
+        self.updatePosition()

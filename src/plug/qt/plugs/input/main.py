@@ -5,12 +5,7 @@ from .widget import VimEditor
 
 class Input(Plug):
 
-    special=[
-            'carriage', 
-            'escape_bracket'
-            ]
-    textCreated=QtCore.pyqtSignal(
-            object)
+    special=['carriage']
 
     def __init__(
             self, 
@@ -18,6 +13,7 @@ class Input(Plug):
             special=special,
             position='overlay',
             listen_leader='<c-I>',
+            delisten_keys=['escape'],
             **kwargs
             ):
         
@@ -26,6 +22,7 @@ class Input(Plug):
                 name=name,
                 special=special,
                 position=position,
+                delisten_keys=delisten_keys,
                 listen_leader=listen_leader, 
                 **kwargs
                 )
@@ -36,10 +33,8 @@ class Input(Plug):
         super().setup()
         self.setUI()
         self.connect()
-        self.ear.escapePressed.connect(
-                self.on_escapePressed)
         self.ear.carriageReturnPressed.connect(
-                self.on_carriagePressed)
+                self.pasteText)
 
     def connect(self):
 
@@ -109,22 +104,10 @@ class Input(Plug):
         text=self.ui.text()
         if self.setter:
             self.setter(text)
-        self.textCreated.emit(text)
-
-    def on_escapePressed(self): 
-
-        self.setRatio()
-        self.escapePressed.emit()
-        self.deactivate()
-
-    def on_carriagePressed(self): 
-
-        self.setRatio()
-        self.pasteText()
-        self.carriagePressed.emit()
         self.deactivate()
 
     def deactivate(self):
         
+        self.setRatio()
         self.ui.clear()
         super().deactivate()

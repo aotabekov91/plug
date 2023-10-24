@@ -80,7 +80,6 @@ class Plug(Base, QtCore.QObject):
         self.endedListening.emit(self)
 
     def checkLeader(self, e, p=None): 
-
         return p in self.ear.listen_leader
 
     @register('t', modes=['command'])
