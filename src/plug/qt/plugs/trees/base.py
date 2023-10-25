@@ -23,6 +23,7 @@ class TreePlug(Plug):
 
         self.uiman.setUI()
         ui=InputTree()
+        self.tree=ui.tree
         self.ui.addWidget(
                 ui, 'main', main=True)
         ui.tree.setSelectionBehavior(
@@ -55,14 +56,18 @@ class TreePlug(Plug):
 
         if not self.follow_index:
             self.follow_index=True
-            self.ui.main.tree.indexChanged.disconnect(
+            self.tree.indexChanged.disconnect(
                     self.on_outlineClicked)
         else:
             self.follow_index=False
-            self.ui.main.tree.indexChanged.connect(
+            self.tree.indexChanged.connect(
                     self.on_outlineClicked)
 
-    def open(self, how, focus, *args, **kwargs): 
+    def open(
+            self, 
+            how, 
+            focus, 
+            **kwargs): 
 
         if focus:
             self.delistenWanted.emit()

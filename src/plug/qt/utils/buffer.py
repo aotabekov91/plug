@@ -21,8 +21,10 @@ class Buffer(QtCore.QObject):
 
     def getModel(self, path):
 
-        for m in self.modellers:
-            return m.getModel(path)
+        for agent in self.modellers:
+            m=agent.getModel(path)
+            if m: 
+                return m
 
     def load(self, path):
 

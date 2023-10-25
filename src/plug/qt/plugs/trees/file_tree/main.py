@@ -11,9 +11,9 @@ class FileBrowser(TreePlug):
             position='left',
             prefix_keys={
                 'command': 'f', 
-                'FileBrowser': '<c-u>'
+                'FileBrowser': '<c-.>'
                 }, 
-            keywords=['files', 'file browser'], 
+            keywords=['files'],
             **kwargs
             ):
 
@@ -26,6 +26,25 @@ class FileBrowser(TreePlug):
         self.app.moder.plugsLoaded.connect(
                 self.on_plugsLoaded)
 
+    def initiate(self):
+
+        buffer=getattr(
+                self.app, 'buffer', None)
+        if buffer: 
+            buffer.addModeller(self)
+
+    def getModel(self, path):
+
+        if os.path.isdir(path):
+            m=self.tree.model()
+            idx=m.index(path)
+            p=idx.parent()
+            ppath=m.filePath(p)
+            m.setRootPath(ppath)
+            self.tree.setRootIndex(p)
+            self.tree.setCurrentIndex(idx)
+            self.activate()
+
     def on_plugsLoaded(self, plugs):
 
         runlist=plugs.get('RunList', None)
@@ -35,26 +54,25 @@ class FileBrowser(TreePlug):
 
     def getPath(self, index=None):
 
-        tree=self.ui.main.tree
         if not index: 
-            index=tree.currentIndex()
+            index=self.tree.currentIndex()
         if index:
-            model=tree.model()
+            model=self.tree.model()
             path=model.filePath(index)
             if os.path.exists(path): 
                 return path
 
     def setPath(self, path=None):
 
-        tree=self.ui.main.tree
-        tree.setModel(QFileSystemModel())
+        model=QFileSystemModel()
         if path is None: 
             path = os.path.abspath('.')
-        tree.model().setRootPath(path)
-        index=tree.model().index(path)
-        tree.setRootIndex(index)
+        model.setRootPath(path)
+        idx=model.index(path)
+        self.tree.setModel(model)
+        self.tree.setRootIndex(idx)
         for i in range(1, 4): 
-            self.ui.main.tree.hideColumn(i)
+            self.tree.hideColumn(i)
 
     @register(modes=['run'])
     def openFile(
@@ -73,17 +91,16 @@ class FileBrowser(TreePlug):
             focus=False
             ):
 
-        tree=self.ui.main.tree
         if not path:
-            index=tree.currentIndex()
-            path=self.getPath(index)
+            idx=self.tree.currentIndex()
+            path=self.getPath(idx)
         if path:
             if os.path.isdir(path): 
-                tree.expand(tree.currentIndex())
+                idx=self.tree.currentIndex()
+                self.tree.expand(idx)
             else:
                 self.app.open(
                         path, 
                         how=how, 
-                        focus=focus,
-                        )
+                        focus=focus)
             super().open(how, focus)

@@ -12,9 +12,7 @@ class Render(Plug):
         if display: 
             display.addViewer(self)
         buffer=getattr(
-                self.app, 
-                'buffer', 
-                None)
+                self.app, 'buffer', None)
         if buffer: 
             buffer.addModeller(self)
 
@@ -34,7 +32,7 @@ class Render(Plug):
         return self.readModel(model)
 
     def readModel(self, model):
-        pass
+        return
 
     def readFile(self, path):
-        pass
+        return
