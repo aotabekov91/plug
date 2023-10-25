@@ -77,24 +77,22 @@ class Normal(Plug):
     @register(key='gg')
     def gotoFirst(self):
 
-        view=self.currentView()
-        if view: 
-            view.gotoFirst()
+        v=self.currentView()
+        if v: v.gotoFirst()
             
     @register(key='G')
     def goto(self, digit=None):
 
-        view=self.currentView()
-        if view: 
-            view.goto(digit)
+        v=self.currentView()
+        if v: v.goto(digit)
 
     @register(key=']')
     def next(self, digit=1): 
 
-        view=self.currentView()
-        if view: 
+        v=self.currentView()
+        if v: 
             for d in range(digit): 
-                view.next()
+                v.next()
     
     @register(key='[')
     def prev(self, digit=1): 
@@ -161,9 +159,8 @@ class Normal(Plug):
     @register(key='S')
     def save(self): 
 
-        view=self.currentView()
-        if view: 
-            view.save()
+        v=self.currentView()
+        if v: v.save()
 
     @register(key='<c-w>c')
     def closeCurrentView(self): 
@@ -221,10 +218,22 @@ class Normal(Plug):
     def focusPrevView(self): 
         self.display.focus('prev')
 
-    @register('<c-q>', modes=['any'])
-    def quit(self):
-        self.app.exit()
-
     @register(key='tc')
     def toggleCursor(self):
         self.cursor_visible=not self.cursor_visible
+
+    @register(key='<c-w>df', modes=['any'])
+    def dockToggleFullscreen(self): 
+        self.app.window.docks.toggleFullscreen()
+
+    @register(key='<c-w>dzi', modes=['any'])
+    def dockZoomIn(self, digit=1): 
+        self.app.window.docks.zoomIn(digit)
+        
+    @register(key='<c-w>dzo', modes=['any'])
+    def dockZoomOut(self, digit=1): 
+        self.app.window.docks.zoomOut(digit)
+
+    @register('<c-q>', modes=['any'])
+    def quit(self):
+        self.app.exit()
