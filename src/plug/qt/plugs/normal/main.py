@@ -74,26 +74,19 @@ class Normal(Plug):
             for d in range(digit): 
                 view.incrementRight()
 
-    def gotoEnd(self):
-
-        view=self.currentView()
-        if view: view.gotoEnd()
-
     @register(key='gg')
-    def gotoBegin(self):
+    def gotoFirst(self):
 
         view=self.currentView()
-        if view: view.gotoBegin()
+        if view: 
+            view.gotoFirst()
             
     @register(key='G')
     def goto(self, digit=None):
 
         view=self.currentView()
         if view: 
-            if not digit:
-                self.gotoEnd()
-            else:
-                view.goto(digit)
+            view.goto(digit)
 
     @register(key=']')
     def next(self, digit=1): 
@@ -114,73 +107,56 @@ class Normal(Plug):
     @register(key=['k'])
     def up(self, digit=1): 
 
-        view=self.currentView()
-        if view: 
-            for d in range(digit): 
-                view.up()
+        v=self.currentView()
+        if v: v.up(digit)
 
     @register(key='j')
     def down(self, digit=1): 
 
-        view=self.currentView()
-        if view: 
-            for d in range(digit): 
-                view.down()
+        v=self.currentView()
+        if v: v.down(digit)
 
     @register(key='h')
     def left(self, digit=1): 
 
-        view=self.currentView()
-        if view: 
-            for d in range(digit): 
-                view.left()
+        v=self.currentView()
+        if v: v.left(digit)
 
     @register(key='l')
     def right(self, digit=1): 
 
-        view=self.currentView()
-        if view: 
-            for d in range(digit): 
-                view.right()
+        v=self.currentView()
+        if v: v.right(digit)
 
     @register(key='zi')
     def zoomIn(self, digit=1): 
         
-        view=self.currentView()
-        if view:
-            for d in range(digit): 
-                view.zoomIn()
+        v=self.currentView()
+        if v: v.zoomIn(digit)
 
     @register(key='zo')
     def zoomOut(self, digit=1): 
         
-        view=self.currentView()
-        if view:
-            for d in range(digit): 
-                view.zoomOut()
+        v=self.currentView()
+        if v: v.zoomOut(digit)
 
     @register(key='K')
     def pageUp(self, digit=1): 
 
-        view=self.currentView()
-        if view:
-            for d in range(digit): 
-                view.pageUp()
+        v=self.currentView()
+        if v: v.pageUp(digit)
 
     @register(key='J')
     def pageDown(self, digit=1): 
         
-        view=self.currentView()
-        if view:
-            for d in range(digit): 
-                view.pageDown()
+        v=self.currentView()
+        if v: v.pageDown(digit)
 
     @register(key='r')
     def readjust(self): 
 
-        view=self.currentView()
-        if view: 
-            view.readjust()
+        v=self.currentView()
+        if v: v.readjust()
 
     @register(key='S')
     def save(self): 
@@ -204,14 +180,12 @@ class Normal(Plug):
     @register(key='<c-w>v')
     def splitVertical(self): 
 
-        return
         if self.currentView():
             self.display.split(True)
 
     @register(key='<c-w>s') 
     def splitHorizontal(self):
 
-        return
         if self.currentView():
             self.display.split(False)
 
