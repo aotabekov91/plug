@@ -54,13 +54,12 @@ class Powerline(Plug):
         uid=''
         if view: uid=view.model().id()
         self.ui.setText('model', uid)
-        self.on_itemChanged(view)
 
-    def on_itemChanged(self, view, item=None): 
+    def on_itemChanged(self, view, item): 
 
         page=''
         if view:
-            cpage=view.current()
-            tpages=view.count()
-            page=f'{cpage}/{tpages}'
+            t=view.count()
+            c=item.index()
+            page=f'{c}/{t}'
         self.ui.setText('page', page)
