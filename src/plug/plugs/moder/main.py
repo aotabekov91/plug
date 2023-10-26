@@ -69,18 +69,17 @@ class Moder(Plug):
                 n=p.__name__
                 c=self.app.config.get(n, {})
 
-                try:
+                # try:
 
-                    kwargs=params.get(n, {})
-                    plug=p(app=self.app, 
-                           config=c, 
-                           **kwargs)
-                    self.add(plug)
+                kwargs=params.get(n, {})
+                plug=p(app=self.app, 
+                       config=c, 
+                       **kwargs)
+                self.add(plug)
 
-                except Exception as e:
-
-                    print('Error in plug loading: ', n)
-                    print(e)
+                # except Exception as e:
+                #     print('Error in plug loading: ', n)
+                #     print(e)
 
         self.on_plugsLoaded(self.plugs)
         self.connect()
