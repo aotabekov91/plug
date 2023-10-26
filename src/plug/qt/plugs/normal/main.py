@@ -115,16 +115,28 @@ class Normal(Plug):
         if v: v.zoomOut(digit)
 
     @register(key='K')
-    def viewPageUp(self, digit=1): 
+    def viewScreenUp(self, digit=1): 
 
         v=self.currentView()
-        if v: v.pageUp(digit)
+        if v: v.screenUp(digit)
+        
+    @register(key='H')
+    def viewScreenLeft(self, digit=1): 
+
+        v=self.currentView()
+        if v: v.screenLeft(digit)
 
     @register(key='J')
-    def viewPageDown(self, digit=1): 
+    def viewScreenDown(self, digit=1): 
         
         v=self.currentView()
-        if v: v.pageDown(digit)
+        if v: v.screenDown(digit)
+        
+    @register(key='L')
+    def viewScreenRight(self, digit=1): 
+
+        v=self.currentView()
+        if v: v.screenRight(digit)
 
     @register(key='r')
     def viewReadjust(self): 
@@ -137,6 +149,30 @@ class Normal(Plug):
 
         v=self.currentView()
         if v: v.save()
+
+    @register(key='c')
+    def toggleContinuousMode(self): 
+
+        v=self.currentView()
+        if v: v.toggleContinuousMode()
+
+    @register('C')
+    def cleanUp(self): 
+
+        v=self.currentView()
+        if v: v.cleanUp()
+        
+    @register(key='w')
+    def fitToWindowWidth(self): 
+
+        v=self.currentView()
+        if v: v.fitToWindowWidth()
+
+    @register(key='s')
+    def fitToWindowHeight(self): 
+
+        v=self.currentView()
+        if v: v.fitToWindowHeight()
 
     @register(key='d')
     def viewCloseCurrent(self): 
@@ -265,3 +301,11 @@ class Normal(Plug):
     @register('fd')
     def decrementFold(self): 
         self.display.decrementFold()
+
+    @register(key='yy')
+    def yank(self):
+
+        v=self.currentView()
+        if v:
+            yank=getattr(v, 'yank', None)
+            if yank: yank()

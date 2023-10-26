@@ -60,7 +60,7 @@ class Powerline(Plug):
 
         page=''
         if view:
-            cpage=view.currentPage()
-            tpages=view.totalPages()
+            cpage=view.current()
+            tpages=view.count()
             page=f'{cpage}/{tpages}'
         self.ui.setText('page', page)
