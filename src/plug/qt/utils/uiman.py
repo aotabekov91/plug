@@ -64,6 +64,7 @@ class UIMan(QtCore.QObject):
         ui.hide()
         self.ui=ui
         self.obj.ui=self.ui
+        self.ui.mode=self.obj
         oname=self.obj.name.title()
         self.ui.setObjectName(oname)
         if hasattr(self.ui, 'hideWanted'):
