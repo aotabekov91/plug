@@ -6,7 +6,7 @@ class Resize(Plug):
     def __init__(self, 
                  app, 
                  name='resize',
-                 listen_leader='<c-r>',
+                 listen_leader='<c-R>',
                  **kwargs,
                  ):
 

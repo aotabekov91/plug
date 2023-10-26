@@ -256,11 +256,11 @@ class Normal(Plug):
 
     @register(key='<c-w>dk', modes=['any'])
     def dockUp(self): 
-        self.app.window.docks.goto('top')
+        self.app.window.docks.goto('up')
 
     @register(key='<c-w>dj', modes=['any'])
     def dockDown(self): 
-        self.app.window.docks.goto('bottom')
+        self.app.window.docks.goto('down')
 
     @register(key='<c-w>dh', modes=['any'])
     def dockLeft(self): 
@@ -272,11 +272,11 @@ class Normal(Plug):
 
     @register('<c-w>dK', modes=['any'])
     def dockMoveUp(self): 
-        self.app.window.docks.move('top')
+        self.app.window.docks.move('up')
 
     @register('<c-w>dJ', modes=['any'])
     def dockMoveDown(self): 
-        self.app.window.docks.move('bottom')
+        self.app.window.docks.move('down')
 
     @register('<c-w>dH', modes=['any'])
     def dockMoveLeft(self): 

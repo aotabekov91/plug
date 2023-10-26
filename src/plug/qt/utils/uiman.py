@@ -125,7 +125,7 @@ class UIMan(QtCore.QObject):
     def locate(self):
 
         if self.ui:
-            dock=['left', 'right', 'top', 'bottom']
+            dock=['left', 'right', 'up', 'down']
             if self.position=='window':
                 self.app.window.stack.addWidget(
                         self.ui, self.name) 
