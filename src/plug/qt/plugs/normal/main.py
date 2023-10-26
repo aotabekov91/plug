@@ -234,6 +234,22 @@ class Normal(Plug):
     def dockRight(self): 
         self.app.window.docks.goto('right')
 
+    @register('<c-w>dK', modes=['any'])
+    def dockMoveUp(self): 
+        self.app.window.docks.move('top')
+
+    @register('<c-w>dJ', modes=['any'])
+    def dockMoveDown(self): 
+        self.app.window.docks.move('bottom')
+
+    @register('<c-w>dH', modes=['any'])
+    def dockMoveLeft(self): 
+        self.app.window.docks.move('left')
+
+    @register('<c-w>dL', modes=['any'])
+    def dockMoveRight(self): 
+        self.app.window.docks.move('right')
+
     @register(key='<c-w>dd', modes=['any'])
     def dockHideAll(self): 
         self.app.window.docks.hideAll()
