@@ -152,7 +152,10 @@ class UIMan(QtCore.QObject):
 
     def activate(self): 
 
-        if self.ui:
+        if self.window:
+            self.window.show()
+            sys.exit(self.qapp.exec_())
+        elif self.ui:
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.activate(self.ui)
             elif self.position=='window':
@@ -162,7 +165,9 @@ class UIMan(QtCore.QObject):
 
     def deactivate(self):
 
-        if self.ui:
+        if self.window: 
+            sys.exit()
+        elif self.ui:
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.deactivate(self.ui)
             elif self.position=='window':
@@ -191,14 +196,3 @@ class UIMan(QtCore.QObject):
 
     def on_focusLost(self, widget=None):
         self.obj.focusLost.emit(self.obj)
-
-    def run(self):
-
-        if self.window:
-            self.window.show()
-            sys.exit(self.qapp.exec_())
-
-    def exit(self):
-
-        if self.window: 
-            sys.exit()

@@ -6,6 +6,7 @@ from gizmo.utils import Ear, register
 class Plug(Base, QtCore.QObject):
 
     tabPressed=QtCore.pyqtSignal()
+    appLaunched=QtCore.pyqtSignal()
     escapePressed=QtCore.pyqtSignal()
     returnPressed=QtCore.pyqtSignal()
     forceDelisten=QtCore.pyqtSignal()
@@ -115,16 +116,18 @@ class Plug(Base, QtCore.QObject):
             self.delistenWanted.emit()
 
     def launch(self):
+
         self.timer.stop()
+        self.appLaunched.emit()
 
     def run(self):
 
         self.running=True
         self.timer.start(
                 self.initial_wait)
-        self.uiman.run()
+        self.uiman.activate()
 
     def exit(self): 
 
         self.running=False
-        self.uiman.exit()
+        self.uiman.deactivate()

@@ -36,15 +36,23 @@ class FileBrowser(TreePlug):
     def getModel(self, path):
 
         if os.path.isdir(path):
-            m=self.tree.model()
-            idx=m.index(path)
-            p=idx.parent()
-            ppath=m.filePath(p)
-            m.setRootPath(ppath)
-            self.tree.setRootIndex(p)
-            self.tree.setCurrentIndex(idx)
-            self.activate()
-            self.ui.dock.toggleFullscreen()
+            if self.app.running:
+                self.openModel(path)
+            else:
+                f=lambda : self.openModel(path)
+                self.app.appLaunched.connect(f)
+
+    def openModel(self, path):
+
+        m=self.tree.model()
+        idx=m.index(path)
+        p=idx.parent()
+        ppath=m.filePath(p)
+        m.setRootPath(ppath)
+        self.tree.setRootIndex(p)
+        self.tree.setCurrentIndex(idx)
+        self.activate()
+        self.ui.dock.toggleFullscreen()
 
     def on_plugsLoaded(self, plugs):
 
