@@ -31,11 +31,13 @@ class Plug(Base, QtCore.QObject):
     def __init__(
             self, 
             *args, 
+            initial_wait=500,
             follow_focus=True,
             **kwargs):
 
         self.running = False
         self.activated = False
+        self.initial_wait=initial_wait
         self.follow_focus=follow_focus
         self.position=kwargs.get(
                 'position', None)
@@ -43,6 +45,7 @@ class Plug(Base, QtCore.QObject):
                 'follow_mouse', False)
         super(Plug, self).__init__(
                 *args, **kwargs)
+
 
     def initiate(self):
 
@@ -53,6 +56,7 @@ class Plug(Base, QtCore.QObject):
 
         super().setup()
         self.setUIMan()
+        self.setTimer()
         self.setEar()
         if self.app:
             self.app.moder.add(self)
@@ -61,6 +65,12 @@ class Plug(Base, QtCore.QObject):
 
         self.uiman=UIMan(
                 self, **self.kwargs)
+
+    def setTimer(self):
+
+        self.timer=QtCore.QTimer()
+        self.timer.timeout.connect(
+                self.launch)
 
     def setEar(self):
 
@@ -104,12 +114,17 @@ class Plug(Base, QtCore.QObject):
         if self.ear.listening:
             self.delistenWanted.emit()
 
+    def launch(self):
+        self.timer.stop()
+
     def run(self):
 
         self.running=True
-        self.uiman.activate()
+        self.timer.start(
+                self.initial_wait)
+        self.uiman.run()
 
     def exit(self): 
 
         self.running=False
-        self.uiman.deactivate()
+        self.uiman.exit()

@@ -33,7 +33,7 @@ QListWidget::item:selected {
 
 QDockWidget QWidget {
 	border-width: 0px;
-	background-color: transparent;
+	background-color: red;
 }
 
 QDockWidget QLineEdit {

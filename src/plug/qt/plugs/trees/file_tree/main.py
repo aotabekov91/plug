@@ -44,6 +44,7 @@ class FileBrowser(TreePlug):
             self.tree.setRootIndex(p)
             self.tree.setCurrentIndex(idx)
             self.activate()
+            self.ui.dock.toggleFullscreen()
 
     def on_plugsLoaded(self, plugs):
 

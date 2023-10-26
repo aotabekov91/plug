@@ -40,12 +40,6 @@ class UIMan(QtCore.QObject):
         self.qapp.earGained.connect(
                 self.on_earGained)
 
-    def on_earSet(self, ear):
-        self.ears+=[ear]
-
-    def on_earGained(self, ear):
-        self.current=ear
-
     def setAppUI(
             self, 
             buffer_class=Buffer,
@@ -62,12 +56,6 @@ class UIMan(QtCore.QObject):
         self.obj.buffer=self.buffer
         self.obj.window=self.window
         self.obj.display=self.display
-
-    def on_focusGained(self, widget=None):
-        self.obj.focusGained.emit(self.obj)
-
-    def on_focusLost(self, widget=None):
-        self.obj.focusLost.emit(self.obj)
 
     def setUI(self, ui=None): 
 
@@ -164,10 +152,7 @@ class UIMan(QtCore.QObject):
 
     def activate(self): 
 
-        if self.window:
-            self.window.show()
-            sys.exit(self.qapp.exec_())
-        elif self.ui:
+        if self.ui:
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.activate(self.ui)
             elif self.position=='window':
@@ -177,9 +162,7 @@ class UIMan(QtCore.QObject):
 
     def deactivate(self):
 
-        if self.window:
-            sys.exit()
-        elif self.ui:
+        if self.ui:
             if hasattr(self.ui, 'dock'):
                 self.ui.dock.deactivate(self.ui)
             elif self.position=='window':
@@ -196,3 +179,26 @@ class UIMan(QtCore.QObject):
 
         if self.app: 
             self.app.window.setFocus()
+
+    def on_earSet(self, ear):
+        self.ears+=[ear]
+
+    def on_earGained(self, ear):
+        self.current=ear
+
+    def on_focusGained(self, widget=None):
+        self.obj.focusGained.emit(self.obj)
+
+    def on_focusLost(self, widget=None):
+        self.obj.focusLost.emit(self.obj)
+
+    def run(self):
+
+        if self.window:
+            self.window.show()
+            sys.exit(self.qapp.exec_())
+
+    def exit(self):
+
+        if self.window: 
+            sys.exit()
