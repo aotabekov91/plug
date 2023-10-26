@@ -1,5 +1,3 @@
-import os
-
 from PyQt5 import QtCore
 
 class Buffer(QtCore.QObject):
@@ -12,34 +10,22 @@ class Buffer(QtCore.QObject):
         self.app=app
         self.buffers={}
         self.modellers=[]
-        self.watch=QtCore.QFileSystemWatcher()
-        self.watch.fileChanged.connect(
-                self.on_fileChanged)
 
     def addModeller(self, modeller):
         self.modellers+=[modeller]
 
-    def getModel(self, path):
+    def getModel(self, source):
 
         for agent in self.modellers:
-            m=agent.getModel(path)
-            if m: 
-                return m
+            m=agent.getModel(source)
+            if m: return m
 
-    def load(self, path):
+    def load(self, source):
 
-        if path in self.buffers:
-            return self.buffers[path]
-        model=self.getModel(path)
+        if source in self.buffers:
+            return self.buffers[source]
+        model=self.getModel(source)
         if model and model.readSuccess():
-            self.buffers[path]=model
+            self.buffers[source]=model
             self.bufferCreated.emit(model)
             return model
-
-    def on_fileChanged(self, path): 
-        pass
-
-    def watchFile(self, path): 
-
-        self.watch.addPath(
-                os.path.realpath(path))

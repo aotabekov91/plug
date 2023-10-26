@@ -66,18 +66,22 @@ class Moder(Plug):
         plugs=self.getPlugs(plugs)
         for p in plugs: 
             if not isLoaded(p): 
-                config=self.app.config.get(
-                        p.__name__, {})
-                # try:
-                kwargs=params.get(
-                        p.__name__, {})
-                plug=p(app=self.app, 
-                       config=config,
-                       **kwargs)
-                self.add(plug)
-                # except Exception as e:
-                #     print('Error in plug loading: ', n)
-                #     print(e)
+                n=p.__name__
+                c=self.app.config.get(n, {})
+
+                try:
+
+                    kwargs=params.get(n, {})
+                    plug=p(app=self.app, 
+                           config=c, 
+                           **kwargs)
+                    self.add(plug)
+
+                except Exception as e:
+
+                    print('Error in plug loading: ', n)
+                    print(e)
+
         self.on_plugsLoaded(self.plugs)
         self.connect()
         self.set()

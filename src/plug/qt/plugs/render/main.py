@@ -2,37 +2,29 @@ from plug.qt import Plug
 
 class Render(Plug):
 
-    def initiate(self):
+    def initiate(self, view=None, model=None):
 
         super().initiate()
-        display=getattr(
-                self.app, 
-                'display', 
-                None)
-        if display: 
-            display.addViewer(self)
-        buffer=getattr(
-                self.app, 'buffer', None)
-        if buffer: 
-            buffer.addModeller(self)
+        self.view_class=view
+        self.model_class=model
+        b=getattr(self.app, 'buffer', None)
+        d=getattr(self.app, 'display', None)
+        if d: d.addViewer(self)
+        if b: b.addModeller(self)
 
-    def getModel(self, path):
-
-        model=self.readFile(path)
-        if model: 
-            self.setId(path, model)
-        return model
-
-    def setId(self, path, model):
+    def setId(self, source, model):
 
         if model:
             model.setId(id(model))
 
+    def getModel(self, source):
+
+        model=self.readSource(source)
+        self.setId(source, model)
+        return model
+
     def getView(self, model):
-        return self.readModel(model)
+        return None
 
-    def readModel(self, model):
-        return
-
-    def readFile(self, path):
-        return
+    def readSource(self, source):
+        return None
