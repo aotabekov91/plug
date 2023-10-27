@@ -2,7 +2,11 @@ from plug.qt import Plug
 
 class Render(Plug):
 
-    def initiate(self, view=None, model=None):
+    def initiate(
+            self, 
+            view=None, 
+            model=None
+            ):
 
         super().initiate()
         self.view_class=view
