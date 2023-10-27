@@ -36,6 +36,7 @@ class Plug(Base, QtCore.QObject):
             follow_focus=True,
             **kwargs):
 
+        self.renders=[]
         self.running = False
         self.activated = False
         self.initial_wait=initial_wait
@@ -46,7 +47,6 @@ class Plug(Base, QtCore.QObject):
                 'follow_mouse', False)
         super(Plug, self).__init__(
                 *args, **kwargs)
-
 
     def initiate(self):
 
@@ -61,6 +61,9 @@ class Plug(Base, QtCore.QObject):
         self.setEar()
         if self.app:
             self.app.moder.add(self)
+
+    def addRender(self, render):
+        self.renders+=[render]
 
     def setUIMan(self):
 

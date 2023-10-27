@@ -9,14 +9,10 @@ class Buffer(QtCore.QObject):
         super().__init__(app)
         self.app=app
         self.buffers={}
-        self.modellers=[]
-
-    def addModeller(self, modeller):
-        self.modellers+=[modeller]
 
     def getModel(self, source):
 
-        for agent in self.modellers:
+        for agent in self.app.renders:
             m=agent.getModel(source)
             if m: return m
 

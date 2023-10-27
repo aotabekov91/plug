@@ -48,9 +48,11 @@ class UIMan(QtCore.QObject):
 
         self.window=StackWindow(
                 objectName='MainWindow')
-        self.buffer=buffer_class(self)
+        self.buffer=buffer_class(self.obj)
         self.display=display_class(
-                window=self.window)
+                app=self.obj,
+                window=self.window,
+                )
         self.window.main.m_layout.addWidget(
                 self.display)
         self.obj.buffer=self.buffer

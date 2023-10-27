@@ -27,11 +27,7 @@ class FileBrowser(TreePlug):
                 self.on_plugsLoaded)
 
     def initiate(self):
-
-        buffer=getattr(
-                self.app, 'buffer', None)
-        if buffer: 
-            buffer.addModeller(self)
+        self.app.addRender(self)
 
     def getModel(self, path):
 
