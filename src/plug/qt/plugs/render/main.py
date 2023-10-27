@@ -13,15 +13,15 @@ class Render(Plug):
         self.model_class=model_class
         self.app.addRender(self)
 
-    def setId(self, source, model):
+    def assignId(self, source, model):
 
         if model:
-            model.setId(id(model))
+            model.assignId(source, model)
 
     def getModel(self, source):
 
         model=self.readSource(source)
-        self.setId(source, model)
+        self.assignId(source, model)
         return model
 
     def getView(self, model, **kwargs):

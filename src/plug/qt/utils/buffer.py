@@ -12,9 +12,11 @@ class Buffer(QtCore.QObject):
 
     def getModel(self, source):
 
-        for agent in self.app.renders:
-            m=agent.getModel(source)
-            if m: return m
+        for r in self.app.renders:
+            m=r.getModel(source)
+            print(m, r, source)
+            if m: 
+                return m
 
     def load(self, source):
 
