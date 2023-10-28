@@ -24,6 +24,9 @@ class Moder(Plug):
                 *args, **kwargs)
         self.actions={}
 
+    def getState(self):
+        return self.current, self.prev
+
     def connect(self):
 
         w=getattr(self.app, 'window')
@@ -93,22 +96,9 @@ class Moder(Plug):
         if hasattr(plug, 'modeWanted'):
             plug.modeWanted.connect(
                     self.set)
-        # if hasattr(plug, 'focusGained'):
-            # plug.focusGained.connect(
-                    # self.on_focusGained)
-        # if hasattr(plug, 'forceDelisten'):
-            # plug.forceDelisten.connect(
-                    # self.set)
         if hasattr(plug, 'delistenWanted'):
             plug.delistenWanted.connect(
                     self.set)
-
-    # def on_focusGained(self, mode=None):
-    #     if self.current!=mode:
-    #         if not self.current:
-    #             self.set(mode)
-    #         elif self.current.follow_focus:
-    #             self.set(mode)
 
     def get(self, mode):
 
@@ -121,12 +111,18 @@ class Moder(Plug):
 
     def set(self, mode=None):
 
+        c=self.current
         m=self.get(mode)
-        p=self.current
-        if m:# and current!=mode:
-            if p: p.delisten()
-            self.current, self.prev=m, p
-            self.current.listen()
+        if m and c!=m:
+            if c: c.delisten()
+            self.setState(m)
+            m.listen()
+            return m 
+
+    def setState(self, mode):
+
+        c, _ = self.current, self.prev 
+        self.current, self.prev = mode, c
 
     def save(self, plug, actions): 
         self.actions[plug]=actions

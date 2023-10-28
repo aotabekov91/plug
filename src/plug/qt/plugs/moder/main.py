@@ -5,6 +5,8 @@ class Moder(Base, QObject):
 
     keysChanged=pyqtSignal(
             str)
+    modeIsToBeSet=pyqtSignal(
+            object)
     modeChanged=pyqtSignal(
             object)
     detailChanged=pyqtSignal(
@@ -31,8 +33,11 @@ class Moder(Base, QObject):
 
     def set(self, mode=None):
 
-        super().set(mode)
-        self.modeChanged.emit(self.current)
+        mode=self.get(mode)
+        self.modeIsToBeSet.emit(mode)
+        m=super().set(mode)
+        if m: self.modeChanged.emit(m)
+        return m
 
     def save(self, plug, actions):
 

@@ -1,6 +1,5 @@
 import os
-from PyQt5.QtWidgets import QFileSystemModel
-
+from PyQt5 import QtWidgets
 from gizmo.utils import register
 from plug.qt.plugs.trees.base import TreePlug
 
@@ -8,7 +7,7 @@ class FileBrowser(TreePlug):
 
     def __init__(
             self, 
-            position='left',
+            position='dock_left',
             prefix_keys={
                 'command': 'f', 
                 'FileBrowser': '<c-.>'
@@ -22,21 +21,12 @@ class FileBrowser(TreePlug):
                 keywords=keywords,
                 prefix_keys=prefix_keys,
                 **kwargs)
-        self.setPath()
+        self.setModel()
         self.app.moder.plugsLoaded.connect(
                 self.on_plugsLoaded)
 
     def initiate(self):
         self.app.addRender(self)
-
-    def getModel(self, path):
-
-        if os.path.isdir(path):
-            if self.app.running:
-                self.openModel(path)
-            else:
-                f=lambda : self.openModel(path)
-                self.app.appLaunched.connect(f)
 
     def openModel(self, path):
 
@@ -67,29 +57,32 @@ class FileBrowser(TreePlug):
             if os.path.exists(path): 
                 return path
 
-    def setPath(self, path=None):
+    def setModel(self, path=None):
 
-        model=QFileSystemModel()
+        m=QtWidgets.QFileSystemModel()
         if path is None: 
             path = os.path.abspath('.')
-        model.setRootPath(path)
-        idx=model.index(path)
-        self.tree.setModel(model)
+        m.setRootPath(path)
+        idx=m.index(path)
+        self.tree.setModel(m)
         self.tree.setRootIndex(idx)
         for i in range(1, 4): 
             self.tree.hideColumn(i)
 
+    def open(self, *args, **kwargs):
+        raise
+
     @register(modes=['run'])
-    def openFile(
+    def openLocalFile(
             self, 
             path, 
             how=None, 
             focus=True
             ):
-        self.open(path, how, focus)
+        self.openFile(path, how, focus)
 
     @register('o')
-    def open(
+    def openFile(
             self, 
             path=None, 
             how=None, 
@@ -109,3 +102,29 @@ class FileBrowser(TreePlug):
                         how=how, 
                         focus=focus)
             super().open(how, focus)
+
+    def getLocation(self, encode=True):
+        return ''
+
+    def modelId(self):
+        return '/'
+
+    def itemId(self):
+
+        idx=self.tree.currentIndex()
+        return self.tree.model().filePath(idx)
+
+    def kind(self):
+        return 'file'
+
+    def getView(self):
+        return self
+
+    def getModel(self, path):
+
+        if os.path.isdir(path):
+            if self.app.running:
+                self.openModel(path)
+            else:
+                f=lambda : self.openModel(path)
+                self.app.appLaunched.connect(f)

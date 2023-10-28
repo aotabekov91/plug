@@ -14,9 +14,7 @@ class Buffer(QtCore.QObject):
 
         for r in self.app.renders:
             m=r.getModel(source)
-            print(m, r, source)
-            if m: 
-                return m
+            if m: return m
 
     def load(self, source):
 

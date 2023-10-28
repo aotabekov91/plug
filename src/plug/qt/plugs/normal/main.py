@@ -21,7 +21,7 @@ class Normal(Plug):
             ):
 
         self.cursor_visible=False
-        super(Normal, self).__init__(
+        super().__init__(
                 app=app, 
                 name=name,
                 special=special,
@@ -36,12 +36,12 @@ class Normal(Plug):
         self.ear.escapePressed.connect(
                 self.on_escapePressed)
 
-    def currentView(self):
+    def getView(self):
         return self.display.currentView()
 
     def on_escapePressed(self):
 
-        v=self.currentView()
+        v=self.getView()
         if v: 
             v.select()
             v.update()
@@ -53,19 +53,19 @@ class Normal(Plug):
     @register(key='gg')
     def viewGotoFirst(self):
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.gotoFirst()
             
     @register(key='G')
     def viewGoto(self, digit=None):
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.goto(digit)
 
     @register(key=']')
     def viewNext(self, digit=1): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: 
             for d in range(digit): 
                 v.next()
@@ -73,7 +73,7 @@ class Normal(Plug):
     @register(key='[')
     def viewPrev(self, digit=1): 
 
-        view=self.currentView()
+        view=self.getView()
         if view:
             for d in range(digit): 
                 view.prev()
@@ -81,97 +81,97 @@ class Normal(Plug):
     @register(key=['k'])
     def viewUp(self, digit=1): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.up(digit)
 
     @register(key='j')
     def viewDown(self, digit=1): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.down(digit)
 
     @register(key='h')
     def viewLeft(self, digit=1): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.left(digit)
 
     @register(key='l')
     def viewRight(self, digit=1): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.right(digit)
 
     @register(key='zi')
     def viewZoomIn(self, digit=1): 
         
-        v=self.currentView()
+        v=self.getView()
         if v: v.zoomIn(digit)
 
     @register(key='zo')
     def viewZoomOut(self, digit=1): 
         
-        v=self.currentView()
+        v=self.getView()
         if v: v.zoomOut(digit)
 
     @register(key='K')
     def viewScreenUp(self, digit=1): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.screenUp(digit)
         
     @register(key='H')
     def viewScreenLeft(self, digit=1): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.screenLeft(digit)
 
     @register(key='J')
     def viewScreenDown(self, digit=1): 
         
-        v=self.currentView()
+        v=self.getView()
         if v: v.screenDown(digit)
         
     @register(key='L')
     def viewScreenRight(self, digit=1): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.screenRight(digit)
 
     @register(key='r')
     def viewReadjust(self): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.readjust()
 
     @register(key='S')
     def viewSave(self): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.save()
 
     @register(key='c')
     def toggleContinuousMode(self): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.toggleContinuousMode()
 
     @register('C')
     def cleanUp(self): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.cleanUp()
         
     @register(key='w')
     def fitToWindowWidth(self): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.fitToWindowWidth()
 
     @register(key='s')
     def fitToWindowHeight(self): 
 
-        v=self.currentView()
+        v=self.getView()
         if v: v.fitToWindowHeight()
 
     @register(key='d')
@@ -181,13 +181,13 @@ class Normal(Plug):
     @register(key='<c-w>v')
     def displaySplitVertical(self): 
 
-        if self.currentView():
+        if self.getView():
             self.display.split(True)
 
     @register(key='<c-w>s') 
     def displaySplitHorizontal(self):
 
-        if self.currentView():
+        if self.getView():
             self.display.split(False)
 
     @register('<c-w>K')
@@ -305,7 +305,7 @@ class Normal(Plug):
     @register(key='yy')
     def yank(self):
 
-        v=self.currentView()
+        v=self.getView()
         if v:
             yank=getattr(v, 'yank', None)
             if yank: yank()

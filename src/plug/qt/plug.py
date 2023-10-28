@@ -105,6 +105,11 @@ class Plug(Base, QtCore.QObject):
             self.deactivate()
 
     @register('f', modes=['command'])
+    def setFocus(self):
+
+        if not self.ear.listening:
+            self.activate()
+            
     def activate(self):
 
         self.activated=True

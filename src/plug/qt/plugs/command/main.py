@@ -1,5 +1,4 @@
 from plug.qt import Plug
-from gizmo.utils import register
 
 class Command(Plug):
 
@@ -12,7 +11,8 @@ class Command(Plug):
                  **kwargs,
                  ):
 
-        super(Command, self).__init__(
+        self.client=None
+        super().__init__(
                 app=app, 
                 name=name, 
                 listen_leader=listen_leader,
@@ -20,3 +20,10 @@ class Command(Plug):
                 delisten_on_exec=delisten_on_exec,
                 **kwargs,
                 )
+        self.app.moder.modeIsToBeSet.connect(
+                self.setClient)
+
+    def setClient(self, mode):
+
+        if mode==self:
+            self.client=self.app.moder.prev

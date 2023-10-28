@@ -126,17 +126,21 @@ class UIMan(QtCore.QObject):
 
     def locate(self):
 
-        if self.ui:
-            dock=['left', 'right', 'up', 'down']
-            if self.position=='window':
-                self.app.window.stack.addWidget(
-                        self.ui, self.name) 
-            elif self.position in dock:
-                self.app.window.docks.setTab(
-                        self.ui, self.position)
-            elif self.position=='overlay':
-                self.ui.setParent(
-                        self.app.window.overlay)
+        if self.ui and self.position:
+            w=self.app.window
+            pos=self.position.split('_')
+            if len(pos)==1:
+                if pos[0]=='window':
+                    w.stack.addWidget(
+                            self.ui, self.name) 
+                elif pos[0]=='overlay':
+                    self.ui.setParent(w.overlay)
+            else:
+                if pos[0]=='dock':
+                    ds=['up', 'down', 'left', 'right']
+                    if pos[1] in ds:
+                        w.docks.setTab(
+                                self.ui, pos[1])
 
     def delocate(self):
 
