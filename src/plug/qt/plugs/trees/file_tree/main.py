@@ -28,7 +28,7 @@ class FileBrowser(TreePlug):
     def initiate(self):
         self.app.addRender(self)
 
-    def openModel(self, path):
+    def openModel(self, path, fullscreen=False):
 
         m=self.tree.model()
         idx=m.index(path)
@@ -38,7 +38,8 @@ class FileBrowser(TreePlug):
         self.tree.setRootIndex(p)
         self.tree.setCurrentIndex(idx)
         self.activate()
-        self.ui.dock.toggleFullscreen()
+        if fullscreen:
+            self.ui.dock.toggleFullscreen()
 
     def on_plugsLoaded(self, plugs):
 
@@ -70,7 +71,9 @@ class FileBrowser(TreePlug):
             self.tree.hideColumn(i)
 
     def open(self, *args, **kwargs):
-        raise
+
+        pos=kwargs.get('position', None)
+        if pos: self.openModel(pos)
 
     @register(modes=['run'])
     def openLocalFile(
@@ -104,7 +107,7 @@ class FileBrowser(TreePlug):
             super().open(how, focus)
 
     def getLocation(self, encode=True):
-        return ''
+        return self.itemId()
 
     def modelId(self):
         return '/'
@@ -126,5 +129,5 @@ class FileBrowser(TreePlug):
             if self.app.running:
                 self.openModel(path)
             else:
-                f=lambda : self.openModel(path)
+                f=lambda : self.openModel(path, True)
                 self.app.appLaunched.connect(f)
