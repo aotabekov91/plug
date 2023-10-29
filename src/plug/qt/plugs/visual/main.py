@@ -33,3 +33,6 @@ class Visual(Plug):
 
         super().listen()
         self.app.window.main.setFocus()
+
+    def getView(self):
+        return self.app.display.currentView()

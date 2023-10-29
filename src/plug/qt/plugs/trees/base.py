@@ -6,17 +6,10 @@ from gizmo.widget import InputTree
 
 class TreePlug(Plug):
 
-    def __init__(
-            self, 
-            *args, 
-            **kwargs
-            ):
+    def setup(self):
 
         self.follow_index=True
-        super().__init__(
-                *args, 
-                **kwargs
-                )
+        super().setup()
         self.setUI()
 
     def setUI(self):

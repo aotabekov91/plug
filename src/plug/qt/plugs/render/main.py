@@ -13,32 +13,29 @@ class Render(Plug):
         self.model_class=model_class
         self.app.addRender(self)
 
-    def assignId(self, source, model):
+    def open(self, source=None, **kwargs):
 
-        if model:
-            model.assignId(source, model)
+        model=self.getModel(
+                source, **kwargs)
+        view=self.getView(
+                model, **kwargs)
+        self.setView(
+                view, **kwargs)
 
-    def getModel(self, source):
+    def getModel(self, source, **kwargs):
 
-        model=self.readSource(source)
-        self.assignId(source, model)
-        return model
+        if source:
+            return self.model_class(
+                    source=source)
 
     def getView(self, model, **kwargs):
 
         if model:
-            source=model.source()
-            if self.isCompatible(source):
-                view=self.view_class(
-                        self.app, **kwargs)
-                view.setModel(model)
-                return view
-
-    def readSource(self, source):
-
-        if self.isCompatible(source):
-            return self.model_class(
-                    source=source)
+            return self.view_class(
+                    model=model)
 
     def isCompatible(self, source):
-        return False
+        pass
+
+    def setView(self, view, **kwargs):
+        pass

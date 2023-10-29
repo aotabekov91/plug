@@ -3,17 +3,20 @@ from gizmo.utils import register
 
 class Move(Plug):
 
-    def __init__(self, 
-                 app, 
-                 name='move',
-                 listen_leader='<c-m>',
-                 **kwargs,
-                 ):
+    def __init__(
+            self, 
+            app, 
+            name='move',
+            prefix_keys={
+                'command': 'm',
+                'Move': '<c-.>',
+                },
+            **kwargs
+            ):
 
-        super(Move, self).__init__(
+        super().__init__(
                 app=app, 
                 name=name, 
-                listen_leader=listen_leader,
                 **kwargs,
                 )
 

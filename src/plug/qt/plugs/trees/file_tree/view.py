@@ -1,9 +1,9 @@
 import os
 from PyQt5 import QtWidgets
 from gizmo.utils import register
-from plug.qt.plugs.render import Render
+from plug.qt.plugs.trees.base import TreePlug
 
-class FileBrowser(TreePlug):
+class FileView(TreePlug):
 
     def __init__(
             self, 
@@ -41,12 +41,6 @@ class FileBrowser(TreePlug):
         if fullscreen:
             self.ui.dock.toggleFullscreen()
 
-    def on_plugsLoaded(self, plugs):
-
-        runlist=plugs.get('RunList', None)
-        if runlist:
-            runlist.setArgOptions(
-                'openFile', 'path', 'path')
 
     def getPath(self, index=None):
 

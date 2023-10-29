@@ -6,22 +6,16 @@ class Buffer(QtCore.QObject):
 
     def __init__(self, app):
 
-        super().__init__(app)
-        self.app=app
         self.buffers={}
+        super().__init__(app)
 
-    def getModel(self, source):
+    def get(self, idx):
 
-        for r in self.app.renders:
-            m=r.getModel(source)
-            if m: return m
+        if idx in self.buffers:
+            return self.buffers[idx]
 
-    def load(self, source):
+    def set(self, idx, buffer):
 
-        if source in self.buffers:
-            return self.buffers[source]
-        model=self.getModel(source)
-        if model and model.readSuccess():
-            self.buffers[source]=model
-            self.bufferCreated.emit(model)
-            return model
+        if buffer: 
+            self.buffers[idx]=buffer
+            self.bufferCreated.emit(buffer)

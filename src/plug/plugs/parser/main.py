@@ -5,9 +5,7 @@ from plug import Plug
 class Parser(Plug):
 
     def __init__(self,
-                 *args,
-                 app=None,
-                 **kwargs):
+                 *args, app=None, **kwargs):
 
         self.app=app
         super().__init__(*args, **kwargs)
@@ -18,7 +16,6 @@ class Parser(Plug):
         self.setParser()
 
     def addArgument(self, *args, **kwargs):
-
         self.parser.add_argument(*args, **kwargs)
 
     def setParser(self): 

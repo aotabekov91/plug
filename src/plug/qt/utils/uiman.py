@@ -55,6 +55,7 @@ class UIMan(QtCore.QObject):
                 )
         self.window.main.m_layout.addWidget(
                 self.display)
+        self.obj.open=self.open
         self.obj.buffer=self.buffer
         self.obj.window=self.window
         self.obj.display=self.display
@@ -203,3 +204,10 @@ class UIMan(QtCore.QObject):
 
     def on_focusLost(self, widget=None):
         self.obj.focusLost.emit(self.obj)
+
+    def open(self, source=None, **kwargs):
+
+        for r in self.obj.renders:
+            if r.isCompatible(source):
+                r.open(source, **kwargs)
+                return
