@@ -242,51 +242,51 @@ class Normal(Plug):
     def displayToggleFullscreen(self): 
         self.display.toggleFullscreen()
 
-    @register(key='<c-w>df', modes=['any'])
+    @register(key='<c-d>f', modes=['command'])
     def dockToggleFullscreen(self): 
         self.app.window.docks.toggleFullscreen()
 
-    @register(key='<c-w>dzi', modes=['any'])
+    @register(key='<c-d>zi', modes=['command'])
     def dockZoomIn(self, digit=1): 
         self.app.window.docks.zoomIn(digit)
         
-    @register(key='<c-w>dzo', modes=['any'])
+    @register(key='<c-d>zo', modes=['command'])
     def dockZoomOut(self, digit=1): 
         self.app.window.docks.zoomOut(digit)
 
-    @register(key='<c-w>dk', modes=['any'])
+    @register(key='<c-d>k', modes=['command'])
     def dockUp(self): 
         self.app.window.docks.goto('up')
 
-    @register(key='<c-w>dj', modes=['any'])
+    @register(key='<c-d>j', modes=['command'])
     def dockDown(self): 
         self.app.window.docks.goto('down')
 
-    @register(key='<c-w>dh', modes=['any'])
+    @register(key='<c-d>h', modes=['command'])
     def dockLeft(self): 
         self.app.window.docks.goto('left')
 
-    @register(key='<c-w>dl', modes=['any'])
+    @register(key='<c-d>l', modes=['command'])
     def dockRight(self): 
         self.app.window.docks.goto('right')
 
-    @register('<c-w>dK', modes=['any'])
+    @register('<c-d>K', modes=['command'])
     def dockMoveUp(self): 
         self.app.window.docks.move('up')
 
-    @register('<c-w>dJ', modes=['any'])
+    @register('<c-d>J', modes=['command'])
     def dockMoveDown(self): 
         self.app.window.docks.move('down')
 
-    @register('<c-w>dH', modes=['any'])
+    @register('<c-d>H', modes=['command'])
     def dockMoveLeft(self): 
         self.app.window.docks.move('left')
 
-    @register('<c-w>dL', modes=['any'])
+    @register('<c-d>L', modes=['command'])
     def dockMoveRight(self): 
         self.app.window.docks.move('right')
 
-    @register(key='<c-w>dd', modes=['any'])
+    @register(key='<c-d>d', modes=['command'])
     def dockHideAll(self): 
         self.app.window.docks.hideAll()
 
