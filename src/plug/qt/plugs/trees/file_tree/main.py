@@ -1,9 +1,10 @@
 import os
-from PyQt5 import QtWidgets
 from gizmo.utils import register
+from gizmo.widget import TreeWidget
 from plug.qt.plugs.render import Render
+from PyQt5.QtWidgets import QFileSystemModel
 
-class FileBrowser(TreePlug):
+class FileBrowser(Render):
 
     def __init__(
             self, 
@@ -15,67 +16,84 @@ class FileBrowser(TreePlug):
             keywords=['files'],
             **kwargs
             ):
-        self.app.addRender(self)
 
         super().__init__(
                 position=position,
                 keywords=keywords,
                 prefix_keys=prefix_keys,
                 **kwargs)
-        self.setModel()
+        self.setUI()
+        self.connect()
+
+    def connect(self):
+
         self.app.moder.plugsLoaded.connect(
                 self.on_plugsLoaded)
 
-    def openModel(
-            self, 
-            path, 
-            fullscreen=False
-            ):
-
-        m=self.tree.model()
-        idx=m.index(path)
-        p=idx.parent()
-        self.tree.setRootIndex(p)
-        self.tree.setCurrentIndex(idx)
-        self.activate()
-        if fullscreen:
-            self.ui.dock.toggleFullscreen()
-
     def on_plugsLoaded(self, plugs):
 
-        runlist=plugs.get('RunList', None)
-        if runlist:
-            runlist.setArgOptions(
+        rplug=plugs.get('RunList', None)
+        if rplug:
+            rplug.setArgOptions(
                 'openFile', 'path', 'path')
+
+    def setUI(self):
+
+        tree=TreeWidget()
+        self.uiman.setUI(tree)
+        self.setModel()
 
     def getPath(self, index=None):
 
         if not index: 
-            index=self.tree.currentIndex()
+            index=self.ui.currentIndex()
         if index:
-            model=self.tree.model()
+            model=self.ui.model()
             path=model.filePath(index)
             if os.path.exists(path): 
                 return path
 
     def setModel(
             self, 
-            root_path='/',
-            path = os.path.abspath('.')
+            root='/',
+            path = None,
             ):
 
-        m=QtWidgets.QFileSystemModel()
-        m.setRootPath(root_path)
-        idx=m.index(path)
-        self.tree.setModel(m)
-        self.tree.setRootIndex(idx)
+        m_model=QFileSystemModel()
+        m_model.setRootPath(root)
+        self.m_model=m_model
+        if not path:
+            path = os.path.abspath('.')
+        idx=m_model.index(path)
+        self.ui.setModel(m_model)
+        self.ui.setRootIndex(idx)
         for i in range(1, 4): 
-            self.tree.hideColumn(i)
+            self.ui.hideColumn(i)
 
-    def open(self, *args, **kwargs):
+    def open(self, source=None, **kwargs):
 
         pos=kwargs.get('position', None)
-        if pos: self.openModel(pos)
+        path = pos or source
+        if self.app.running:
+            self._open(path)
+        else:
+            f=lambda : self._open(path, True)
+            self.app.appLaunched.connect(f)
+
+    def _open(
+            self, 
+            path, 
+            fullscreen=False,
+            ):
+
+        m=self.ui.model()
+        idx=m.index(path)
+        p=idx.parent()
+        self.ui.setRootIndex(p)
+        self.ui.setCurrentIndex(idx)
+        self.activate()
+        if fullscreen:
+            self.ui.dock.toggleFullscreen()
 
     @register(modes=['run'])
     def openLocalFile(
@@ -95,12 +113,12 @@ class FileBrowser(TreePlug):
             ):
 
         if not path:
-            idx=self.tree.currentIndex()
+            idx=self.ui.currentIndex()
             path=self.getPath(idx)
         if path:
             if os.path.isdir(path): 
-                idx=self.tree.currentIndex()
-                self.tree.expand(idx)
+                idx=self.ui.currentIndex()
+                self.ui.expand(idx)
             else:
                 self.app.open(
                         path, 
@@ -111,31 +129,35 @@ class FileBrowser(TreePlug):
     def getLocation(self, encode=True):
         return self.itemId()
 
+    def itemId(self):
+
+        idx=self.ui.currentIndex()
+        return self.ui.model().filePath(idx)
+
     def model(self):
-        return self
+        return self.m_model
 
     def modelId(self):
         return ''
 
-    def element(self):
-        pass
+    def getView(self):
+        return self
 
     def kind(self):
         return 'file'
 
-    def getView(self):
-        return self
+    def element(self, idx):
 
-    def itemId(self):
+        if not idx: 
+            index=self.tree.currentIndex()
+        if index:
+            model=self.tree.model()
+            path=model.filePath(index)
+            if os.path.exists(path): 
+                return path
 
-        idx=self.tree.currentIndex()
-        return self.tree.model().filePath(idx)
+    def isCompatible(self, source):
 
-    def getModel(self, path):
-
-        if os.path.isdir(path):
-            if self.app.running:
-                self.openModel(path)
-            else:
-                f=lambda : self.openModel(path, True)
-                self.app.appLaunched.connect(f)
+        if source:
+            if os.path.exists(source):
+                return True
