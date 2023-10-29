@@ -124,7 +124,8 @@ class FileBrowser(Render):
                         path, 
                         how=how, 
                         focus=focus)
-            super().open(how, focus)
+                self.listen()
+            # super().open(how, focus)
 
     def getLocation(self, encode=True):
         return self.itemId()
