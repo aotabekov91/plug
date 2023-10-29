@@ -59,7 +59,7 @@ QTreeView::item:selected {
 }
 
 #View[selected=true] {
-	border-width: 3px;
+	border-width: 2px;
 	border-style: solid;
 	border-color: green;
 }
