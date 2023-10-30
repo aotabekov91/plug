@@ -5,13 +5,11 @@ class Render(Plug):
 
     def initiate(
             self, 
-            pattern=None,
             view_class=None, 
             model_class=None,
             ):
 
         super().initiate()
-        self.pattern=pattern
         self.view_class=view_class
         self.model_class=model_class
         self.app.addRender(self)
@@ -39,11 +37,8 @@ class Render(Plug):
 
     def isCompatible(self, source):
 
-        if source and self.pattern:
-            return re.match(
-                    self.pattern, 
-                    source,
-                    re.I)
+        return self.model_class.isCompatible(
+                source)
 
     def setView(self, view, **kwargs):
         pass
