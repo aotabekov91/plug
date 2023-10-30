@@ -160,5 +160,4 @@ class FileBrowser(Render):
     def isCompatible(self, source):
 
         if source:
-            if os.path.exists(source):
-                return True
+            return os.path.isdir(source)

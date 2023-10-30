@@ -1,14 +1,17 @@
+import re
 from plug.qt import Plug
 
 class Render(Plug):
 
     def initiate(
             self, 
+            pattern=None,
             view_class=None, 
             model_class=None,
             ):
 
         super().initiate()
+        self.pattern=pattern
         self.view_class=view_class
         self.model_class=model_class
         self.app.addRender(self)
@@ -35,7 +38,12 @@ class Render(Plug):
                     model=model)
 
     def isCompatible(self, source):
-        pass
+
+        if source and self.pattern:
+            return re.match(
+                    self.pattern, 
+                    source,
+                    re.I)
 
     def setView(self, view, **kwargs):
         pass
