@@ -37,7 +37,8 @@ class Powerline(Plug):
 
     def on_detailChanged(self, name):
 
-        if name: name=name.title()
+        if name: 
+            name=name.title()
         self.ui.setText('detail', name) 
 
     def on_keysChanged(self, keys):
@@ -46,19 +47,21 @@ class Powerline(Plug):
     def on_modeChanged(self, mode):
 
         name=None
-        if mode: name=mode.name.title()
+        if mode: 
+            name=mode.name.title()
         self.ui.setText('mode', name) 
 
     def on_viewChanged(self, view, prev): 
 
-        uid=''
-        if view: uid=view.model().id()
+        uid=None
+        if view: 
+            uid=view.model().id()
         self.ui.setText('model', uid)
 
     def on_itemChanged(self, view, item): 
 
-        page=''
-        if view:
+        page=None
+        if view and item:
             t=view.count()
             c=item.index()
             page=f'{c}/{t}'

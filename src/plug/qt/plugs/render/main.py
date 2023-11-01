@@ -1,17 +1,13 @@
-import re
 from plug.qt import Plug
 
 class Render(Plug):
 
-    def initiate(
-            self, 
-            view_class=None, 
-            model_class=None,
-            ):
+    view_class=None
+    model_class=None
 
-        super().initiate()
-        self.view_class=view_class
-        self.model_class=model_class
+    def initiate(self, *args, **kwargs):
+
+        super().initiate(*args, **kwargs)
         self.app.addRender(self)
 
     def open(self, source=None, **kwargs):
@@ -25,13 +21,13 @@ class Render(Plug):
 
     def getModel(self, source, **kwargs):
 
-        if source:
+        if source and self.model_class:
             return self.model_class(
                     source=source)
 
     def getView(self, model, **kwargs):
 
-        if model:
+        if model and self.view_class:
             return self.view_class(
                     model=model)
 

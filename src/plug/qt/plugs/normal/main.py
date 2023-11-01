@@ -50,6 +50,15 @@ class Normal(Plug):
     def toggleCursor(self):
         self.cursor_visible=not self.cursor_visible
 
+    @register(key='tb')
+    def toggleStatusbar(self):
+
+        bar=self.app.window.bar
+        if bar.isVisible():
+            bar.hide()
+        else:
+            bar.show()
+
     @register(key='gg')
     def viewGotoFirst(self):
 
