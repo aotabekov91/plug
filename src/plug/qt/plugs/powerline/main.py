@@ -7,12 +7,12 @@ class Powerline(Plug):
 
     def __init__(
             self, 
-            prefix_keys={'command': 'P'}, 
+            leader_keys={'command': 'P'}, 
             **kwargs
             ):
 
         super().__init__(
-                prefix_keys=prefix_keys,
+                leader_keys=leader_keys,
                 **kwargs)
         self.setUI()
         self.app.moder.modeChanged.connect(

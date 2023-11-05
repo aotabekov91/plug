@@ -7,7 +7,7 @@ class Umay(Handler):
     def __init__(
             self, 
             *args, 
-            wait_time=200, 
+            wait_time=5, 
             umay_port=None, 
             pollerize=True, 
             adjuster={'digit':int}, 
@@ -80,7 +80,7 @@ class Umay(Handler):
             units[n]=self.getUnits(p)
         data['units']=units
         res=self.send({'register': data})
-        print('Umay plug:', res)
+        # print('Umay plug:', res)
 
     def send(self, data):
 

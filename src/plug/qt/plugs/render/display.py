@@ -15,6 +15,7 @@ class DisplayRender(Render):
                 app=self.app, 
                 config=config, 
                 **kwargs)
+
         v.setModel(model)
         return v
 

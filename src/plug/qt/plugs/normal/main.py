@@ -71,81 +71,89 @@ class Normal(Plug):
         v=self.getView()
         if v: v.goto(digit)
 
-    @register(key=']')
-    def viewNext(self, digit=1): 
+    @register(key='n')
+    def viewNextItem(self, digit=1): 
 
         v=self.getView()
-        if v: 
-            for d in range(digit): 
-                v.next()
+        if v and v.checkProp('hasLayout'): 
+            v.nextItem(digit)
     
-    @register(key='[')
-    def viewPrev(self, digit=1): 
+    @register(key='p')
+    def viewPrevItem(self, digit=1): 
 
-        view=self.getView()
-        if view:
-            for d in range(digit): 
-                view.prev()
+        v=self.getView()
+        if v and v.checkProp('hasLayout'): 
+            v.prevItem(digit)
 
     @register(key=['k'])
     def viewUp(self, digit=1): 
 
         v=self.getView()
-        if v: v.up(digit)
+        if v and v.checkProp('canMove'): 
+            v.up(digit)
 
     @register(key='j')
     def viewDown(self, digit=1): 
 
         v=self.getView()
-        if v: v.down(digit)
+        if v and v.checkProp('canMove'):
+            v.down(digit)
 
     @register(key='h')
     def viewLeft(self, digit=1): 
 
         v=self.getView()
-        if v: v.left(digit)
+        if v and v.checkProp('canMove'): 
+            v.left(digit)
 
     @register(key='l')
     def viewRight(self, digit=1): 
 
         v=self.getView()
-        if v: v.right(digit)
+        if v and v.checkProp('canMove'): 
+            v.right(digit)
 
     @register(key='zi')
     def viewZoomIn(self, digit=1): 
         
         v=self.getView()
-        if v: v.zoomIn(digit)
+        if v and v.checkProp('canZoom'): 
+            v.zoomIn(digit)
 
     @register(key='zo')
     def viewZoomOut(self, digit=1): 
         
         v=self.getView()
-        if v: v.zoomOut(digit)
+        if v and v.checkProp('canZoom'): 
+            v.zoomOut(digit)
 
     @register(key='K')
     def viewScreenUp(self, digit=1): 
 
         v=self.getView()
-        if v: v.screenUp(digit)
+        if v and v.checkProp('canMove'): 
+            v.screenUp(digit)
         
     @register(key='H')
     def viewScreenLeft(self, digit=1): 
 
         v=self.getView()
-        if v: v.screenLeft(digit)
+        if v and v.checkProp('canMove'): 
+            v.screenLeft(digit)
 
     @register(key='J')
     def viewScreenDown(self, digit=1): 
         
         v=self.getView()
-        if v: v.screenDown(digit)
+        if v and v.checkProp('canMove'): 
+            v.screenDown(digit)
         
     @register(key='L')
     def viewScreenRight(self, digit=1): 
 
         v=self.getView()
-        if v: v.screenRight(digit)
+        if v and v.checkProp('canMove'): 
+            v.screenRight(digit)
 
     @register(key='r')
     def viewReadjust(self): 
@@ -172,16 +180,18 @@ class Normal(Plug):
         if v: v.cleanUp()
         
     @register(key='w')
-    def fitToWindowWidth(self): 
+    def fitToWidth(self): 
 
         v=self.getView()
-        if v: v.fitToWindowWidth()
+        if v and hasattr(v, 'canFit'): 
+            v.fitToWidth()
 
     @register(key='s')
-    def fitToWindowHeight(self): 
+    def fitToHeight(self): 
 
         v=self.getView()
-        if v: v.fitToWindowHeight()
+        if v and hasattr(v, 'canFit'): 
+            v.fitToHeight()
 
     @register(key='d')
     def viewCloseCurrent(self): 

@@ -2,10 +2,13 @@ import sys
 from PyQt5 import QtCore
 
 from gizmo.ui import Display
-from plug.utils import setKeys
+from gizmo.ui import Application
 from gizmo.widget import CommandStack 
+
+from plug.utils import setKeys
 from plug.qt.utils.buffer import Buffer
-from gizmo.ui import StackWindow, Application
+
+from .stack_window import StackWindow
 
 class UIMan(QtCore.QObject):
 
@@ -209,5 +212,4 @@ class UIMan(QtCore.QObject):
 
         for r in self.obj.renders:
             if r.isCompatible(source):
-                r.open(source, **kwargs)
-                return
+                return r.open(source, **kwargs)

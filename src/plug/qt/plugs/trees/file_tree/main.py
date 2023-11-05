@@ -9,7 +9,7 @@ class FileBrowser(Render):
     def __init__(
             self, 
             position='dock_left',
-            prefix_keys={
+            leader_keys={
                 'command': 'f', 
                 'FileBrowser': '<c-.>'
                 }, 
@@ -20,7 +20,7 @@ class FileBrowser(Render):
         super().__init__(
                 position=position,
                 keywords=keywords,
-                prefix_keys=prefix_keys,
+                leader_keys=leader_keys,
                 **kwargs)
         self.setUI()
         self.connect()

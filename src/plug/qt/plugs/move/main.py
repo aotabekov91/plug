@@ -7,7 +7,7 @@ class Move(Plug):
             self, 
             app, 
             name='move',
-            prefix_keys={
+            leader_keys={
                 'command': 'm',
                 'Move': '<c-.>',
                 },
