@@ -34,21 +34,21 @@ class Normal(Plug):
         super().setup()
         self.display=self.app.display
         self.ear.escapePressed.connect(
-                self.on_escapePressed)
+                self.cleanUp)
 
     def getView(self):
         return self.display.currentView()
 
-    def on_escapePressed(self):
+    def cleanUp(self):
 
         v=self.getView()
-        if v: 
-            v.select()
-            v.update()
+        if v: v.redraw()
 
     @register(key='tc')
     def toggleCursor(self):
-        self.cursor_visible=not self.cursor_visible
+        
+        v=not self.cursor_visible
+        self.cursor_visible=v
 
     @register(key='tb')
     def toggleStatusbar(self):
@@ -75,84 +75,84 @@ class Normal(Plug):
     def viewNextItem(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('hasLayout'): 
+        if v and v.check('hasLayout'): 
             v.nextItem(digit)
     
     @register(key='p')
     def viewPrevItem(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('hasLayout'): 
+        if v and v.check('hasLayout'): 
             v.prevItem(digit)
 
     @register(key=['k'])
     def viewUp(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('canMove'): 
+        if v and v.check('canMove'): 
             v.up(digit)
 
     @register(key='j')
     def viewDown(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('canMove'):
+        if v and v.check('canMove'):
             v.down(digit)
 
     @register(key='h')
     def viewLeft(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('canMove'): 
+        if v and v.check('canMove'): 
             v.left(digit)
 
     @register(key='l')
     def viewRight(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('canMove'): 
+        if v and v.check('canMove'): 
             v.right(digit)
 
     @register(key='zi')
     def viewZoomIn(self, digit=1): 
         
         v=self.getView()
-        if v and v.checkProp('canZoom'): 
+        if v and v.check('canZoom'): 
             v.zoomIn(digit)
 
     @register(key='zo')
     def viewZoomOut(self, digit=1): 
         
         v=self.getView()
-        if v and v.checkProp('canZoom'): 
+        if v and v.check('canZoom'): 
             v.zoomOut(digit)
 
     @register(key='K')
     def viewScreenUp(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('canMove'): 
+        if v and v.check('canMove'): 
             v.screenUp(digit)
         
     @register(key='H')
     def viewScreenLeft(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('canMove'): 
+        if v and v.check('canMove'): 
             v.screenLeft(digit)
 
     @register(key='J')
     def viewScreenDown(self, digit=1): 
         
         v=self.getView()
-        if v and v.checkProp('canMove'): 
+        if v and v.check('canMove'): 
             v.screenDown(digit)
         
     @register(key='L')
     def viewScreenRight(self, digit=1): 
 
         v=self.getView()
-        if v and v.checkProp('canMove'): 
+        if v and v.check('canMove'): 
             v.screenRight(digit)
 
     @register(key='r')
