@@ -51,7 +51,7 @@ class UIMan(QtCore.QObject):
 
         self.window=StackWindow(
                 objectName='MainWindow')
-        self.buffer=buffer_class(self.obj)
+        self.buffer=buffer_class()
         self.display=display_class(
                 app=self.obj,
                 window=self.window,

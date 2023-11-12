@@ -141,3 +141,6 @@ class Plug(Base, QtCore.QObject):
 
         self.running=False
         self.uiman.deactivate()
+
+    def getView(self):
+        return None

@@ -69,7 +69,11 @@ class Normal(Plug):
     def viewGoto(self, digit=None):
 
         v=self.getView()
-        if v: v.goto(digit)
+        if v: 
+            if digit is None:
+                v.gotoLast()
+            else:
+                v.goto(digit)
 
     @register(key='n')
     def viewNextItem(self, digit=1): 

@@ -1,10 +1,10 @@
 import os
 from gizmo.utils import register
 from gizmo.widget import TreeWidget
-from plug.qt.plugs.render import Render
+from plug.qt.plugs.viewer import Viewer
 from PyQt5.QtWidgets import QFileSystemModel
 
-class FileBrowser(Render):
+class FileBrowser(Viewer):
 
     def __init__(
             self, 
