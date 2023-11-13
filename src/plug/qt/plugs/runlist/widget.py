@@ -1,12 +1,12 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 
-class ListWidget(QtWidgets.QWidget):
+class RunListWidget(QtWidgets.QWidget):
 
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-        self.setup()
         self.parent().installEventFilter(self)
+        self.setup()
 
     def setup(self):
 
@@ -16,12 +16,10 @@ class ListWidget(QtWidgets.QWidget):
                 QtCore.Qt.ScrollBarAlwaysOff)
         self.list.setHorizontalScrollBarPolicy(
                 QtCore.Qt.ScrollBarAlwaysOff)
-
         self.m_layout=QtWidgets.QVBoxLayout(self)
         self.m_layout.setContentsMargins(0,0,0,0)
         self.m_layout.addWidget(self.list)
         self.setLayout(self.m_layout)
-
         self.model=QtGui.QStandardItemModel()
         self.proxy=QtCore.QSortFilterProxyModel()
         self.proxy.setSourceModel(self.model)
@@ -62,10 +60,8 @@ class ListWidget(QtWidgets.QWidget):
             h=self.height()
             if x is None: x=0
             y=p.height()-self.height()
-
             bar=self.parent().bar
-            dh=22*bar.clayout.count()
-            y-=dh
+            y-=25*bar.clayout.count()+2
             self.setGeometry(x, y, w, h)
 
     def eventFilter(self, widget, event):
