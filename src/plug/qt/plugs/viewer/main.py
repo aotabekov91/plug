@@ -22,11 +22,10 @@ class Viewer(Plug):
     def getModel(self, source, **kwargs):
 
         m=self.app.buffer.getModel(source)
-        if not m:
-            if source and self.model_class:
-                m=self.model_class(
-                        source=source,
-                        **kwargs)
+        c=[not m, source, self.model_class]
+        if all(c):
+            m=self.model_class(
+                    source=source, **kwargs)
             self.app.buffer.setModel(source, m)
         return m
 
@@ -43,10 +42,8 @@ class Viewer(Plug):
             self.app.buffer.setView(model, v)
         return v
 
-    def isCompatible(self, source):
-
-        return self.model_class.isCompatible(
-                source)
+    def isCompatible(self, s):
+        return self.model_class.isCompatible(s)
 
     def getConfig(self):
 
