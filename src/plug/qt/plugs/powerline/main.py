@@ -11,21 +11,40 @@ class Powerline(Plug):
             **kwargs
             ):
 
+        self.view=None
+        self.mode=None
         super().__init__(
                 leader_keys=leader_keys,
                 **kwargs)
-        self.setUI()
         self.app.moder.modeChanged.connect(
-                self.on_modeChanged)
-        self.app.moder.keysChanged.connect(
-                self.on_keysChanged)
-        self.app.moder.detailChanged.connect(
-                self.on_detailChanged)
-        self.app.display.itemChanged.connect(
-                self.on_itemChanged)
-        self.app.display.viewChanged.connect(
-                self.on_viewChanged)
+                self.updateMode)
+        self.setUI()
         self.activate()
+
+    def updateMode(self, mode):
+
+        if mode:
+            self.resetMode()
+            self.mode=mode
+            self.view=mode.getView()
+            self.resetMode('connect')
+            self.setMode(mode)
+            self.setView(self.view)
+
+    def resetMode(self, kind='disconnect'):
+
+        if self.mode:
+            for f in ['keysChanged', 'detailChanged']:
+                s=getattr(self.mode, f, None)
+                if s:
+                    s=getattr(s, kind)
+                    s(getattr(self, f'on_{f}'))
+        if self.view:
+            for f in ['indexChanged',]:
+                s=getattr(self.view, f, None)
+                if s:
+                    s=getattr(s, kind)
+                    s(getattr(self, f'on_{f}'))
 
     def setUI(self):
 
@@ -34,6 +53,20 @@ class Powerline(Plug):
         bar.clayout.insertWidget(
                 0, self.ui)
         self.app.window.bar.show()
+
+    def setMode(self, mode):
+
+        name=None
+        if mode: 
+            name=mode.name.title()
+        self.ui.setText('mode', name) 
+
+    def setView(self, curr): 
+
+        uid=None
+        if curr: 
+            uid=curr.model().id()
+        self.ui.setText('model', uid)
 
     def on_detailChanged(self, name):
 
@@ -44,25 +77,7 @@ class Powerline(Plug):
     def on_keysChanged(self, keys):
         self.ui.setText('keys', keys)
 
-    def on_modeChanged(self, mode):
+    def on_indexChanged(self, idx): 
 
-        name=None
-        if mode: 
-            name=mode.name.title()
-        self.ui.setText('mode', name) 
-
-    def on_viewChanged(self, view, prev): 
-
-        uid=None
-        if view: 
-            uid=view.model().id()
-        self.ui.setText('model', uid)
-
-    def on_itemChanged(self, view, item): 
-
-        page=None
-        if view and item:
-            t=view.count()
-            c=item.index()
-            page=f'{c}/{t}'
-        self.ui.setText('page', page)
+        idx=f'{idx}/{self.view.count()}'
+        self.ui.setText('page', idx)
