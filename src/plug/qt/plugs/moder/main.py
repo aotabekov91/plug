@@ -3,27 +3,26 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 class Moder(Base, QObject):
 
-    keysChanged=pyqtSignal(
-            str)
-    modeIsToBeSet=pyqtSignal(
-            object)
-    modeChanged=pyqtSignal(
-            object)
-    detailChanged=pyqtSignal(
-            object)
-    plugAdded=pyqtSignal(
-            object)
-    plugsLoaded=pyqtSignal(
-            object)
-    actionsRegistered=pyqtSignal(
-            object, object)
+    plugAdded=pyqtSignal(object)
+    plugsLoaded=pyqtSignal(object)
+    modeChanged=pyqtSignal(object)
+    modeIsToBeSet=pyqtSignal(object)
+    actionsRegistered=pyqtSignal(object, object)
+
+    def setup(self):
+
+        super().setup()
+        self.app.window.focusGained.connect(
+                self.on_focused)
+        self.app.appLaunched.connect(
+                lambda: self.set(self.default))
+
+    def on_focused(self):
+        self.set(self.current)
 
     def add(self, plug):
 
         super().add(plug)
-        if hasattr(plug, 'keysChanged'):
-            plug.keysChanged.connect(
-                    self.keysChanged)
         self.plugAdded.emit(plug)
 
     def load(self, *args, **kwargs):
@@ -33,14 +32,13 @@ class Moder(Base, QObject):
 
     def set(self, mode=None):
 
-        mode=self.get(mode)
-        self.modeIsToBeSet.emit(mode)
-        m=super().set(mode)
+        m=self.get(mode)
+        self.modeIsToBeSet.emit(m)
+        m=super().set(m)
         if m: self.modeChanged.emit(m)
         return m
 
     def save(self, plug, actions):
 
         super().save(plug, actions)
-        self.actionsRegistered.emit(
-                plug, actions)
+        self.actionsRegistered.emit(plug, actions)
