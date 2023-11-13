@@ -5,72 +5,62 @@ from gizmo.utils import Ear, register
 
 class Plug(Base, QtCore.QObject):
 
-    selection=QtCore.pyqtSignal(
-            object, object)
-    tabPressed=QtCore.pyqtSignal()
+    position=None
+    main_app=None
+
     appLaunched=QtCore.pyqtSignal()
+    tabPressed=QtCore.pyqtSignal()
     escapePressed=QtCore.pyqtSignal()
     returnPressed=QtCore.pyqtSignal()
-    forceDelisten=QtCore.pyqtSignal()
     carriagePressed=QtCore.pyqtSignal()
     delistenWanted=QtCore.pyqtSignal()
-    focusLost=QtCore.pyqtSignal(
-            object)
-    focusGained=QtCore.pyqtSignal(
-            object)
-    modeWanted=QtCore.pyqtSignal(
-            object)
-    listenWanted=QtCore.pyqtSignal(
-            object)
-    keysChanged=QtCore.pyqtSignal(
-            str)
-    keyPressed=QtCore.pyqtSignal(
-            object, object)
-    endedListening=QtCore.pyqtSignal(
-            object)
-    startedListening=QtCore.pyqtSignal(
-            object)
+    focusLost=QtCore.pyqtSignal(object)
+    focusGained=QtCore.pyqtSignal(object)
+    modeWanted=QtCore.pyqtSignal(object)
+    listenWanted=QtCore.pyqtSignal(object)
+    keysChanged=QtCore.pyqtSignal(str)
+    endedListening=QtCore.pyqtSignal(object)
+    startedListening=QtCore.pyqtSignal(object)
 
     def __init__(
             self, 
             *args, 
-            initial_wait=500,
-            follow_focus=True,
-            **kwargs):
+            wait=100,
+            **kwargs
+            ):
 
-        self.renders=[]
+        self.wait=wait
         self.running = False
         self.activated = False
-        self.initial_wait=initial_wait
-        self.follow_focus=follow_focus
-        self.position=kwargs.get(
-                'position', None)
-        self.follow_mouse=kwargs.get(
-                'follow_mouse', False)
         super(Plug, self).__init__(
                 *args, **kwargs)
+        self.initiate()
 
     def initiate(self):
 
-        self.uiman.setUIKeys()
-        super().initiate()
+        if not self.app:
+            self.uiman.setUIKeys()
+        else:
+            self.app.uiman.setUIKeys(obj=self)
 
     def setup(self):
 
         super().setup()
-        self.setUIMan()
+        if self.main_app:
+            self.setUIMan()
         self.setTimer()
         self.setEar()
         if self.app:
             self.app.moder.add(self)
 
-    def addRender(self, render):
-        self.renders+=[render]
-
     def setUIMan(self):
 
+        raise
         self.uiman=UIMan(
-                self, **self.kwargs)
+                obj=self, 
+                **self.kwargs)
+        self.uiman.setApp()
+        self.uiman.setAppUI()
 
     def setTimer(self):
 
@@ -86,14 +76,20 @@ class Plug(Base, QtCore.QObject):
     def listen(self): 
 
         self.ear.listen()
-        self.uiman.listen()
         self.startedListening.emit(self)
+        if not self.app:
+            self.uiman.listen()
+        else:
+            self.app.uiman.listen(self)
 
     def delisten(self): 
 
         self.ear.delisten()
-        self.uiman.delisten()
         self.endedListening.emit(self)
+        if not self.app:
+            self.app.uiman.delisten()
+        else:
+            self.app.uiman.delisten(self)
 
     def checkLeader(self, e, p=None): 
         return p in self.ear.listen_leader
@@ -115,15 +111,21 @@ class Plug(Base, QtCore.QObject):
     def activate(self):
 
         self.activated=True
-        self.uiman.activate()
         self.modeWanted.emit(self)
+        if not self.app:
+            self.uiman.activate()
+        else:
+            self.app.uiman.activate(self)
 
     def deactivate(self):
 
         self.activated=False
-        self.uiman.deactivate()
         if self.ear.listening:
             self.delistenWanted.emit()
+        if not self.app:
+            self.uiman.deactivate()
+        else:
+            self.app.uiman.deactivate(self)
 
     def launch(self):
 
@@ -133,14 +135,19 @@ class Plug(Base, QtCore.QObject):
     def run(self):
 
         self.running=True
-        self.timer.start(
-                self.initial_wait)
-        self.uiman.activate()
+        self.timer.start(self.wait)
+        if not self.app:
+            self.uiman.activate()
+        else:
+            self.uiman.activate(self)
 
     def exit(self): 
 
         self.running=False
-        self.uiman.deactivate()
+        if not self.app:
+            self.uiman.deactivate()
+        else:
+            self.uiman.deactivate(self)
 
     def getView(self):
         return None

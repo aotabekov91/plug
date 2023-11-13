@@ -19,8 +19,6 @@ class Run(Plug):
 
     def __init__(
             self, 
-            app=None, 
-            name='run', 
             special=special, 
             listen_leader='<c-r>', 
             **kwargs
@@ -28,13 +26,10 @@ class Run(Plug):
 
         self.commands={}
         super().__init__(
-                app=app, 
-                name=name, 
+                name='run',
                 special=special,
                 listen_leader=listen_leader, 
-                **kwargs
-                )
-
+                **kwargs)
         self.ear.returnPressed.connect(
                 self.on_returnPressed)
         self.ear.carriageReturnPressed.connect(
@@ -42,39 +37,34 @@ class Run(Plug):
         self.ear.tabPressed.connect(
                 self.on_tabPressed)
         self.ear.keysSet.connect(
-                self.on_keysSet)
+                self.updateKeysSet)
 
     def setup(self):
 
         super().setup()
         self.setParser()
-        if self.app:
-            self.app.moder.plugsLoaded.connect(
-                    self.on_plugsLoaded
-                    )
+        self.bar=self.app.window.bar
+        self.app.moder.plugsLoaded.connect(
+                self.setModeFunctions)
 
-    def on_plugsLoaded(self, plugs):
-
-        self.functions.update(
-                self.commands)
+    def setModeFunctions(self, plugs):
+        self.functions.update(self.commands)
 
     def delisten(self):
 
         super().delisten()
-        bar=self.app.window.bar
-        bar.bottom.hide()
-        bar.edit.textChanged.disconnect(
+        self.bar.bottom.hide()
+        self.bar.edit.textChanged.disconnect(
                 self.textChanged)
-        bar.edit.clear()
+        self.bar.edit.clear()
 
     def listen(self):
 
         super().listen()
-        bar=self.app.window.bar
-        bar.bottom.show()
-        bar.show()
-        bar.edit.setFocus()
-        bar.edit.textChanged.connect(
+        self.bar.bottom.show()
+        self.bar.show()
+        self.bar.edit.setFocus()
+        self.bar.edit.textChanged.connect(
                 self.textChanged)
 
     def setParser(self):
@@ -83,27 +73,26 @@ class Run(Plug):
         self.subparser=self.parser.add_subparsers(
                 dest='command')
 
-    def on_keysSet(self, commands):
+    def updateKeysSet(self, commands):
 
         for c, m in self.ear.methods.items():
             if c in self.commands: 
                 continue
             self.commands[c]=m
             prmts=signature(m).parameters
-            parser=self.subparser.add_parser(c)
-            for n, p in prmts.items():
+            p=self.subparser.add_parser(c)
+            for n, v in prmts.items():
                 try:
-
-                    if p.default==Parameter.empty:
-                        parser.add_argument(n)
+                    if v.default==Parameter.empty:
+                        p.add_argument(n)
                     else:
-                        parser.add_argument(
-                                f'--{n}',
-                                default=p.default)
+                        p.add_argument(
+                                f'--{n}', default=v.default)
                 except:
                     pass
 
-    def on_tabPressed(self): pass
+    def on_tabPressed(self): 
+        pass
 
     def on_returnPressed(self): 
 

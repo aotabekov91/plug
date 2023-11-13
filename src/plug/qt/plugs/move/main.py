@@ -5,7 +5,6 @@ class Move(Plug):
 
     def __init__(
             self, 
-            app, 
             name='move',
             leader_keys={
                 'command': 'm',
@@ -15,7 +14,6 @@ class Move(Plug):
             ):
 
         super().__init__(
-                app=app, 
                 name=name, 
                 **kwargs,
                 )

@@ -3,76 +3,62 @@ from plug.qt import Plug
 from gizmo.utils import register
 
 from .filler import Filler
-from .widget import ListWidget
+from .widget import RunListWidget
 
 class RunList(Plug):
 
-    def __init__(self, 
-                 app=None, 
-                 special=['tab'],
-                 **kwargs,
-                 ):
+    def __init__(
+            self, 
+            special=['tab'], 
+            **kwargs
+            ):
 
         self.args={}
-        self.run=None
         super().__init__(
-                app=app, 
                 special=special,
                 **kwargs,
                 )
         self.filler=Filler()
-
-    def setup(self):
-
-        super().setup()
-        self.setConnect()
-        self.setUI()
-
-    def setConnect(self):
-
+        self.bar=self.app.window.bar
         self.app.moder.plugsLoaded.connect(
-                self.on_plugsLoaded)
+                self.setRunPlug)
         self.ear.tabPressed.connect(
                 self.select)
+        self.setUI()
 
-    def setArgOptions(self, 
-                      cname, 
-                      aname, 
-                      alist):
+    def setArgOptions(
+            self, cname, aname, alist):
+
         if not cname in self.args:
             self.args[cname]={}
         self.args[cname][aname]=alist
 
     def setUI(self):
 
-        self.ui=ListWidget(
+        self.ui=RunListWidget(
                     objectName='RunList',
-                    parent=self.app.window,
-                )
+                    parent=self.app.window
+                    )
         self.ui.hide()
 
-    def on_plugsLoaded(self, plugs):
+    def setRunPlug(self, plugs):
 
-        run_mode=plugs.get('run', None)
-        if run_mode:
-            self.run=run_mode
-            run_mode.textChanged.connect(
-                    self.on_textChanged
-                    )
-            run_mode.startedListening.connect(
-                    self.on_startedListening
-                    )
-            run_mode.endedListening.connect(
-                    self.on_delistenWanted
-                    )
+        self.run=plugs.get('run', None)
+        if self.run:
+            self.run.textChanged.connect(
+                    self.updateText)
+            self.run.startedListening.connect(
+                    self.startListening)
+            self.run.endedListening.connect(
+                    self.stopListening)
 
-    def on_startedListening(self):
+    def startListening(self):
 
         self.ui.show()
-        self.on_textChanged()
+        self.updateText()
         self.listen()
 
-    def on_delistenWanted(self):
+    def stopListening(self):
 
         self.ui.model.clear()
         self.ui.hide()
@@ -88,13 +74,15 @@ class RunList(Plug):
             t=idx.data()
             new=''.join(tlist[:-1]+[t])
         self.setEditText(new)
-        self.updateListPosition()
+        self.updateWidgetPosition()
 
     @register('<c-k>')
-    def moveUp(self): self.move('up')
+    def moveUp(self): 
+        self.move('up')
 
     @register('<c-j>')
-    def moveDown(self): self.move('down')
+    def moveDown(self): 
+        self.move('down')
 
     def move(self, kind):
 
@@ -113,12 +101,12 @@ class RunList(Plug):
     def setEditText(self, text):
 
         self.run.textChanged.disconnect(
-                self.on_textChanged)
-        self.app.window.bar.edit.setText(text)
+                self.updateText)
+        self.bar.edit.setText(text)
         self.run.textChanged.connect(
-                self.on_textChanged)
+                self.updateText)
 
-    def on_textChanged(self): 
+    def updateText(self): 
 
         clist=[]
         text, t, last = self.run.getEditText()
@@ -152,7 +140,7 @@ class RunList(Plug):
             clist=self.getSimilar(last, clist)
 
         self.setList(clist)
-        self.updateListPosition()
+        self.updateWidgetPosition()
 
     def getOptions(self, command, arg, last):
 
@@ -165,14 +153,14 @@ class RunList(Plug):
 
     def getSimilar(self, name, alist):
 
-        if not name: return alist
-        return self.run.getSimilar(name, alist)
+        if name: 
+            alist=self.run.getSimilar(name, alist) 
+        return alist
 
     def setList(self, clist):
 
         self.ui.proxy.clear()
         self.ui.model.clear()
-
         if clist:
             for item in clist:
                 if type(item)!=QtGui.QStandardItem:
@@ -180,11 +168,9 @@ class RunList(Plug):
                 self.ui.model.appendRow(item)
             self.ui.list.setCurrentIndex(
                     self.ui.proxy.index(0, 0))
-            self.updateListPosition()
+            self.updateWidgetPosition()
 
-    def updateListPosition(self, x=None, delta=5):
+    def updateWidgetPosition(self, x=None, delta=5):
 
-        if not x:
-            edit=self.app.window.bar.edit
-            x=edit.cursorRect().x()+delta
-        self.ui.updatePosition(x)
+        cx=self.bar.edit.cursorRect().x()+delta
+        self.ui.updatePosition(x or cx)

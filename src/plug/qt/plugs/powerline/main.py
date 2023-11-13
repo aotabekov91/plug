@@ -19,7 +19,6 @@ class Powerline(Plug):
         self.app.moder.modeChanged.connect(
                 self.updateMode)
         self.setUI()
-        self.activate()
 
     def updateMode(self, mode):
 
@@ -53,6 +52,7 @@ class Powerline(Plug):
         bar.clayout.insertWidget(
                 0, self.ui)
         self.app.window.bar.show()
+        self.uiman.activate()
 
     def setMode(self, mode):
 

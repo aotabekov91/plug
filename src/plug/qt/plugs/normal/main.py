@@ -29,6 +29,12 @@ class Normal(Plug):
                 delisten_on_exec=delisten_on_exec, 
                 **kwargs)
 
+    def listen(self):
+
+        super().listen()
+        v=self.getView()
+        if v: v.setFocus()
+
     def setup(self):
 
         super().setup()

@@ -2,9 +2,9 @@ from plug.qt import Plug
 
 class Viewer(Plug):
 
+    position=None
     view_class=None
     model_class=None
-    view_position=None
 
     def initiate(self, *args, **kwargs):
 
@@ -61,6 +61,6 @@ class Viewer(Plug):
 
     def setView(self, view, **kwargs):
 
-        if self.view_position=='display':
+        if self.position=='display':
             self.app.display.setupView(
                     view, **kwargs)

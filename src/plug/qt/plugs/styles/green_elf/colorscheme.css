@@ -54,12 +54,12 @@ QTreeView::item:selected {
 	background-color: green;
 }
 
-#View[selected=false] {
+#View {
 	border-width: 0px;
 }
 
-#View[selected=true] {
-	border-width: 0px; 
+#View:focus {
+	border-width: 5px; 
 	border-style: solid;
 	border-color: green;
 }

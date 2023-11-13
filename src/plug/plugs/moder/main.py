@@ -27,16 +27,6 @@ class Moder(Plug):
     def getState(self):
         return self.current, self.prev
 
-    def connect(self):
-
-        w=getattr(self.app, 'window')
-        if w:
-            w.focusGained.connect(
-                self.on_focused)
-
-    def on_focused(self):
-        self.set(self.current)
-
     def getPlugs(self, plugs=set()):
 
         for n, f in self.rtp.items():
@@ -85,8 +75,6 @@ class Moder(Plug):
                 #     print(e)
 
         self.on_plugsLoaded(self.plugs)
-        self.connect()
-        self.set()
 
     def add(self, plug):
 

@@ -209,7 +209,7 @@ class Umay(Handler):
                 if f:
                     return f(**prm)
                 cand=[]
-                for e in uiman.ears:
+                for e in self.app.qapp.ears:
                     if not e.listening:
                         continue
                     v=getattr(e.obj, 'isVisible', None)

@@ -10,17 +10,17 @@ class Plug:
 
         super().__init__()
         self.files={}
+        self.renders=[]
         self.actions={}
         self.functions={}
         self.kwargs=kwargs
-        self.app=kwargs.get(
-                'app', None)
-        self.name=kwargs.get(
-                'name', None)
-        self.config=kwargs.get(
-                'config', {})
+        self.app=kwargs.get('app', None)
+        self.name=kwargs.get('name', None)
+        self.config=kwargs.get('config', {})
         self.setup()
-        self.initiate()
+
+    def addRender(self, render):
+        self.renders+=[render]
 
     def setup(self):
 
@@ -44,17 +44,9 @@ class Plug:
 
     def setModer(self, moder, **kwargs):
 
-        config=self.config.get(
-                'Moder', {})
+        c=self.config.get('Moder', {})
         self.moder=moder(
-                app=self,
-                config=config,
-                **kwargs)
-
-    def setMode(self, mode=None):
-
-        if self.app and self.app.moder:
-            self.app.moder.set(mode)
+                app=self, config=c, **kwargs)
 
     def setActions(self):
 
@@ -78,10 +70,7 @@ class Plug:
         saveOwnKeys()
 
     def createFolder(
-            self, 
-            folder=None, 
-            fname='folder'
-            ):
+            self, folder=None, fname='folder'):
         
         if not folder: 
             folder=f'~/{self.name.lower()}'
@@ -116,11 +105,9 @@ class Plug:
         for n, v in s.items():
             setattr(self, n, v)
 
-    def listen(self): 
-        pass
+    def open(self, source=None, **kwargs):
 
-    def delisten(self): 
-        pass
-
-    def initiate(self):
-        pass
+        for r in self.renders:
+            if not r.isCompatible(source):
+                continue
+            return r.open(source, **kwargs)
