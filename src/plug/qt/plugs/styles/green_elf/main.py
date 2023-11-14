@@ -1,4 +1,4 @@
-from plug.qt.plugs import Colorscheme
+from plug.qt.plugs.colorscheme import Colorscheme
 
 class GreenElf(Colorscheme): 
 
