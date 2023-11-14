@@ -1,12 +1,11 @@
+import plug
 from PyQt5 import QtCore 
-from plug import Plug as Base
-from plug.qt.utils import UIMan
 from gizmo.utils import Ear, register
+from plug.qt.utils import UIMan, Moder
 
-class Plug(Base, QtCore.QObject):
+class Plug(plug.Plug, QtCore.QObject):
 
     position=None
-    main_app=None
 
     appLaunched=QtCore.pyqtSignal()
     tabPressed=QtCore.pyqtSignal()
@@ -37,11 +36,7 @@ class Plug(Base, QtCore.QObject):
         self.initiate()
 
     def initiate(self):
-
-        if not self.app:
-            self.uiman.setUIKeys()
-        else:
-            self.app.uiman.setUIKeys(obj=self)
+        self.app.uiman.setUIKeys(self)
 
     def setup(self):
 
@@ -50,17 +45,15 @@ class Plug(Base, QtCore.QObject):
             self.setUIMan()
         self.setTimer()
         self.setEar()
-        if self.app:
-            self.app.moder.add(self)
 
     def setUIMan(self):
 
-        raise
-        self.uiman=UIMan(
-                obj=self, 
-                **self.kwargs)
-        self.uiman.setApp()
-        self.uiman.setAppUI()
+        self.uiman=UIMan()
+        self.uiman.setApp(self)
+        self.uiman.setAppUI(self)
+
+    def setModer(self, moder=Moder):
+        super().setModer(moder)
 
     def setTimer(self):
 
@@ -71,25 +64,23 @@ class Plug(Base, QtCore.QObject):
     def setEar(self):
 
         self.ear=Ear(
-                obj=self, **self.kwargs)
+                obj=self, 
+                app=self.app,
+                config=self.config,
+                **self.kwargs
+                )
 
     def listen(self): 
 
         self.ear.listen()
         self.startedListening.emit(self)
-        if not self.app:
-            self.uiman.listen()
-        else:
-            self.app.uiman.listen(self)
+        self.app.uiman.listen(self)
 
     def delisten(self): 
 
         self.ear.delisten()
         self.endedListening.emit(self)
-        if not self.app:
-            self.app.uiman.delisten()
-        else:
-            self.app.uiman.delisten(self)
+        self.app.uiman.delisten(self)
 
     def checkLeader(self, e, p=None): 
         return p in self.ear.listen_leader
@@ -112,20 +103,14 @@ class Plug(Base, QtCore.QObject):
 
         self.activated=True
         self.modeWanted.emit(self)
-        if not self.app:
-            self.uiman.activate()
-        else:
-            self.app.uiman.activate(self)
+        self.app.uiman.activate(self)
 
     def deactivate(self):
 
         self.activated=False
         if self.ear.listening:
             self.delistenWanted.emit()
-        if not self.app:
-            self.uiman.deactivate()
-        else:
-            self.app.uiman.deactivate(self)
+        self.app.uiman.deactivate(self)
 
     def launch(self):
 
@@ -136,18 +121,12 @@ class Plug(Base, QtCore.QObject):
 
         self.running=True
         self.timer.start(self.wait)
-        if not self.app:
-            self.uiman.activate()
-        else:
-            self.uiman.activate(self)
+        self.app.uiman.activate(self)
 
     def exit(self): 
 
         self.running=False
-        if not self.app:
-            self.uiman.deactivate()
-        else:
-            self.uiman.deactivate(self)
+        self.app.uiman.deactivate(self)
 
     def getView(self):
         return None

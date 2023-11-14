@@ -1,22 +1,29 @@
 import os
 import tomli
 from inspect import getfile
-from plug.utils import setKeys, createFolder
+from plug.utils import setKeys, createFolder, Moder
 
 class Plug:
 
+    main_app=False
+
     def __init__(
-            self, *args, **kwargs):
+            self, 
+            *args,
+            app=None,
+            name=None,
+            config={},
+            **kwargs):
 
         super().__init__()
+        self.app=app
         self.files={}
+        self.name=name
         self.renders=[]
         self.actions={}
         self.functions={}
+        self.config=config
         self.kwargs=kwargs
-        self.app=kwargs.get('app', None)
-        self.name=kwargs.get('name', None)
-        self.config=kwargs.get('config', {})
         self.setup()
 
     def addRender(self, render):
@@ -30,7 +37,10 @@ class Plug:
         self.setSettings()
         self.updateArgs()
         self.setActions()
-        
+        if self.main_app:
+            self.app=self
+            self.setModer()
+
     def updateArgs(self):
 
         settings=self.config.get(
@@ -42,11 +52,11 @@ class Plug:
                 settings[n]=kw
         self.kwargs.update(settings)
 
-    def setModer(self, moder, **kwargs):
+    def setModer(self, moder=Moder):
 
         c=self.config.get('Moder', {})
         self.moder=moder(
-                app=self, config=c, **kwargs)
+                app=self, config=c)
 
     def setActions(self):
 

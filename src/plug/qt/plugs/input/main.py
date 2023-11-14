@@ -5,6 +5,7 @@ from .widget import VimEditor
 
 class Input(Plug):
 
+    position='overlay'
     special=['carriage']
     detailChanged=QtCore.pyqtSignal(object)
 
@@ -12,7 +13,6 @@ class Input(Plug):
             self, 
             name='input',
             special=special,
-            position='overlay',
             listen_leader='<c-I>',
             delisten_keys=['escape'],
             **kwargs
@@ -22,12 +22,11 @@ class Input(Plug):
         super(Input, self).__init__(
                 name=name,
                 special=special,
-                position=position,
                 delisten_keys=delisten_keys,
                 listen_leader=listen_leader, 
                 **kwargs
                 )
-        self.app.uiman.qapp.focusChanged.connect(
+        self.app.qapp.focusChanged.connect(
                 self.on_focusChanged)
         self.ear.carriageReturnPressed.connect(
                 self.pasteText)
@@ -36,8 +35,8 @@ class Input(Plug):
 
     def setUI(self):
 
-        self.uiman.position='overlay'
-        self.uiman.setUI(VimEditor())
+        self.app.uiman.setUI(
+                self, VimEditor())
         self.ui.modeChanged.connect(
                 self.detailChanged)
         self.app.window.resized.connect(

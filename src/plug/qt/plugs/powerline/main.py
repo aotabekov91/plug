@@ -18,6 +18,7 @@ class Powerline(Plug):
                 **kwargs)
         self.app.moder.modeChanged.connect(
                 self.updateMode)
+        self.bar=self.app.window.bar
         self.setUI()
 
     def updateMode(self, mode):
@@ -48,11 +49,11 @@ class Powerline(Plug):
     def setUI(self):
 
         self.ui=PowerlineWidget()
-        bar=self.app.window.bar
-        bar.clayout.insertWidget(
+        self.bar.clayout.insertWidget(
                 0, self.ui)
-        self.app.window.bar.show()
-        self.uiman.activate()
+        self.bar.show()
+
+        # self.app.uiman.activate(self)
 
     def setMode(self, mode):
 

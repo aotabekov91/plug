@@ -130,6 +130,6 @@ class Styler(Plug):
         if style:
             cdict, css=style
             self.current=self.style=name
-            self.app.uiman.qapp.setStyleSheet(css)
+            self.app.qapp.setStyleSheet(css)
         else:
             self.current=None

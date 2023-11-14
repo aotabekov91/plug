@@ -200,26 +200,22 @@ class Umay(Handler):
                     cobj, eobj.parent())
 
         if self.app:
-            current=None
-            uiman=getattr(self.app, 'uiman', None)
-            if uiman:
-                current=uiman.current
-            if current:
-                f=checkEar(current, action)
-                if f:
-                    return f(**prm)
-                cand=[]
-                for e in self.app.qapp.ears:
-                    if not e.listening:
-                        continue
-                    v=getattr(e.obj, 'isVisible', None)
-                    if v and v():
-                        f=checkEar(e, action)
-                        if f: cand+=[(e, f)]
-                if len(cand)==1:
-                    e, f = cand[0]
-                    return f(**prm)
-                elif len(cand)>1:
-                    for e, f in cand:
-                        if checkParent(current.obj, e.obj):
-                            return f(**prm)
+            cear=self.app.qapp.current
+            f=checkEar(cear, action)
+            if f:
+                return f(**prm)
+            cand=[]
+            for e in self.app.qapp.ears:
+                if not e.listening:
+                    continue
+                v=getattr(e.obj, 'isVisible', None)
+                if v and v():
+                    f=checkEar(e, action)
+                    if f: cand+=[(e, f)]
+            if len(cand)==1:
+                e, f = cand[0]
+                return f(**prm)
+            elif len(cand)>1:
+                for e, f in cand:
+                    if checkParent(cear.obj, e.obj):
+                        return f(**prm)

@@ -29,13 +29,12 @@ class Search(Plug):
 
     def setUI(self):
 
-        self.uiman.setUI()
+        self.app.uiman.setUI(self)
+        lwid=ListWidget(
+            check_fields=['up'],
+            item_widget=ItemWidget)
         self.ui.addWidget(
-                ListWidget(
-                    item_widget=ItemWidget, 
-                    check_fields=['up']), 
-                'main', 
-                main=True)
+                'main', lwid, main=True)
 
     @register('l')
     def toggleList(self):

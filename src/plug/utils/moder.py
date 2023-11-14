@@ -1,28 +1,40 @@
 import os
 import sys
 import importlib
-from plug import Plug
 from plug.utils.miscel import dotdict
 
-class Moder(Plug):
+class Moder:
 
     def __init__(
             self, 
-            *args,
             rtp={},
+            app=None,
+            config={},
+            actions={},
             plugs=dotdict(),
             default='normal',
             **kwargs,
             ):
 
+        self.app=app
         self.rtp=rtp
         self.prev=None
-        self.current=None
         self.plugs=plugs
+        self.current=None
+        self.config=config
+        self.actions=actions
         self.default=default
-        super().__init__(
-                *args, **kwargs)
-        self.actions={}
+        super().__init__(**kwargs)
+        self.setup()
+
+    def setup(self):
+        self.setSettings()
+
+    def setSettings(self):
+
+        s=self.config.get('Settings', {})
+        for n, v in s.items():
+            setattr(self, n, v)
 
     def getState(self):
         return self.current, self.prev
@@ -60,14 +72,17 @@ class Moder(Plug):
         for p in plugs: 
             if not isLoaded(p): 
                 n=p.__name__
-                c=self.app.config.get(n, {})
+                config=self.app.config.get(
+                        n, {})
 
                 # try:
 
                 kwargs=params.get(n, {})
-                plug=p(app=self.app, 
-                       config=c, 
-                       **kwargs)
+                plug=p(
+                      app=self.app, 
+                      config=config, 
+                      **kwargs
+                      )
                 self.add(plug)
 
                 # except Exception as e:

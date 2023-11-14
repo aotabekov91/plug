@@ -14,7 +14,7 @@ class TreePlug(Plug):
 
     def setUI(self):
 
-        self.uiman.setUI()
+        self.app.uiman.setUI(self)
         ui=InputTree()
         self.tree=ui.tree
         self.ui.addWidget(

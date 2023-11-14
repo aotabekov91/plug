@@ -1,7 +1,7 @@
-from plug.plugs.moder import Moder as Base
+from plug import utils
 from PyQt5.QtCore import QObject, pyqtSignal
 
-class Moder(Base, QObject):
+class Moder(utils.Moder, QObject):
 
     plugAdded=pyqtSignal(object)
     plugsLoaded=pyqtSignal(object)
@@ -12,12 +12,16 @@ class Moder(Base, QObject):
     def setup(self):
 
         super().setup()
-        self.app.window.focusGained.connect(
-                self.on_focused)
         self.app.appLaunched.connect(
-                lambda: self.set(self.default))
+                self.setupOnLauch)
 
-    def on_focused(self):
+    def setupOnLauch(self):
+
+        self.set(self.default)
+        w=getattr(self.app, 'window', None)
+        if w: w.focusGained.connect(self.reset)
+
+    def reset(self):
         self.set(self.current)
 
     def add(self, plug):
