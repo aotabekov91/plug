@@ -1,6 +1,7 @@
 import os
 import sys
 import importlib
+from collections.abc import Iterable
 from plug.utils.miscel import dotdict
 
 class Moder:
@@ -57,8 +58,8 @@ class Moder:
 
     def load(
             self, 
+            plugs=[], 
             params={},
-            plugs=set(), 
             **kwargs,
             ):
 
@@ -67,6 +68,11 @@ class Moder:
                 if p.__class__==plug_class:
                     return True
             return False
+
+        if type(plugs)!=set:
+            iter=isinstance(plugs, Iterable)
+            if not iter: plugs=[plugs]
+            plugs=set(plugs)
 
         plugs=self.getPlugs(plugs)
         for p in plugs: 
