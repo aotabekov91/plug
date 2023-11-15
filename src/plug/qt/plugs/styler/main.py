@@ -2,7 +2,7 @@ import re
 from collections import OrderedDict
 
 from plug.qt import Plug
-from gizmo.utils import register
+from gizmo.utils import tag
 
 class Styler(Plug):
 
@@ -123,7 +123,7 @@ class Styler(Plug):
         if self.current!=self.style:
             self.colorscheme(self.style)
 
-    @register(modes=['run'])
+    @tag(modes=['run'])
     def colorscheme(self, name):
         
         style=self.styles.get(name, None)

@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
 from plug.qt import Plug
-from gizmo.utils import register
+from gizmo.utils import tag
 from gizmo.widget import ListWidget, ItemWidget
 
 class Search(Plug):
@@ -36,7 +36,7 @@ class Search(Plug):
         self.ui.addWidget(
                 'main', lwid, main=True)
 
-    @register('l')
+    @tag('l')
     def toggleList(self):
 
         if self.ui.isVisible():
@@ -44,15 +44,15 @@ class Search(Plug):
         else:
             self.ui.activate()
 
-    @register('j')
+    @tag('j')
     def next(self): 
         self.jump(+1)
 
-    @register('k')
+    @tag('k')
     def prev(self): 
         self.jump(-1)
 
-    @register('f')
+    @tag('f')
     def focusSearch(self): 
         self.bar.edit.setFocus()
 

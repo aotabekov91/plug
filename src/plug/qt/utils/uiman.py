@@ -1,25 +1,35 @@
 import sys
-from PyQt5 import QtCore
 from gizmo.ui import Display
 from plug.utils import setKeys
-from gizmo.ui import Application
+from PyQt5 import QtCore, QtWidgets
 from gizmo.widget import CommandStack 
 from plug.qt.utils.buffer import Buffer
 
 from .stack_window import StackWindow
 
 class UIMan(QtCore.QObject):
+    
+    appLaunched=QtCore.pyqtSignal()
 
     def __init__(self):
 
         self.app=None
+        self.launch_wait=10
         super().__init__()
+        self.setTimer()
+
+    def setTimer(self):
+
+        self.timer=QtCore.QTimer()
+        self.timer.timeout.connect(
+                self.appLaunched.emit)
+        self.timer.setSingleShot(True)
 
     def setApp(self, obj):
 
         self.app=obj
         self.setParent(obj)
-        obj.qapp=Application([])
+        obj.qapp=QtWidgets.QApplication([])
         obj.qapp.setApplicationName(obj.name)
         obj.setParent(obj.qapp)
 
@@ -43,14 +53,14 @@ class UIMan(QtCore.QObject):
         ui.hide()
         obj.ui, ui.mode=ui, obj
         ui.setObjectName(obj.name.title())
-        if hasattr(ui, 'hideWanted'):
-            ui.hideWanted.connect(obj.deactivate)
-        if hasattr(ui, 'keysChanged'):
-            ui.keysChanged.connect(obj.keysChanged)
-        if hasattr(ui, 'modeWanted'):
-            ui.modeWanted.connect(obj.modeWanted)
-        if hasattr(ui, 'delistenWanted'):
-            ui.delistenWanted.connect(obj.delistenWanted)
+        # if hasattr(ui, 'hideWanted'):
+            # ui.hideWanted.connect(obj.deactivate)
+        # if hasattr(ui, 'keysChanged'):
+            # ui.keysChanged.connect(obj.keysChanged)
+        # if hasattr(ui, 'modeWanted'):
+            # ui.modeWanted.connect(obj.modeWanted)
+        # if hasattr(ui, 'delistenWanted'):
+            # ui.delistenWanted.connect(obj.delistenWanted)
         if hasattr(ui, 'focusGained'):
             f=lambda **kwargs: obj.focusGained.emit(obj) 
             ui.focusGained.connect(f)
@@ -116,16 +126,17 @@ class UIMan(QtCore.QObject):
 
     def relocate(self, obj, position):
 
-        ob.position=position
+        obj.position=position
         self.delocateUI()
         self.locate()
 
     def activate(self, obj):
 
         ui=getattr(obj, 'ui', None)
-        window=getattr(obj, 'window', None)
-        if window:
-            window.show()
+        w=getattr(obj, 'window', None)
+        if w:
+            w.show()
+            self.timer.start(self.launch_wait)
             sys.exit(obj.qapp.exec_())
         elif ui:
             if hasattr(ui, 'dock'):
@@ -149,12 +160,10 @@ class UIMan(QtCore.QObject):
             elif obj.position=='window':
                 self.app.window.show()
 
-    def listen(self, obj):
+    def focus(self, obj):
 
         ui=getattr(obj, 'ui', None)
         if ui: ui.setFocus()
 
-    def delisten(self, obj):
-
-        w=getattr(obj, 'window', None)
-        if w: w.setFocus()
+    def defocus(self, obj):
+        self.app.window.setFocus()

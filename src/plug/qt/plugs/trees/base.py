@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 
 from plug.qt import Plug
-from gizmo.utils import register
+from gizmo.utils import tag
 from gizmo.widget import InputTree
 
 class TreePlug(Plug):
@@ -36,15 +36,15 @@ class TreePlug(Plug):
         ui.tree.clicked.connect(
                 self.on_outlineClicked)
 
-    @register('i')
+    @tag('i')
     def openBelow(self): 
         self.open(how='below', focus=False)
 
-    @register('O')
+    @tag('O')
     def openReset(self): 
         self.open(how='reset', focus=False)
 
-    @register('s')
+    @tag('s')
     def center(self):
 
         if not self.follow_index:

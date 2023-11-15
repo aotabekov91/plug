@@ -1,40 +1,40 @@
 from plug.qt import Plug
-from gizmo.utils import register
+from gizmo.utils import tag
 
 from .widget import PowerlineWidget
 
 class Powerline(Plug):
 
-    def __init__(
-            self, 
-            leader_keys={'command': 'P'}, 
-            **kwargs
-            ):
+    view=None
+    mode=None
+    leader_keys={'command': 'P'}
 
-        self.view=None
-        self.mode=None
-        super().__init__(
-                leader_keys=leader_keys,
-                **kwargs)
+    def setup(self):
+
+        super().setup()
+        self.app.earman.keysChanged.connect(
+                self.on_keysChanged)
         self.app.moder.modeChanged.connect(
                 self.updateMode)
         self.bar=self.app.window.bar
         self.setUI()
 
-    def updateMode(self, mode):
+    def updateMode(self, m):
 
-        if mode:
-            self.resetMode()
-            self.mode=mode
-            self.view=mode.getView()
-            self.resetMode('connect')
-            self.setMode(mode)
-            self.setView(self.view)
+        if m:
+            self.reconnect()
+            self.mode=m
+            self.setMode(m)
+            self.view=None
+            if self.checkProp('hasView', m):
+                self.view=m.getView()
+                self.setView(self.view)
+            self.reconnect('connect')
 
-    def resetMode(self, kind='disconnect'):
+    def reconnect(self, kind='disconnect'):
 
         if self.mode:
-            for f in ['keysChanged', 'detailChanged']:
+            for f in ['detailChanged']:
                 s=getattr(self.mode, f, None)
                 if s:
                     s=getattr(s, kind)
@@ -52,8 +52,6 @@ class Powerline(Plug):
         self.bar.clayout.insertWidget(
                 0, self.ui)
         self.bar.show()
-
-        # self.app.uiman.activate(self)
 
     def setMode(self, mode):
 

@@ -5,29 +5,31 @@ from plug.utils import setKeys, createFolder, Moder
 
 class Plug:
 
+    name=None
     main_app=False
 
     def __init__(
             self, 
-            *args,
             app=None,
-            name=None,
             config={},
             **kwargs):
 
         super().__init__()
         self.app=app
         self.files={}
-        self.name=name
-        self.renders=[]
         self.actions={}
         self.functions={}
         self.config=config
         self.kwargs=kwargs
         self.setup()
 
+    def setName(self):
+
+        if self.name is None: 
+            self.name=self.__class__.__name__
+
     def addRender(self, render):
-        self.renders+=[render]
+        self.app.renders+=[render]
 
     def setup(self):
 
@@ -39,6 +41,7 @@ class Plug:
         self.setActions()
         if self.main_app:
             self.app=self
+            self.renders=[]
             self.setModer()
 
     def updateArgs(self):
@@ -87,11 +90,6 @@ class Plug:
         p=createFolder(folder)
         setattr(self, fname, p)
 
-    def setName(self):
-
-        if self.name is None: 
-            self.name=self.__class__.__name__
-
     def setBasePath(self):
 
         p=os.path.abspath(
@@ -117,7 +115,17 @@ class Plug:
 
     def open(self, source=None, **kwargs):
 
-        for r in self.renders:
+        print(source, self.app.renders)
+        for r in self.app.renders:
             if not r.isCompatible(source):
                 continue
             return r.open(source, **kwargs)
+
+    def checkProp(self, prop, obj=None):
+
+        ob=obj or self
+        if type(prop)!=list: prop=[prop]
+        for p in prop:
+            if not getattr(ob, p, False):
+                return False
+        return True

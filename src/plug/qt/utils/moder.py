@@ -3,16 +3,22 @@ from PyQt5.QtCore import QObject, pyqtSignal
 
 class Moder(utils.Moder, QObject):
 
+    delistenWanted=pyqtSignal()
     plugAdded=pyqtSignal(object)
-    plugsLoaded=pyqtSignal(object)
+    modeWanted=pyqtSignal(object)
     modeChanged=pyqtSignal(object)
+    plugsLoaded=pyqtSignal(object)
     modeIsToBeSet=pyqtSignal(object)
     actionsRegistered=pyqtSignal(object, object)
 
     def setup(self):
 
         super().setup()
-        self.app.appLaunched.connect(
+        self.modeWanted.connect(
+                self.set)
+        self.delistenWanted.connect(
+                self.set)
+        self.app.uiman.appLaunched.connect(
                 self.setupOnLauch)
 
     def setupOnLauch(self):

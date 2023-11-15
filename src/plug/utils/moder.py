@@ -102,21 +102,13 @@ class Moder:
         name=plug.name.lower()
         self.plugs[name]=plug
         self.save(plug, plug.actions)
-        if hasattr(plug, 'modeWanted'):
-            plug.modeWanted.connect(
-                    self.set)
-        if hasattr(plug, 'delistenWanted'):
-            plug.delistenWanted.connect(
-                    self.set)
 
-    def get(self, mode):
+    def get(self, m):
 
-        if mode is None:
-            mode=self.default
-        if type(mode)==str:
-            name=mode.lower()
-            mode=self.plugs.get(name)
-        return mode
+        m=m or self.default
+        if type(m)==str:
+            m=self.plugs.get(m.lower())
+        return m
 
     def set(self, mode=None):
 

@@ -1,5 +1,5 @@
 from plug.qt import Plug
-from gizmo.utils import register
+from gizmo.utils import tag
 
 class Move(Plug):
 
@@ -29,49 +29,49 @@ class Move(Plug):
             if kind=='move':
                 display.move(direction)
 
-    @register('h')
+    @tag('h')
     def moveLeft(self, digit=1):
 
         for d in range(digit):
             self.move('left', 'move')
 
-    @register('l')
+    @tag('l')
     def moveRight(self, digit=1):
         
         for d in range(digit):
             self.move('right', 'move')
 
-    @register('k')
+    @tag('k')
     def moveUp(self, digit=1):
 
         for d in range(digit):
             self.move('up', 'move')
 
-    @register('j')
+    @tag('j')
     def moveDown(self, digit=1):
 
         for d in range(digit):
             self.move('down', 'move')
 
-    @register('H')
+    @tag('H')
     def repositionLeft(self, digit=1):
 
         for d in range(digit):
             self.move('left', 'reposition')
 
-    @register('L')
+    @tag('L')
     def repositionRight(self, digit=1):
         
         for d in range(digit):
             self.move('right', 'reposition')
 
-    @register('K')
+    @tag('K')
     def repositionUp(self, digit=1):
 
         for d in range(digit):
             self.move('up', 'reposition')
 
-    @register('J')
+    @tag('J')
     def repositionDown(self, digit=1):
 
         for d in range(digit):

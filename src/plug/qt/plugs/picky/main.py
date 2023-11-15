@@ -1,25 +1,25 @@
 from PyQt5 import QtCore
-from gizmo.utils import register
+from gizmo.utils import tag
 from plug.plugs.picky import Picky as Base
 
 class Picky(Base, QtCore.QObject):
 
-    @register(modes=['run'])
+    @tag(modes=['run'])
     def reloadPicks(self): 
         self.moder.load()
 
-    @register(modes=['run'])
+    @tag(modes=['run'])
     def installPicks(self): 
         super().installPicks()
 
-    @register(modes=['run'])
+    @tag(modes=['run'])
     def installRequirements(self):
         super().installRequirements()
 
-    @register(modes=['run'])
+    @tag(modes=['run'])
     def updatePicks(self): 
         super().updatePicks()
 
-    @register(modes=['run'])
+    @tag(modes=['run'])
     def cleanupPicks(self): 
         super().cleanupPicks()

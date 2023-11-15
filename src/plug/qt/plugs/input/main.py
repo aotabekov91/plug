@@ -51,19 +51,14 @@ class Input(Plug):
         self.getter=getter
         self.setter=setter
 
-    def on_focusChanged(self, old, obj):
+    def on_focusChanged(self, o, n):
 
-        if not self.follow: 
-            return
-        g=getattr(
-                obj, 'toPlainText', None)
-        s=getattr(
-                obj, 'setPlainText', None)
+        if not self.follow: return
+        g=getattr(n, 'toPlainText', None)
+        s=getattr(n, 'setPlainText', None)
         if not g: 
-            g=getattr(
-                    obj, 'text', None)
-            s=getattr(
-                    obj, 'setText', None)
+            g=getattr(n, 'text', None)
+            s=getattr(n, 'setText', None)
         self.setFunctors(g, s)
 
     def listen(self):

@@ -2,13 +2,15 @@ from plug.qt import Plug
 
 class Viewer(Plug):
 
-    position=None
     view_class=None
     model_class=None
 
-    def initiate(self, *args, **kwargs):
+    def isCompatible(self, s):
+        return self.model_class.isCompatible(s)
 
-        super().initiate(*args, **kwargs)
+    def setup(self):
+
+        super().setup()
         self.app.addRender(self)
 
     def open(self, source=None, **kwargs):
@@ -41,9 +43,6 @@ class Viewer(Plug):
             v.setModel(model)
             self.app.buffer.setView(model, v)
         return v
-
-    def isCompatible(self, s):
-        return self.model_class.isCompatible(s)
 
     def getConfig(self):
 

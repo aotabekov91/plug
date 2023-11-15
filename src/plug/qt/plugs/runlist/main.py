@@ -1,6 +1,6 @@
 from PyQt5 import QtGui
 from plug.qt import Plug
-from gizmo.utils import register
+from gizmo.utils import tag
 
 from .filler import Filler
 from .widget import RunListWidget
@@ -64,7 +64,7 @@ class RunList(Plug):
         self.ui.hide()
         self.delisten()
 
-    @register('<c-l>')
+    @tag('<c-l>')
     def select(self): 
 
         idx=self.ui.list.currentIndex()
@@ -76,11 +76,11 @@ class RunList(Plug):
         self.setEditText(new)
         self.updateWidgetPosition()
 
-    @register('<c-k>')
+    @tag('<c-k>')
     def moveUp(self): 
         self.move('up')
 
-    @register('<c-j>')
+    @tag('<c-j>')
     def moveDown(self): 
         self.move('down')
 

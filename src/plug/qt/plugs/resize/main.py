@@ -1,5 +1,5 @@
 from plug.qt import Plug
-from gizmo.utils import register
+from gizmo.utils import tag
 
 class Resize(Plug):
 
@@ -27,49 +27,49 @@ class Resize(Plug):
         if prev.name=='normal':
             display.resize(direction, kind)
 
-    @register('h')
+    @tag('h')
     def incrementLeft(self, digit=1):
 
         for d in range(digit):
             self.crement('left', 'increment')
 
-    @register('l')
+    @tag('l')
     def incrementRight(self, digit=1):
         
         for d in range(digit):
             self.crement('right', 'increment')
 
-    @register('k')
+    @tag('k')
     def incrementUp(self, digit=1):
 
         for d in range(digit):
             self.crement('up', 'increment')
 
-    @register('j')
+    @tag('j')
     def incrementDown(self, digit=1):
 
         for d in range(digit):
             self.crement('down', 'increment')
 
-    @register('H')
+    @tag('H')
     def decrmentLeft(self, digit=1):
 
         for d in range(digit):
             self.crement('left', 'decrment')
 
-    @register('L')
+    @tag('L')
     def decrmentRight(self, digit=1):
         
         for d in range(digit):
             self.crement('right', 'decrment')
 
-    @register('K')
+    @tag('K')
     def decrmentUp(self, digit=1):
 
         for d in range(digit):
             self.crement('up', 'decrment')
 
-    @register('J')
+    @tag('J')
     def decrmentDown(self, digit=1):
 
         for d in range(digit):
