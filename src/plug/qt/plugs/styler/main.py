@@ -6,12 +6,13 @@ from gizmo.utils import tag
 
 class Styler(Plug):
 
-    def __init__(self, *args, **kwargs):
+    styles={}
+    current=None
+    style='default'
 
-        self.styles={}
-        self.current=None
-        self.style='default'
-        super().__init__(*args, **kwargs)
+    def setup(self):
+
+        super().setup()
         self.app.moder.plugsLoaded.connect(
                 self.on_plugsLoaded)
 

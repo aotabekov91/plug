@@ -4,3 +4,8 @@ class dotdict(dict):
     __getattr__ = dict.get
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+
+class hashabledict(dict):
+
+    def __hash__(self):
+        return hash(tuple(sorted(self.items())))

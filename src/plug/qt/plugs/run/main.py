@@ -8,42 +8,29 @@ from .parser import ArgumentParser
 
 class Run(Plug):
 
-    special=[
-            'return', 
-            'tab', 
-            'carriage', 
-            'escape', 
-            'escape_bracket'
-            ]
+    name='run'
+    commands={}
+    listen_leader='<c-r>'
     textChanged=QtCore.pyqtSignal()
 
-    def __init__(
-            self, 
-            special=special, 
-            listen_leader='<c-r>', 
-            **kwargs
-            ):
+    def event_functor(self, e, ear):
 
-        self.commands={}
-        super().__init__(
-                name='run',
-                special=special,
-                listen_leader=listen_leader, 
-                **kwargs)
-        self.ear.returnPressed.connect(
-                self.on_returnPressed)
-        self.ear.carriageReturnPressed.connect(
-                self.on_returnPressed)
-        self.ear.tabPressed.connect(
-                self.on_tabPressed)
-        self.ear.keysSet.connect(
-                self.updateKeysSet)
+        enter=[
+               QtCore.Qt.Key_Enter,
+               QtCore.Qt.Key_Return, 
+              ]
+        if e.key() in enter:
+            self.on_returnPressed()
+            self.deactivate()
+            return True
 
     def setup(self):
 
         super().setup()
         self.setParser()
         self.bar=self.app.window.bar
+        self.app.earman.plugsLoaded.connect(
+                self.updateKeysSet)
         self.app.moder.plugsLoaded.connect(
                 self.setModeFunctions)
 
@@ -75,7 +62,10 @@ class Run(Plug):
 
     def updateKeysSet(self, commands):
 
-        for c, m in self.ear.methods.items():
+        f=self.app.earman.commands.get(
+                self, {})
+        default=f.get('default', {})
+        for c, m in default.items():
             if c in self.commands: 
                 continue
             self.commands[c]=m
@@ -107,8 +97,6 @@ class Run(Plug):
 
         # except:
         #     pass
-
-        self.delistenWanted.emit()
 
     def getEditText(self):
 

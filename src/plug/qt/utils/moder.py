@@ -6,6 +6,8 @@ class Moder(utils.Moder, QObject):
     delistenWanted=pyqtSignal()
     plugAdded=pyqtSignal(object)
     modeWanted=pyqtSignal(object)
+    typeWanted=pyqtSignal(object)
+    typeChanged=pyqtSignal(object)
     modeChanged=pyqtSignal(object)
     plugsLoaded=pyqtSignal(object)
     modeIsToBeSet=pyqtSignal(object)
@@ -15,20 +17,27 @@ class Moder(utils.Moder, QObject):
 
         super().setup()
         self.modeWanted.connect(
-                self.set)
+                self.setMode)
+        self.typeWanted.connect(
+                self.setType)
         self.delistenWanted.connect(
-                self.set)
+                self.setMode)
         self.app.uiman.appLaunched.connect(
-                self.setupOnLauch)
+                self.launch)
 
-    def setupOnLauch(self):
+    def setType(self, t):
 
-        self.set(self.default)
+        super().setType(t)
+        if t: self.typeChanged.emit(t)
+
+    def launch(self):
+
+        self.setMode(self.default)
         w=getattr(self.app, 'window', None)
         if w: w.focusGained.connect(self.reset)
 
     def reset(self):
-        self.set(self.current)
+        self.setMode(self.current)
 
     def add(self, plug):
 
@@ -40,11 +49,11 @@ class Moder(utils.Moder, QObject):
         super().load(*args, **kwargs)
         self.plugsLoaded.emit(self.plugs)
 
-    def set(self, mode=None):
+    def setMode(self, mode=None):
 
-        m=self.get(mode)
+        m=self.getMode(mode)
         self.modeIsToBeSet.emit(m)
-        m=super().set(m)
+        m=super().setMode(m)
         if m: self.modeChanged.emit(m)
         return m
 

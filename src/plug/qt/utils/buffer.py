@@ -16,14 +16,12 @@ class Buffer(QtCore.QObject):
         super().__init__()
 
     def getModel(self, idx):
-
-        if idx in self.models:
-            return self.models[idx]
+        return self.models.get(idx, None)
 
     def setModel(self, idx, model):
 
         if model: 
-            c, p = idx, self.m_pmodel
+            c, p = model, self.m_pmodel
             self.m_cmodel, self.m_pmodel=c, p
             self.models[idx]=model
             self.modelCreated.emit(model)
@@ -36,7 +34,7 @@ class Buffer(QtCore.QObject):
     def getView(self, model):
 
         for v in self.views:
-            if v.model()==model:
+            if id(v.model())==id(model):
                 return v
 
     def setView(self, model, view):

@@ -1,4 +1,4 @@
 from .helpers import *
 from .moder import Moder
-from .miscel import dotdict
 from .command import command
+from .miscel import dotdict, hashabledict

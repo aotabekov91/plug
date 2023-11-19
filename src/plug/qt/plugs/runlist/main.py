@@ -7,23 +7,15 @@ from .widget import RunListWidget
 
 class RunList(Plug):
 
-    def __init__(
-            self, 
-            special=['tab'], 
-            **kwargs
-            ):
+    args={}
+    filler=Filler()
 
-        self.args={}
-        super().__init__(
-                special=special,
-                **kwargs,
-                )
-        self.filler=Filler()
+    def setup(self):
+
+        super().setup()
         self.bar=self.app.window.bar
         self.app.moder.plugsLoaded.connect(
                 self.setRunPlug)
-        self.ear.tabPressed.connect(
-                self.select)
         self.setUI()
 
     def setArgOptions(
@@ -48,23 +40,21 @@ class RunList(Plug):
             self.run.textChanged.connect(
                     self.updateText)
             self.run.startedListening.connect(
-                    self.startListening)
+                    self.start)
             self.run.endedListening.connect(
-                    self.stopListening)
+                    self.stop)
 
-    def startListening(self):
+    def start(self):
 
         self.ui.show()
         self.updateText()
-        self.listen()
 
-    def stopListening(self):
+    def stop(self):
 
         self.ui.model.clear()
         self.ui.hide()
-        self.delisten()
 
-    @tag('<c-l>')
+    @tag(['<c-l>', '<tab>'], modes=['run'])
     def select(self): 
 
         idx=self.ui.list.currentIndex()
@@ -76,11 +66,11 @@ class RunList(Plug):
         self.setEditText(new)
         self.updateWidgetPosition()
 
-    @tag('<c-k>')
+    @tag('<c-k>', modes=['run'])
     def moveUp(self): 
         self.move('up')
 
-    @tag('<c-j>')
+    @tag('<c-j>', modes=['run'])
     def moveDown(self): 
         self.move('down')
 

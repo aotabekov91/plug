@@ -7,31 +7,36 @@ class EarMan(QtCore.QObject):
 
     wait_run=5
     wait_time=200
-    default_mode='normal'
+    mode_on_exit='normal'
     delisten_on_exec=False
     delisten_key=[QtCore.Qt.Key_Escape]
+    delisten_key_=['<escape>', '<c-['] # Todo
+    plugsLoaded=QtCore.pyqtSignal(object)
     keysChanged=QtCore.pyqtSignal(object)
+    matchIsExecuted=QtCore.pyqtSignal()
+    matchIsToBeExecuted=QtCore.pyqtSignal()
 
     mapping={
-            ',': 'Comma', 
-            ';': 'Semicolon', 
-            '.': 'Period',
-            '-': 'Minus',
-            '.': 'Period',
-            '/': 'Slash',
-            '+': 'Plus',
-            '*': 'Asterisk',
             '@': 'At',
+            '+': 'Plus',
+            ' ': 'Space',
+            '/': 'Slash',
+            '-': 'Minus',
+            ',': 'Comma', 
+            '.': 'Period',
             '$': 'Dollar',
+            '*': 'Asterisk',
+            ';': 'Semicolon', 
+            '_': 'Underscore',
             '[': 'BracketLeft',
             ']': 'BracketRight',
-            '_': 'Underscore',
-            ' ': 'Space'}
+            }
 
     def __init__(self, app):
 
         self.app=app
         self.keys={}
+        self.names={}
         self.obj=None
         self.kwargs={}
         self.leaders={}
@@ -64,6 +69,7 @@ class EarMan(QtCore.QObject):
         self.createHolders(plugs)
         self.setPlugActions(plugs)
         self.setPlugLeaders(plugs)
+        self.plugsLoaded.emit(plugs)
 
     def setPlugLeaders(self, plugs):
 
@@ -94,6 +100,14 @@ class EarMan(QtCore.QObject):
                 return key, command
             return getAncestorActions(p)
 
+        def getMode(mode):
+
+            t=mode.split('|')
+            if len(t)==1:
+                return t[0], ['default']
+            elif len(t)==2:
+                return t[0], t[1].split(':')
+
         def setWidgetActions(w, upcursive=False):
 
             key, command={}, {}
@@ -110,12 +124,23 @@ class EarMan(QtCore.QObject):
                         key[wk]=a
                     command[a.name]=a
                 else:
-                    raise
+                    for m in a.modes:
+                        t=getMode(m)
+                        if not t: continue
+                        tt, ts=t[0], t[1]
+                        plug=self.names[tt]
+                        pkeys=self.keys[plug]
+                        pcoms=self.commands[plug]
+                        for j in ts:
+                            if not j in pkeys: pkeys[j]={}
+                            if not j in pcoms: pcoms[j]={}
+                            pcoms[j][a.name]=a
+                            if a.key:
+                                wk=self.parseKey(a.key)
+                                pkeys[j][wk]=a
 
-            if key: 
-                k[w]=key
-            if command: 
-                c[w]=command
+            if key: k[w]=key
+            if command: c[w]=command
 
         ui=getattr(p, 'ui', None)
         if ui:
@@ -129,48 +154,75 @@ class EarMan(QtCore.QObject):
         for n, p in plugs.items():
             if p.name in self.commands:
                 continue
+            self.names[p.name]=p
             self.keys[p]={'default': {}}
             self.commands[p]={'default': {}}
 
     def setActions(self, obj):
+
+        def check(modes, o, obj):
+
+            for i in modes:
+                t=i.split('|', 1)
+                if len(t)<2: continue
+                m, a = t[0], t[1] 
+                if obj.name!=m: continue
+                return a.split(':')
+
+        def checkMode(m, o, obj):
+
+            if 'any' in m:
+                return ['default']
+            elif obj.name in m:
+                return ['default']
+            elif o==obj and len(m)==0:
+                return ['default']
+            else:
+                return check(m, o, obj)
 
         k=self.keys[obj]
         c=self.commands[obj]
         acs=self.app.moder.actions
         for o, a in acs.items():
             for (pn, n), m in a.items():
-                any_='any' in m.modes
-                in_=obj.name in m.modes
-                own_=o==obj and len(m.modes)==0
-                if not any([own_, any_, in_]):
-                    continue
-                key=self.setKey(obj, o, m, n)
-                c['default'][n]=m
-                if key: k['default'][key]=m
+                modes=getattr(m, 'modes', [])
+                ss=checkMode(modes, o, obj)
+                if not ss: continue
+                for s in ss:
+                    if not s in k: k[s]={}
+                    if not s in c: c[s]={}
+                    key=self.setKey(obj, o, m, n)
+                    if key: k[s][key]=m
+                    c[s][n]=m
 
     def setKey(self, obj, o, m, n):
 
         k=getattr(m, 'key')
-        if k:
-            l=getattr(o, 'leader_keys', {})
-            p=l.get(obj.name, '')
-            return self.parseKey(k, prefix=p)
+        if not k: return
+        l=getattr(o, 'leader_keys', {})
+        p=l.get(obj.name, '')
+        return self.parseKey(k, prefix=p)
 
     def parseKey(self, key, prefix=''):
 
-        def parseLetter(t):
+        def parseLetter(t, title=True):
 
-            unit=[]
+            u=[]
             if t.isupper(): 
-                unit+=[getattr(QtCore.Qt,'ShiftModifier')]
-            k=self.mapping.get(t, t.upper())
-            unit+=[getattr(QtCore.Qt, f"Key_{k}")]
-            return unit
+                u+=[getattr(QtCore.Qt,'ShiftModifier')]
+            if title: t=t.upper()
+            k=self.mapping.get(t, t)
+            u+=[getattr(QtCore.Qt, f"Key_{k}")]
+            return u
 
         def parse(key):
 
             parsed=[]
-            p=r'(?P<group>(<[acAC]-.>)*)(?P<tail>([^<]*))'
+            # p=r'(?P<group>(<[acAC]-.>)*)(?P<tail>([^<]*))'
+            t=r'(?P<tail>([^<]*))'
+            s=r'(?P<special>(<[^>]*>)*)'
+            g=r'(?P<group>(<[acAC]-.>)*)'
+            p=f'{g}{s}{t}'
             match=re.match(p, key)
             groups=match.group('group')
             if groups:
@@ -186,6 +238,13 @@ class EarMan(QtCore.QObject):
                         am=getattr(QtCore.Qt,'AltModifier')
                         unit+=[am]
                     unit+=parseLetter(l)
+                    parsed+=[tuple(unit)]
+            special=match.group('special')
+            if special:
+                special=re.findall('<([^>]*)>', special)
+                for s in special:
+                    s=s.strip('<').strip('>').title()
+                    unit=parseLetter(s, False)
                     parsed+=[tuple(unit)]
             tails=match.group('tail')
             if tails:
@@ -215,8 +274,13 @@ class EarMan(QtCore.QObject):
         if self.addKeys(e):
             e.accept()
             return True
-        elif hasattr(self.obj, 'suffix_functor'):
-            return self.obj.suffix_functor(e)
+        elif hasattr(self.obj, 'event_functor'):
+            r=self.obj.event_functor(e, self)
+            if r:
+                e.accept()
+                return True
+            self.clearKeys()
+            return False
         else:
             self.clearKeys()
             return False
@@ -306,8 +370,9 @@ class EarMan(QtCore.QObject):
                 return keys.get(w, {})
             return getWKeys(w.parent())
 
-        def addWidgetKeys(l):
+        def getWidgetKeys():
 
+            l={}
             ui=getattr(self.obj, 'ui', None)
             if ui:
                 w=self.app.qapp.focusWidget()
@@ -319,25 +384,41 @@ class EarMan(QtCore.QObject):
                     ch=ui.findChildren(QWidget)
                     ch.append(ui)
                     if w in ch: 
-                        l+=[getWKeys(w)]
+                        l.update(getWKeys(w))
+            return l
 
-        m, p = [], []
+        def getTypeKeys(keys):
+
+            l={}
+            s=self.app.moder.type()
+            sclass=s.__class__
+            for c in sclass.__mro__[::-1]:
+                n=c.__name__
+                if n in keys:
+                    l.update(keys.get(n, {}))
+            print(sclass)
+            return l
+
+        m, p, l, i = [], [], [], {}
         keys=self.keys.get(self.obj, {})
-        l=[keys.get('default', {})]
-        addWidgetKeys(l)
-
-        for i in l:
-            for v, f in i.items():
-                for c in v:
-                    if k!=c[:len(k)]: continue
-                    if not d is None:
-                        t=getattr(f, '__wrapped__', f)
-                        c1='digit' in signature(t).parameters
-                        if not c1: continue
-                    if k==c: 
-                        m+=[f]
-                    elif k==c[:len(k)]: 
-                        p+=[f]
+        wkeys=getWidgetKeys()
+        skeys=getTypeKeys(keys)
+        dkeys=keys.get('default', {})
+        if wkeys: l.append(wkeys)
+        if dkeys: l.append(dkeys)
+        if skeys: l.append(skeys)
+        for v in l: i.update(v)
+        for v, f in i.items():
+            for c in v:
+                if k!=c[:len(k)]: continue
+                if not d is None:
+                    t=getattr(f, '__wrapped__', f)
+                    c1='digit' in signature(t).parameters
+                    if not c1: continue
+                if k==c: 
+                    m+=[f]
+                elif k==c[:len(k)]: 
+                    p+=[f]
         return m, p
 
     def runMatches(
@@ -399,16 +480,22 @@ class EarMan(QtCore.QObject):
                 self.clearKeys()
             if len(matches)==1:
                 m=matches[0]
-                self.on_executeMatch()
+                self.runBeforeExecute()
                 f=getattr(m, '__wrapped__', m)
                 c1='digit' in signature(f).parameters
                 if digit is not None and c1: 
                     m(digit=digit)
                 else:
                     m()
+                self.runAfterExecute()
 
-    def on_executeMatch(self): 
+    def runAfterExecute(self): 
+        self.matchIsExecuted.emit()
 
+    def runBeforeExecute(self): 
+
+        self.clearKeys()
+        self.matchIsToBeExecuted.emit()
         d=getattr(
                 self.obj, 
                 'delisten_on_exec', 
@@ -416,7 +503,7 @@ class EarMan(QtCore.QObject):
         w=getattr(
                 self.obj,
                 'mode_on_exit',
-                self.default_mode)
+                self.mode_on_exit)
         if d: 
             self.keysChanged.emit('')
             self.app.moder.modeWanted.emit(w)

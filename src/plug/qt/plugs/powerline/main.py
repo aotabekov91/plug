@@ -13,7 +13,9 @@ class Powerline(Plug):
 
         super().setup()
         self.app.earman.keysChanged.connect(
-                self.on_keysChanged)
+                self.setKeys)
+        self.app.moder.typeChanged.connect(
+                self.setType)
         self.app.moder.modeChanged.connect(
                 self.updateMode)
         self.bar=self.app.window.bar
@@ -38,45 +40,49 @@ class Powerline(Plug):
                 s=getattr(self.mode, f, None)
                 if s:
                     s=getattr(s, kind)
-                    s(getattr(self, f'on_{f}'))
+                    s(getattr(self, 'setDetail'))
         if self.view:
             for f in ['indexChanged',]:
                 s=getattr(self.view, f, None)
                 if s:
                     s=getattr(s, kind)
-                    s(getattr(self, f'on_{f}'))
+                    s(getattr(self, 'setIndex'))
 
     def setUI(self):
 
         self.ui=PowerlineWidget()
-        self.bar.clayout.insertWidget(
-                0, self.ui)
+        self.bar.clayout.insertWidget(0, self.ui)
         self.bar.show()
 
     def setMode(self, mode):
 
         name=None
-        if mode: 
-            name=mode.name.title()
+        if mode: name=mode.name.title()
         self.ui.setText('mode', name) 
 
     def setView(self, curr): 
 
         uid=None
         if curr: 
-            uid=curr.model().id()
+            m=curr.model()
+            if m: uid=curr.model().id()
         self.ui.setText('model', uid)
 
-    def on_detailChanged(self, name):
+    def setDetail(self, name):
 
-        if name: 
-            name=name.title()
+        if name: name=name.title()
         self.ui.setText('detail', name) 
 
-    def on_keysChanged(self, keys):
+    def setKeys(self, keys):
         self.ui.setText('keys', keys)
 
-    def on_indexChanged(self, idx): 
+    def setType(self, view): 
+
+        m=view.model()
+        if m: m=f'[{m.kind.title()}]'
+        self.ui.setText('submode', m)
+
+    def setIndex(self, idx): 
 
         idx=f'{idx}/{self.view.count()}'
-        self.ui.setText('page', idx)
+        self.ui.setText('index', idx)

@@ -5,6 +5,7 @@ class Command(Plug):
     client=None
     name='command'
     listen_leader='<c-,>'
+    delisten_on_exec=True
 
     def setup(self):
 

@@ -2,7 +2,7 @@ import sys
 from gizmo.ui import Display
 from plug.utils import setKeys
 from PyQt5 import QtCore, QtWidgets
-from gizmo.widget import CommandStack 
+from gizmo.widget import StackedWidget
 from plug.qt.utils.buffer import Buffer
 
 from .stack_window import StackWindow
@@ -49,18 +49,10 @@ class UIMan(QtCore.QObject):
 
     def setUI(self, obj, ui=None): 
 
-        ui = ui or CommandStack()
-        ui.hide()
+        if ui is None:
+            ui = StackedWidget()
         obj.ui, ui.mode=ui, obj
         ui.setObjectName(obj.name.title())
-        # if hasattr(ui, 'hideWanted'):
-            # ui.hideWanted.connect(obj.deactivate)
-        # if hasattr(ui, 'keysChanged'):
-            # ui.keysChanged.connect(obj.keysChanged)
-        # if hasattr(ui, 'modeWanted'):
-            # ui.modeWanted.connect(obj.modeWanted)
-        # if hasattr(ui, 'delistenWanted'):
-            # ui.delistenWanted.connect(obj.delistenWanted)
         if hasattr(ui, 'focusGained'):
             f=lambda **kwargs: obj.focusGained.emit(obj) 
             ui.focusGained.connect(f)
@@ -68,6 +60,7 @@ class UIMan(QtCore.QObject):
             f=lambda **kwargs: obj.focusLost.emit(obj) 
             ui.focusLost.connect(f)
         self.locate(obj)
+        ui.hide()
 
     def setUIKeys(self, obj, ui=None):
 
@@ -100,51 +93,60 @@ class UIMan(QtCore.QObject):
     def locate(self, obj):
 
         ui=getattr(obj, 'ui', None)
-        pos=getattr(obj, 'position', None)
-        if ui and pos:
-            w=self.app.window
-            pos=pos.split('_')
-            if len(pos)==1:
-                if pos[0]=='window':
-                    w.stack.addWidget(ui, obj.name) 
-                elif pos[0]=='overlay':
-                    ui.setParent(w.overlay)
-            else:
-                if pos[0]=='dock':
-                    ds=['up', 'down', 'left', 'right']
-                    if pos[1] in ds:
-                        w.docks.setTab(ui, pos[1])
+        p=getattr(obj, 'position', '')
+        c=p is not None
+        if not (c and p): return
+        p=p.split('_')
+        w=self.app.window
+        if len(p)==1:
+            if p[0]=='window':
+                w.stack.addWidget(
+                        ui, obj.name) 
+            elif p[0]=='overlay':
+                ui.setParent(
+                        w.overlay)
+        else:
+            if p[0]=='dock':
+                ds=['up', 'down', 'left', 'right']
+                if p[1] in ds: 
+                    w.docks.setTab(ui, p[1])
 
     def delocate(self, obj):
 
-        pos=obj.position
+        p=obj.position
         ui=getattr(obj, 'ui', None)
-        if pos=='window':
+        if p=='window':
             self.app.window.remove(ui)
-        elif pos=='dock':
+        elif p=='dock':
             self.app.window.docks.delTab(ui)
 
     def relocate(self, obj, position):
 
         obj.position=position
         self.delocateUI()
-        self.locate()
+        self.locate(obj)
 
-    def activate(self, obj):
+    def activate(self, obj, **kwargs):
 
         ui=getattr(obj, 'ui', None)
         w=getattr(obj, 'window', None)
-        if w:
+        if w is not None:
             w.show()
             self.timer.start(self.launch_wait)
             sys.exit(obj.qapp.exec_())
-        elif ui:
-            if hasattr(ui, 'dock'):
-                ui.dock.activate(ui)
-            elif obj.position=='overlay':
-                ui.show()
-            elif obj.position=='window':
-                self.app.window.show(ui)
+        elif ui is not None:
+            p=getattr(obj, 'position', None)
+            if p=='overlay':
+                ui.show(**kwargs)
+            elif p=='window':
+                self.app.window.show(
+                        ui, **kwargs)
+            elif p=='display':
+                self.app.display.setupView(
+                        ui, **kwargs)
+            elif hasattr(ui, 'dock'):
+                ui.dock.activate(
+                        ui, **kwargs)
 
     def deactivate(self, obj):
 

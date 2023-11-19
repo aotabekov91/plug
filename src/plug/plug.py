@@ -28,9 +28,6 @@ class Plug:
         if self.name is None: 
             self.name=self.__class__.__name__
 
-    def addRender(self, render):
-        self.app.renders+=[render]
-
     def setup(self):
 
         self.setName()
@@ -41,7 +38,7 @@ class Plug:
         self.setActions()
         if self.main_app:
             self.app=self
-            self.renders=[]
+            self.handlers=[]
             self.setModer()
 
     def updateArgs(self):
@@ -115,8 +112,7 @@ class Plug:
 
     def open(self, source=None, **kwargs):
 
-        print(source, self.app.renders)
-        for r in self.app.renders:
+        for r in self.app.handlers:
             if not r.isCompatible(source):
                 continue
             return r.open(source, **kwargs)
@@ -126,6 +122,7 @@ class Plug:
         ob=obj or self
         if type(prop)!=list: prop=[prop]
         for p in prop:
-            if not getattr(ob, p, False):
-                return False
+            c=getattr(ob, p, None)
+            if c is None: return False
+            if c is False: return False
         return True

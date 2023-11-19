@@ -23,6 +23,7 @@ class Moder:
         self.plugs=plugs
         self.current=None
         self.config=config
+        self.m_type=None
         self.actions=actions
         self.default=default
         super().__init__(**kwargs)
@@ -99,21 +100,27 @@ class Moder:
 
     def add(self, plug):
 
-        name=plug.name.lower()
-        self.plugs[name]=plug
+        n=plug.name.lower()
+        self.plugs[n]=plug
         self.save(plug, plug.actions)
 
-    def get(self, m):
+    def type(self):
+        return self.m_type
+
+    def setType(self, pype):
+        self.m_type=pype
+
+    def getMode(self, m):
 
         m=m or self.default
         if type(m)==str:
             m=self.plugs.get(m.lower())
         return m
 
-    def set(self, mode=None):
+    def setMode(self, mode=None):
 
         c=self.current
-        m=self.get(mode)
+        m=self.getMode(mode)
         if m and c!=m:
             if c: c.delisten()
             self.setState(m)

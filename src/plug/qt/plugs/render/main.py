@@ -1,24 +1,21 @@
+import re
 from plug.qt import Plug
 
-class Viewer(Plug):
+class Render(Plug):
 
+    pattern=None
     view_class=None
     model_class=None
-
-    def isCompatible(self, s):
-        return self.model_class.isCompatible(s)
 
     def setup(self):
 
         super().setup()
-        self.app.addRender(self)
+        self.app.handlers.append(self)
 
-    def open(self, source=None, **kwargs):
+    def open(self, source, **kwargs):
 
-        model=self.getModel(
-                source, **kwargs)
-        view=self.getView(
-                model, **kwargs)
+        model=self.getModel(source, **kwargs)
+        view=self.getView(model, **kwargs)
         self.setView(view, **kwargs)
 
     def getModel(self, source, **kwargs):
@@ -27,7 +24,10 @@ class Viewer(Plug):
         c=[not m, source, self.model_class]
         if all(c):
             m=self.model_class(
-                    source=source, **kwargs)
+                    render=self,
+                    source=source, 
+                    **kwargs
+                    )
             self.app.buffer.setModel(source, m)
         return m
 
@@ -35,12 +35,13 @@ class Viewer(Plug):
 
         config=self.getConfig()
         v=self.app.buffer.getView(model)
-        if not self.unique or not v:
+        if not v or not self.unique:
             v=self.view_class(
-                    app=self.app, 
+                    render=self,
                     config=config, 
                     **kwargs)
             v.setModel(model)
+            self.app.uiman.setUI(self, v)
             self.app.buffer.setView(model, v)
         return v
 
@@ -59,7 +60,12 @@ class Viewer(Plug):
         return s
 
     def setView(self, view, **kwargs):
+        self.app.uiman.activate(self, **kwargs)
 
-        if self.position=='display':
-            self.app.display.setupView(
-                    view, **kwargs)
+    def isCompatible(self, source):
+
+        if source and self.pattern:
+            return re.match(
+                    self.pattern, 
+                    source, 
+                    re.I)

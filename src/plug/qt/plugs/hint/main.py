@@ -65,7 +65,6 @@ class Hint(Plug):
 
         node=self.labels.get(digit, None)
         if node:
-            print(node.widget)
             self.app.display.focusView(
                     node.widget)
         self.delistenWanted.emit()
