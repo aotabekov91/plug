@@ -6,7 +6,6 @@ from .widget import PowerlineWidget
 class Powerline(Plug):
 
     view=None
-    mode=None
     leader_keys={'command': 'P'}
 
     def setup(self):
@@ -14,33 +13,32 @@ class Powerline(Plug):
         super().setup()
         self.app.earman.keysChanged.connect(
                 self.setKeys)
-        self.app.moder.typeChanged.connect(
-                self.setType)
         self.app.moder.modeChanged.connect(
-                self.updateMode)
+                self.setMode)
+        self.app.moder.typeChanged.connect(
+                self.updateType)
+        self.app.moder.viewChanged.connect(
+                self.updateView)
         self.bar=self.app.window.bar
         self.setUI()
 
-    def updateMode(self, m):
+    def updateType(self, t):
 
-        if m:
-            self.reconnect()
-            self.mode=m
-            self.setMode(m)
-            self.view=None
-            if self.checkProp('hasView', m):
-                self.view=m.getView()
-                self.setView(self.view)
-            self.reconnect('connect')
+        if t:
+            self.setType(t)
+            model=None
+            if t.view: model=t.view.model()
+            self.setModel(model)
+
+    def updateView(self, view):
+
+        self.reconnect()
+        self.view=view
+        self.setView(view)
+        self.reconnect('connect')
 
     def reconnect(self, kind='disconnect'):
 
-        if self.mode:
-            for f in ['detailChanged']:
-                s=getattr(self.mode, f, None)
-                if s:
-                    s=getattr(s, kind)
-                    s(getattr(self, 'setDetail'))
         if self.view:
             for f in ['indexChanged',]:
                 s=getattr(self.view, f, None)
@@ -54,35 +52,41 @@ class Powerline(Plug):
         self.bar.clayout.insertWidget(0, self.ui)
         self.bar.show()
 
-    def setMode(self, mode):
+    def setMode(self, mode=None):
 
-        name=None
-        if mode: name=mode.name.title()
-        self.ui.setText('mode', name) 
+        if mode: 
+            mode=mode.name.title()
+        self.ui.setText('mode', mode) 
 
-    def setView(self, curr): 
+    def setModel(self, model=None): 
 
-        uid=None
-        if curr: 
-            m=curr.model()
-            if m: uid=curr.model().id()
-        self.ui.setText('model', uid)
+        if model: 
+            model=model.id()
+        self.ui.setText('model', model)
 
     def setDetail(self, name):
 
-        if name: name=name.title()
+        if name: 
+            name=name.title()
         self.ui.setText('detail', name) 
 
-    def setKeys(self, keys):
+    def setKeys(self, keys=None):
         self.ui.setText('keys', keys)
 
-    def setType(self, view): 
+    def setType(self, pype=None):
 
-        m=view.model()
-        if m: m=f'[{m.kind.title()}]'
-        self.ui.setText('submode', m)
+        if pype: 
+            pype=pype.type().title()
+        self.ui.setText('type', pype)
 
-    def setIndex(self, idx): 
+    def setView(self, view=None): 
 
-        idx=f'{idx}/{self.view.count()}'
+        if view:
+            view=view.__class__.__name__
+        self.ui.setText('view', view)
+
+    def setIndex(self, idx=None): 
+
+        if idx and hasattr(self.view, 'count'):
+            idx=f'{idx}/{self.view.count()}'
         self.ui.setText('index', idx)
