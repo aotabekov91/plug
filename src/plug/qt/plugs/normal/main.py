@@ -21,9 +21,10 @@ class Normal(Plug):
                 self.setDisplayView)
 
     def getView(self):
-        return self.app.moder.type()
+        return self.app.moder.view()
 
     def cleanUp(self): 
+
         v=self.getView()
         if v: v.cleanUp()
 
@@ -32,9 +33,8 @@ class Normal(Plug):
 
         c=self.display.currentView()
         if c: 
-            c.setFocus()
             m=self.app.moder
-            m.typeWanted.emit(c)
+            m.typeWanted.emit(c.render())
 
     @tag('tc')
     def toggleCursor(self):
@@ -163,13 +163,13 @@ class Normal(Plug):
         if v and v.check('canMove'): 
             v.move('screenRight', digit)
 
-    @tag('c')
+    @tag('<c-w>c')
     def toggleContinuousMode(self): 
 
         v=self.getView()
         if v: v.toggleContinuousMode()
 
-    @tag('d')
+    @tag('<c-w>d')
     def viewCloseCurrent(self): 
         self.display.closeView()
 

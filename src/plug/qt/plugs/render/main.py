@@ -3,9 +3,20 @@ from plug.qt import Plug
 
 class Render(Plug):
 
+    kind=None
+    view=None
     pattern=None
     view_class=None
     model_class=None
+
+    def type(self):
+
+        if self.kind:
+            return self.kind
+        elif self.view:
+            return self.view.model().kind
+        else:
+            return self.__class__.__name__
 
     def setup(self):
 
@@ -59,8 +70,21 @@ class Render(Plug):
                 s[k]=v
         return s
 
+    def setupView(self, view):
+
+        self.app.uiman.setUI(self, view)
+        self.view=view
+
     def setView(self, view, **kwargs):
+
+        self.focusView(view)
         self.app.uiman.activate(self, **kwargs)
+
+    def focusView(self, view):
+
+        self.view=view
+        m=self.app.moder
+        m.viewWanted.emit(view)
 
     def isCompatible(self, source):
 

@@ -4,16 +4,12 @@ class PowerlineWidget(QtWidgets.QWidget):
 
     def __init__(self):
 
-        super().__init__(objectName='Powerline')
+        super().__init__(
+                objectName='Powerline')
         self.setUI()
 
     def setUI(self):
 
-        layout=QtWidgets.QHBoxLayout()
-        layout.setSpacing(0)
-        layout.setContentsMargins(0,0,0,0)
-
-        self.setLayout(layout)
         self.mode=QtWidgets.QLabel(
                 objectName='Mode')
         self.info=QtWidgets.QLabel(
@@ -22,17 +18,18 @@ class PowerlineWidget(QtWidgets.QWidget):
                 objectName='Detail')
         self.keys=QtWidgets.QLabel(
                 objectName='Keys')
-        self.submode=QtWidgets.QLabel(
-                objectName='Submode')
+        self.type=QtWidgets.QLabel(
+                objectName='Type')
         self.model=QtWidgets.QLabel(
                 objectName='Model')
+        self.view=QtWidgets.QLabel(
+                objectName='View')
         self.index=QtWidgets.QLabel(
                 objectName='Index')
-
         self.mode.setAlignment(
                 QtCore.Qt.AlignCenter|
                 QtCore.Qt.AlignVCenter)
-        self.submode.setAlignment(
+        self.type.setAlignment(
                 QtCore.Qt.AlignCenter|
                 QtCore.Qt.AlignVCenter)
         self.info.setAlignment(
@@ -41,34 +38,37 @@ class PowerlineWidget(QtWidgets.QWidget):
         self.detail.setAlignment(
                 QtCore.Qt.AlignCenter|
                 QtCore.Qt.AlignVCenter)
+        self.view.setAlignment(
+                QtCore.Qt.AlignCenter|
+                QtCore.Qt.AlignVCenter)
         self.keys.setAlignment(
                 QtCore.Qt.AlignCenter|
                 QtCore.Qt.AlignVCenter)
         self.index.setAlignment(
                 QtCore.Qt.AlignCenter|
                 QtCore.Qt.AlignVCenter)
-
-        layout.addWidget(self.mode)
-        layout.addWidget(self.submode)
-        layout.addStretch(1)
-        layout.addWidget(self.info)
-        layout.addStretch(1)
-        layout.addWidget(self.detail)
-        layout.addStretch(100)
-        layout.addWidget(
-                self.keys, QtCore.Qt.AlignRight)
-        # layout.addStretch(1)
-        layout.addWidget(
-                self.model, QtCore.Qt.AlignRight)
-        # layout.addStretch(1)
-        layout.addWidget(self.index)
-        # layout.addStretch(1)
-
+        l=QtWidgets.QHBoxLayout()
+        l.setSpacing(0)
+        l.setContentsMargins(0,0,0,0)
+        l.addWidget(self.mode)
+        l.addWidget(self.type)
+        l.addStretch(1)
+        l.addWidget(self.info)
+        l.addStretch(1)
+        l.addWidget(self.detail)
+        l.addStretch(100)
+        ar=QtCore.Qt.AlignRight
+        l.addWidget(self.keys, ar)
+        l.addWidget(self.model, ar)
+        l.addWidget(self.view, ar)
+        l.addWidget(self.index)
+        self.setLayout(l)
         self.mode.hide()
         self.info.hide()
         self.detail.hide()
+        self.view.hide()
         self.keys.hide()
-        self.submode.hide()
+        self.type.hide()
         self.model.hide()
         self.index.hide()
 

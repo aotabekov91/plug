@@ -8,6 +8,8 @@ class Moder(utils.Moder, QObject):
     modeWanted=pyqtSignal(object)
     typeWanted=pyqtSignal(object)
     typeChanged=pyqtSignal(object)
+    viewWanted=pyqtSignal(object)
+    viewChanged=pyqtSignal(object)
     modeChanged=pyqtSignal(object)
     plugsLoaded=pyqtSignal(object)
     modeIsToBeSet=pyqtSignal(object)
@@ -20,10 +22,19 @@ class Moder(utils.Moder, QObject):
                 self.setMode)
         self.typeWanted.connect(
                 self.setType)
+        self.viewWanted.connect(
+                self.setView)
         self.delistenWanted.connect(
                 self.setMode)
         self.app.uiman.appLaunched.connect(
                 self.launch)
+
+    def setView(self, v):
+
+        super().setView(v)
+        if v: 
+            v.setFocus()
+            self.viewChanged.emit(v)
 
     def setType(self, t):
 

@@ -1,5 +1,4 @@
-import os
-import sys
+import os, sys
 import importlib
 from collections.abc import Iterable
 from plug.utils.miscel import dotdict
@@ -20,10 +19,11 @@ class Moder:
         self.app=app
         self.rtp=rtp
         self.prev=None
+        self.m_type=None
+        self.m_view=None
         self.plugs=plugs
         self.current=None
         self.config=config
-        self.m_type=None
         self.actions=actions
         self.default=default
         super().__init__(**kwargs)
@@ -104,12 +104,6 @@ class Moder:
         self.plugs[n]=plug
         self.save(plug, plug.actions)
 
-    def type(self):
-        return self.m_type
-
-    def setType(self, pype):
-        self.m_type=pype
-
     def getMode(self, m):
 
         m=m or self.default
@@ -137,3 +131,17 @@ class Moder:
 
     def on_plugsLoaded(self, plugs): 
         pass
+
+    def type(self):
+        return self.m_type
+
+    def setType(self, pype):
+
+        self.m_type=pype
+        self.setView(pype.view)
+
+    def view(self):
+        return self.m_view
+
+    def setView(self, view):
+        self.m_view=view

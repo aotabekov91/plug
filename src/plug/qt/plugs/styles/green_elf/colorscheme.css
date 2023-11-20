@@ -86,7 +86,12 @@ QTreeView::item:selected {
 	background-color: green;
 }
 
-#Powerline QLabel#Submode{
+#Powerline QLabel#Type{
+	color: green;
+	background-color: transparent;
+}
+
+#Powerline QLabel#View{
 	color: green;
 	background-color: transparent;
 }

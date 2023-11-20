@@ -100,14 +100,6 @@ class EarMan(QtCore.QObject):
                 return key, command
             return getAncestorActions(p)
 
-        def getMode(mode):
-
-            t=mode.split('|')
-            if len(t)==1:
-                return t[0], ['default']
-            elif len(t)==2:
-                return t[0], t[1].split(':')
-
         def setWidgetActions(w, upcursive=False):
 
             key, command={}, {}
@@ -125,7 +117,7 @@ class EarMan(QtCore.QObject):
                     command[a.name]=a
                 else:
                     for m in a.modes:
-                        t=getMode(m)
+                        t=self.parseMode(m)
                         if not t: continue
                         tt, ts=t[0], t[1]
                         plug=self.names[tt]
@@ -387,16 +379,20 @@ class EarMan(QtCore.QObject):
                         l.update(getWKeys(w))
             return l
 
-        def getTypeKeys(keys):
+        def getTypeKeys(k):
 
             l={}
-            s=self.app.moder.type()
-            sclass=s.__class__
-            for c in sclass.__mro__[::-1]:
-                n=c.__name__
-                if n in keys:
-                    l.update(keys.get(n, {}))
-            print(sclass)
+            t=self.app.moder.type()
+            v=self.app.moder.view()
+            for s in [v, t]:
+                sclass=s.__class__
+                for c in sclass.__mro__[::-1]:
+                    n=c.__name__
+                    if n in k:
+                        l.update(k.get(n))
+            r=v.render()
+            if r and r.name in k:
+                l.update(k.get(r.name))
             return l
 
         m, p, l, i = [], [], [], {}
@@ -510,3 +506,11 @@ class EarMan(QtCore.QObject):
 
     def isListening(self, obj):
         return self.obj==obj
+
+    def parseMode(self, mode):
+
+        t=mode.split('|')
+        if len(t)==1:
+            return t[0], ['default']
+        elif len(t)==2:
+            return t[0], t[1].split(':')
