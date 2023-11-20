@@ -14,9 +14,9 @@ class Render(Plug):
         if self.kind:
             return self.kind
         elif self.view:
-            return self.view.model().kind
-        else:
-            return self.__class__.__name__
+            k=self.view.model().kind
+            if k: return k
+        return self.__class__.__name__
 
     def setup(self):
 

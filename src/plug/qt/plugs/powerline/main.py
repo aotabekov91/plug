@@ -83,6 +83,8 @@ class Powerline(Plug):
 
         if view:
             view=view.__class__.__name__
+            if hasattr(view, 'name'):
+                view=view.name()
         self.ui.setText('view', view)
 
     def setIndex(self, idx=None): 
