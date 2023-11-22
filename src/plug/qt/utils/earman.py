@@ -532,7 +532,7 @@ class EarMan(QtCore.QObject):
 
         m, p = [], []
         for c, (o, d) in sdd.items():
-            print(c, k)
+            # print(c, k)
             if k!=c[:len(k)]: continue
             # if not d is None:
             #     t=getattr(d, '__wrapped__', d)
