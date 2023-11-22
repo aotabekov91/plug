@@ -324,11 +324,11 @@ setSystemShortcut	src/plug/plug.py	/^    def setSystemShortcut(self):$/;"	m	clas
 setText	src/plug/qt/modes/input/main.py	/^    def setText(self):$/;"	m	class:Input
 setText	src/plug/qt/modes/input/widget.py	/^    def setText(self, text):$/;"	m	class:InputWidget
 setText	src/plug/qt/plugs/powerline/widget.py	/^    def setText(self, kind, text):$/;"	m	class:PowerlineWidget
-setUI	src/plug/qt/modes/exec/main.py	/^    def setUI(self):$/;"	m	class:Exec
-setUI	src/plug/qt/modes/search/main.py	/^    def setUI(self):$/;"	m	class:Search
-setUI	src/plug/qt/obj.py	/^    def setUI(self): $/;"	m	class:Plug
-setUI	src/plug/qt/plugs/powerline/main.py	/^    def setUI(self):$/;"	m	class:Powerline
-setUI	src/plug/qt/plugs/trees/base.py	/^    def setUI(self):$/;"	m	class:TreePlug
+setupUI	src/plug/qt/modes/exec/main.py	/^    def setupUI(self):$/;"	m	class:Exec
+setupUI	src/plug/qt/modes/search/main.py	/^    def setupUI(self):$/;"	m	class:Search
+setupUI	src/plug/qt/obj.py	/^    def setupUI(self): $/;"	m	class:Plug
+setupUI	src/plug/qt/plugs/powerline/main.py	/^    def setupUI(self):$/;"	m	class:Powerline
+setupUI	src/plug/qt/plugs/trees/base.py	/^    def setupUI(self):$/;"	m	class:TreePlug
 setup	src/plug/plug.py	/^    def setup(self):$/;"	m	class:Plug
 setup	src/plug/qt/modes/base.py	/^    def setup(self):$/;"	m	class:Mode
 setup	src/plug/qt/modes/input/widget.py	/^    def setup(self):$/;"	m	class:InputWidget

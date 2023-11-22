@@ -32,7 +32,7 @@ class Visual(Plug):
     def listen(self):
 
         super().listen()
-        self.app.window.main.setFocus()
+        self.app.ui.main.setFocus()
 
     def getView(self):
         return self.app.display.currentView()

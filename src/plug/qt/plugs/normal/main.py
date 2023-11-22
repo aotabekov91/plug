@@ -18,23 +18,31 @@ class Normal(Plug):
         self.escapePressed.connect(
                 self.cleanUp)
         self.app.uiman.appLaunched.connect(
-                self.setDisplayView)
+                self.setDefaultType)
 
-    def getView(self):
+    def setDefaultType(self):
+
+        v=self.defaultView()
+        if v:
+            self.app.moder.setType(v.render())
+
+    def defaultView(self):
+        return self.display.currentView()
+
+    def view(self):
         return self.app.moder.view()
 
     def cleanUp(self): 
 
-        v=self.getView()
+        v=self.view()
         if v: v.cleanUp()
 
-    @tag('<c-d>', modes=['any'])
+    @tag('<c-d>')
     def setDisplayView(self):
 
-        c=self.display.currentView()
-        if c: 
-            m=self.app.moder
-            m.typeWanted.emit(c.render())
+        v=self.defaultView()
+        self.app.moder.setType(v.render())
+
 
     @tag('tc')
     def toggleCursor(self):
@@ -45,7 +53,7 @@ class Normal(Plug):
     @tag('tb')
     def toggleStatusbar(self):
 
-        bar=self.app.window.bar
+        bar=self.app.ui.bar
         if bar.isVisible():
             bar.hide()
         else:
@@ -54,119 +62,119 @@ class Normal(Plug):
     @tag('gg')
     def viewGotoFirst(self):
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canGo'):
             v.go('first')
             
     @tag('G')
     def viewGoto(self, digit=None):
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canGo'): 
             v.go(digit or 'last')
 
     @tag('n')
     def viewNextItem(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canGo'): 
             v.go('next', digit=digit)
     
     @tag('p')
     def viewPrevItem(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canGo'): 
             v.go('prev', digit=digit)
 
     @tag('k')
     def viewUp(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canMove'): 
             v.move('up', digit)
 
     @tag('j')
     def viewDown(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canMove'):
             v.move('down', digit)
 
     @tag('h')
     def viewLeft(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canMove'): 
             v.move('left', digit)
 
     @tag('l')
     def viewRight(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canMove'): 
             v.move('right', digit)
 
     @tag('zi')
     def viewZoomIn(self, digit=1): 
         
-        v=self.getView()
+        v=self.view()
         if v and v.check('canScale'): 
             v.scale('zoomIn', digit=digit)
 
     @tag('zo')
     def viewZoomOut(self, digit=1): 
         
-        v=self.getView()
+        v=self.view()
         if v and v.check('canScale'): 
             v.scale('zoomOut', digit=digit)
 
     @tag('w')
     def fitToWidth(self): 
 
-        v=self.getView()
+        v=self.view()
         if v and hasattr(v, 'canScale'): 
             v.scale('fitToWidth')
 
     @tag('s')
     def fitToHeight(self): 
 
-        v=self.getView()
+        v=self.view()
         if v and hasattr(v, 'canScale'): 
             v.scale('fitToHeight')
 
     @tag('K')
     def viewScreenUp(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canMove'): 
             v.move('screenUp', digit)
         
     @tag('H')
     def viewScreenLeft(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canMove'): 
             v.move('screenLeft', digit)
 
     @tag('J')
     def viewScreenDown(self, digit=1): 
         
-        v=self.getView()
+        v=self.view()
         if v and v.check('canMove'): 
             v.move('screenDown', digit)
         
     @tag('L')
     def viewScreenRight(self, digit=1): 
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canMove'): 
             v.move('screenRight', digit)
 
     @tag('<c-w>c')
     def toggleContinuousMode(self): 
 
-        v=self.getView()
+        v=self.view()
         if v: v.toggleContinuousMode()
 
     @tag('<c-w>d')
@@ -176,13 +184,13 @@ class Normal(Plug):
     @tag('<c-w>v')
     def displaySplitVertical(self): 
 
-        if self.getView():
+        if self.view():
             self.display.split(True)
 
     @tag('<c-w>s') 
     def displaySplitHorizontal(self):
 
-        if self.getView():
+        if self.view():
             self.display.split(False)
 
     @tag('<c-w>K')
@@ -239,51 +247,51 @@ class Normal(Plug):
 
     @tag('<c-d>f', modes=['command'])
     def dockToggleFullscreen(self): 
-        self.app.window.docks.toggleFullscreen()
+        self.app.ui.docks.toggleFullscreen()
 
     @tag('<c-d>zi', modes=['command'])
     def dockZoomIn(self, digit=1): 
-        self.app.window.docks.zoomIn(digit)
+        self.app.ui.docks.zoomIn(digit)
         
     @tag('<c-d>zo', modes=['command'])
     def dockZoomOut(self, digit=1): 
-        self.app.window.docks.zoomOut(digit)
+        self.app.ui.docks.zoomOut(digit)
 
     @tag('<c-d>k', modes=['command'])
     def dockUp(self): 
-        self.app.window.docks.goto('up')
+        self.app.ui.docks.goto('up')
 
     @tag('<c-d>j', modes=['command'])
     def dockDown(self): 
-        self.app.window.docks.goto('down')
+        self.app.ui.docks.goto('down')
 
     @tag('<c-d>h', modes=['command'])
     def dockLeft(self): 
-        self.app.window.docks.goto('left')
+        self.app.ui.docks.goto('left')
 
     @tag('<c-d>l', modes=['command'])
     def dockRight(self): 
-        self.app.window.docks.goto('right')
+        self.app.ui.docks.goto('right')
 
     @tag('<c-d>K', modes=['command'])
     def dockMoveUp(self): 
-        self.app.window.docks.move('up')
+        self.app.ui.docks.move('up')
 
     @tag('<c-d>J', modes=['command'])
     def dockMoveDown(self): 
-        self.app.window.docks.move('down')
+        self.app.ui.docks.move('down')
 
     @tag('<c-d>H', modes=['command'])
     def dockMoveLeft(self): 
-        self.app.window.docks.move('left')
+        self.app.ui.docks.move('left')
 
     @tag('<c-d>L', modes=['command'])
     def dockMoveRight(self): 
-        self.app.window.docks.move('right')
+        self.app.ui.docks.move('right')
 
     @tag('<c-d>d', modes=['command'])
     def dockHideAll(self): 
-        self.app.window.docks.hideAll()
+        self.app.ui.docks.hideAll()
 
     @tag('<c-q>', modes=['any'])
     def quit(self):
@@ -300,6 +308,6 @@ class Normal(Plug):
     @tag('yy')
     def yank(self):
 
-        v=self.getView()
+        v=self.view()
         if v and v.check('canYank'):
             v.yank()

@@ -10,11 +10,11 @@ class TreePlug(Plug):
 
         self.follow_index=True
         super().setup()
-        self.setUI()
+        self.setupUI()
 
-    def setUI(self):
+    def setupUI(self):
 
-        self.app.uiman.setUI(self)
+        self.app.uiman.setupUI(self)
         ui=InputTree()
         self.tree=ui.tree
         self.ui.addWidget(

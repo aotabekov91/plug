@@ -4,18 +4,17 @@ from plug.qt import Plug
 class Render(Plug):
 
     kind=None
-    view=None
+    position={}
     pattern=None
     view_class=None
     model_class=None
 
+    def view(self):
+        return self.m_view
+
     def type(self):
 
-        if self.kind:
-            return self.kind
-        elif self.view:
-            k=self.view.model().kind
-            if k: return k
+        if self.kind: return self.kind
         return self.__class__.__name__
 
     def setup(self):
@@ -27,7 +26,7 @@ class Render(Plug):
 
         model=self.getModel(source, **kwargs)
         view=self.getView(model, **kwargs)
-        self.setView(view, **kwargs)
+        self.setCurrentView(view, **kwargs)
 
     def getModel(self, source, **kwargs):
 
@@ -37,8 +36,8 @@ class Render(Plug):
             m=self.model_class(
                     render=self,
                     source=source, 
-                    **kwargs
-                    )
+                    kind=self.kind,
+                    **kwargs)
             self.app.buffer.setModel(source, m)
         return m
 
@@ -50,9 +49,11 @@ class Render(Plug):
             v=self.view_class(
                     render=self,
                     config=config, 
+                    kind=self.kind,
                     **kwargs)
             v.setModel(model)
-            self.app.uiman.setUI(self, v)
+            self.app.uiman.setupUI(
+                    self, v, v.name())
             self.app.buffer.setView(model, v)
         return v
 
@@ -70,21 +71,12 @@ class Render(Plug):
                 s[k]=v
         return s
 
-    def setupView(self, view):
+    def setCurrentView(
+            self, view, **kwargs):
 
-        self.app.uiman.setUI(self, view)
-        self.view=view
-
-    def setView(self, view, **kwargs):
-
-        self.focusView(view)
-        self.app.uiman.activate(self, **kwargs)
-
-    def focusView(self, view):
-
-        self.view=view
-        m=self.app.moder
-        m.viewWanted.emit(view)
+        self.m_view=view
+        self.app.uiman.activate(
+                self, view, **kwargs)
 
     def isCompatible(self, source):
 

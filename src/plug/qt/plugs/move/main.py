@@ -22,7 +22,7 @@ class Move(Plug):
 
         prev=self.app.moder.prev
         # Todo add dock resizing here also
-        # bar=self.app.window.bar
+        # bar=self.app.ui.bar
         display=self.app.display
 
         if prev.name=='normal':

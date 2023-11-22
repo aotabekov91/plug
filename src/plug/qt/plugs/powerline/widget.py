@@ -6,9 +6,9 @@ class PowerlineWidget(QtWidgets.QWidget):
 
         super().__init__(
                 objectName='Powerline')
-        self.setUI()
+        self.setupUI()
 
-    def setUI(self):
+    def setupUI(self):
 
         self.mode=QtWidgets.QLabel(
                 objectName='Mode')
@@ -75,9 +75,9 @@ class PowerlineWidget(QtWidgets.QWidget):
     def setText(self, kind, text):
 
         field=getattr(self, kind, None)
-        if field:
-            field.setText(text)
-            if text:
-                field.show()
-            else:
-                field.hide()
+        if not field: return
+        field.setText(str(text))
+        if text is None:
+            field.hide()
+        else:
+            field.show()

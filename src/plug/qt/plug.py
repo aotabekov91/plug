@@ -1,12 +1,8 @@
 import plug
 from PyQt5 import QtCore 
-from gizmo.utils import tag
 from plug.qt.utils import UIMan, EarMan, Moder
 
 class Plug(plug.Plug, QtCore.QObject):
-
-    position=None
-    activated = False
 
     focusLost=QtCore.pyqtSignal(object)
     focusGained=QtCore.pyqtSignal(object)
@@ -15,14 +11,15 @@ class Plug(plug.Plug, QtCore.QObject):
 
     def setup(self):
 
+        self.activated = False
         if self.main_app: 
-            self.setUIMan()
+            self.setupUIMan()
         super().setup()
         if self.main_app: 
             self.setEarMan()
-        self.app.uiman.setUIKeys(self)
+        self.app.uiman.setupUIKeys(self)
 
-    def setUIMan(self):
+    def setupUIMan(self):
 
         self.uiman=UIMan()
         self.uiman.setApp(self)
@@ -46,15 +43,12 @@ class Plug(plug.Plug, QtCore.QObject):
         self.app.earman.delisten(self)
         self.app.uiman.defocus(self)
 
-    @tag('t', modes=['command'])
     def toggle(self):
 
         if not self.activated:
-            self.activate()
-        else:
-            self.deactivate()
+            return self.activate()
+        return self.deactivate()
 
-    @tag('f', modes=['command'])
     def setFocus(self):
 
         c=self.app.earman.isListening(self)

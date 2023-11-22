@@ -13,10 +13,10 @@ class RunList(Plug):
     def setup(self):
 
         super().setup()
-        self.bar=self.app.window.bar
+        self.bar=self.app.ui.bar
         self.app.moder.plugsLoaded.connect(
                 self.setRunPlug)
-        self.setUI()
+        self.setupUI()
 
     def setArgOptions(
             self, cname, aname, alist):
@@ -25,11 +25,11 @@ class RunList(Plug):
             self.args[cname]={}
         self.args[cname][aname]=alist
 
-    def setUI(self):
+    def setupUI(self):
 
         self.ui=RunListWidget(
                     objectName='RunList',
-                    parent=self.app.window
+                    parent=self.app.ui
                     )
         self.ui.hide()
 

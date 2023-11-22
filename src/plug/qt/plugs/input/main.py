@@ -31,15 +31,15 @@ class Input(Plug):
         self.ear.carriageReturnPressed.connect(
                 self.pasteText)
         self.setFunctors()
-        self.setUI()
+        self.setupUI()
 
-    def setUI(self):
+    def setupUI(self):
 
-        self.app.uiman.setUI(
+        self.app.uiman.setupUI(
                 self, VimEditor())
         self.ui.modeChanged.connect(
                 self.detailChanged)
-        self.app.window.resized.connect(
+        self.app.ui.resized.connect(
                 self.ui.updatePosition)
 
     def setFunctors(

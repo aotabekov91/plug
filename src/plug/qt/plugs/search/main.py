@@ -23,13 +23,13 @@ class Search(Plug):
         self.index=-1
         self.matches=[]
         self.match=None
-        self.setUI()
-        self.bar=app.window.bar
-        self.display=app.window.display
+        self.setupUI()
+        self.bar=app.ui.bar
+        self.display=app.ui.display
 
-    def setUI(self):
+    def setupUI(self):
 
-        self.app.uiman.setUI(self)
+        self.app.uiman.setupUI(self)
         lwid=ListWidget(
             check_fields=['up'],
             item_widget=ItemWidget)

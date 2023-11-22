@@ -129,19 +129,23 @@ class Moder:
     def save(self, plug, actions): 
         self.actions[plug]=actions
 
-    def on_plugsLoaded(self, plugs): 
-        pass
-
     def type(self):
         return self.m_type
 
     def setType(self, pype):
 
+        v=pype.view()
         self.m_type=pype
-        self.setView(pype.view)
+        if v: self.setView(v)
 
     def view(self):
         return self.m_view
 
-    def setView(self, view):
-        self.m_view=view
+    def setView(self, v):
+        self.m_view=v
+
+    def mode(self):
+        return self.current
+
+    def on_plugsLoaded(self, plugs): 
+        pass

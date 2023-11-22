@@ -28,7 +28,7 @@ class Run(Plug):
 
         super().setup()
         self.setParser()
-        self.bar=self.app.window.bar
+        self.bar=self.app.ui.bar
         self.app.earman.plugsLoaded.connect(
                 self.updateKeysSet)
         self.app.moder.plugsLoaded.connect(
@@ -100,7 +100,7 @@ class Run(Plug):
 
     def getEditText(self):
 
-        text=self.app.window.bar.edit.text()
+        text=self.app.ui.bar.edit.text()
         t=re.split('( )', text)
         self.current_data=text, t
         return text, t, t[-1]

@@ -19,22 +19,23 @@ class Powerline(Plug):
                 self.updateType)
         self.app.moder.viewChanged.connect(
                 self.updateView)
-        self.bar=self.app.window.bar
-        self.setUI()
+        self.bar=self.app.ui.bar
+        self.setupUI()
 
     def updateType(self, t):
 
         if t:
+            m=None
+            v=t.view()
             self.setType(t)
-            model=None
-            if t.view: model=t.view.model()
-            self.setModel(model)
+            if v: m=v.model()
+            self.setModel(m)
 
-    def updateView(self, view):
+    def updateView(self, v):
 
         self.reconnect()
-        self.view=view
-        self.setView(view)
+        self.view=v
+        self.setView(v)
         self.reconnect('connect')
 
     def reconnect(self, kind='disconnect'):
@@ -46,7 +47,7 @@ class Powerline(Plug):
                     s=getattr(s, kind)
                     s(getattr(self, 'setIndex'))
 
-    def setUI(self):
+    def setupUI(self):
 
         self.ui=PowerlineWidget()
         self.bar.clayout.insertWidget(0, self.ui)
@@ -82,9 +83,15 @@ class Powerline(Plug):
     def setView(self, view=None): 
 
         if view:
-            view=view.__class__.__name__
+            idx=None
+            if hasattr(view, 'currentIndex'):
+                c=view.currentIndex()
+                if type(c)==int: idx=c
+            self.setIndex(idx)
             if hasattr(view, 'name'):
                 view=view.name()
+            else:
+                view=view.__class__.__name__
         self.ui.setText('view', view)
 
     def setIndex(self, idx=None): 
