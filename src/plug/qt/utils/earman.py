@@ -515,6 +515,15 @@ class EarMan(QtCore.QObject):
         vv=self.app.moder.view()
         dd=(mm.name, vv.name())
 
+        # search and update
+
+        # k = {}
+        # k = (mode, None, None)
+        # k = (mode, view, None)
+        # k = (mode, view, type)
+        # k = (any, None, None)
+
+
         sdd={}
         for i in [vv.name(), 'any', None][::-1]:
             dd=(mm.name, i)
@@ -581,8 +590,7 @@ class EarMan(QtCore.QObject):
             elif n == 'ShiftModifier':
                 shift=True
             else:
-                if shift: 
-                    n=n.upper()
+                if shift: n=n.upper()
                 p+=[n]
         if len(p)==1:
             return p[0]
