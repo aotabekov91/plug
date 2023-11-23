@@ -81,11 +81,17 @@ class UIMan(QtCore.QObject):
         obj.buffer, obj.ui, obj.display=b, w, d
         self.m_widgets+=[obj.ui, obj.display]
 
-    def setupUI(self, obj, ui, name='ui', **kwargs): 
+    def setupUI(
+            self, 
+            obj=None, 
+            ui=None, 
+            name='ui', 
+            **kwargs): 
 
         ui.hide()
         self.m_widgets+=[ui]
         self.locate(obj, ui, name)
+        if not obj: return
         ui.setObjectName(obj.name.title())
         if hasattr(ui, 'focusGained'):
             f=lambda **kwargs: obj.focusGained.emit(obj) 
@@ -96,7 +102,13 @@ class UIMan(QtCore.QObject):
 
     def locate(self, obj, ui, name):
 
-        pos=getattr(obj, 'position', {})
+        pos={}
+        if ui:
+            p=getattr(ui, 'position', {})
+            pos.update(p)
+        if obj:
+            p=getattr(obj, 'position', {})
+            pos.update(p)
         loc=pos.get(name, None)
         if not loc: return
         ui.pos=loc
@@ -130,10 +142,14 @@ class UIMan(QtCore.QObject):
         self.delocateUI()
         self.locate(obj)
 
-    def activate(self, obj, ui=None, **kwargs):
+    def activate(
+            self, 
+            obj=None, 
+            ui=None, 
+            **kwargs):
 
         ui = ui or getattr(obj, 'ui', None)
-        if obj.main_app:
+        if obj and obj.isMainApp:
             ui.show()
             self.timer.start(self.launch_wait)
             sys.exit(obj.qapp.exec_())
@@ -155,7 +171,7 @@ class UIMan(QtCore.QObject):
     def deactivate(self, obj, ui=None):
 
         ui = ui or getattr(obj, 'ui', None)
-        if obj.main_app: 
+        if obj.isMainApp: 
             self.appSoonQuits.emit()
             sys.exit()
         elif ui:

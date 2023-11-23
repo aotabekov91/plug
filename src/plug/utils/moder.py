@@ -23,18 +23,16 @@ class Moder:
         self.m_view=None
         self.plugs=plugs
         self.current=None
-        self.config=config
+        self.m_config=config
         self.actions=actions
         self.default=default
         super().__init__(**kwargs)
-        self.setup()
-
-    def setup(self):
         self.setSettings()
+        self.setup()
 
     def setSettings(self):
 
-        s=self.config.get('Settings', {})
+        s=self.m_config.get('Settings', {})
         for n, v in s.items():
             setattr(self, n, v)
 
@@ -148,4 +146,7 @@ class Moder:
         return self.current
 
     def on_plugsLoaded(self, plugs): 
+        pass
+
+    def setup(self):
         pass

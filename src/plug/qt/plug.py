@@ -1,6 +1,6 @@
 import plug
 from PyQt5 import QtCore 
-from plug.qt.utils import UIMan, EarMan, Moder
+from plug.qt import utils
 
 class Plug(plug.Plug, QtCore.QObject):
 
@@ -12,23 +12,23 @@ class Plug(plug.Plug, QtCore.QObject):
     def setup(self):
 
         self.activated = False
-        if self.main_app: 
+        if self.isMainApp: 
             self.setupUIMan()
         super().setup()
-        if self.main_app: 
+        if self.isMainApp: 
             self.setEarMan()
         self.app.uiman.setupUIKeys(self)
 
     def setupUIMan(self):
 
-        self.uiman=UIMan()
+        self.uiman=utils.UIMan()
         self.uiman.setApp(self)
         self.uiman.setAppUI(self)
 
-    def setModer(self, moder=Moder):
+    def setModer(self, moder=utils.Moder):
         super().setModer(moder)
 
-    def setEarMan(self, earman=EarMan):
+    def setEarMan(self, earman=utils.EarMan):
         self.earman=earman(self)
 
     def listen(self): 

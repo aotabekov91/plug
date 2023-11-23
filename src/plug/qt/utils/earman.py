@@ -136,22 +136,22 @@ class EarMan(QtCore.QObject):
                         k=self.parseKey(m.key, pref)
                         for i in k: d[j][i]=(s, m)
 
-        for v in self.app.handlers:
-            s=v.view_class()
-            if not v: continue
-            for f in dir(s):
-                m=getattr(s, f)
-                if hasattr(m, 'modes') and hasattr(m, 'key'):
-                    name=s.__class__.__name__
-                    if hasattr(s, 'name'):
-                        name=s.name()
-                    for j in getModes(m.modes, name):
-                        if not j in d: d[j]={}
-                        t=[name]+list(j)
-                        t=tuple(t)
-                        pref=self.key_leaders.get(t, '')
-                        k=self.parseKey(m.key, pref)
-                        for i in k: d[j][i]=(s, m)
+        # for v in self.app.handlers:
+        #     s=v.view_class()
+        #     if not v: continue
+        #     for f in dir(s):
+        #         m=getattr(s, f)
+        #         if hasattr(m, 'modes') and hasattr(m, 'key'):
+        #             name=s.__class__.__name__
+        #             if hasattr(s, 'name'):
+        #                 name=s.name()
+        #             for j in getModes(m.modes, name):
+        #                 if not j in d: d[j]={}
+        #                 t=[name]+list(j)
+        #                 t=tuple(t)
+        #                 pref=self.key_leaders.get(t, '')
+        #                 k=self.parseKey(m.key, pref)
+        #                 for i in k: d[j][i]=(s, m)
 
         acs=self.app.moder.actions
         for p, c in acs.items():

@@ -67,8 +67,7 @@ class Powerline(Plug):
 
     def setDetail(self, name):
 
-        if name: 
-            name=name.title()
+        if name: name=name.title()
         self.ui.setText('detail', name) 
 
     def setKeys(self, keys=None):
@@ -88,10 +87,7 @@ class Powerline(Plug):
                 c=view.currentIndex()
                 if type(c)==int: idx=c
             self.setIndex(idx)
-            if hasattr(view, 'name'):
-                view=view.name()
-            else:
-                view=view.__class__.__name__
+            view=view.name
         self.ui.setText('view', view)
 
     def setIndex(self, idx=None): 

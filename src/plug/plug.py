@@ -1,12 +1,13 @@
 import os
 import tomli
+from plug import utils
 from inspect import getfile
-from plug.utils import setKeys, createFolder, Moder
 
 class Plug:
 
     name=None
-    main_app=False
+    isMode=False
+    isMainApp=False
 
     def __init__(
             self, 
@@ -26,7 +27,8 @@ class Plug:
     def setName(self):
 
         if self.name is None: 
-            self.name=self.__class__.__name__
+            c=self.__class__
+            self.name=c.__name__
 
     def setup(self):
 
@@ -36,10 +38,29 @@ class Plug:
         self.setSettings()
         self.updateArgs()
         self.setActions()
-        if self.main_app:
+        if self.isMainApp:
             self.app=self
-            self.handlers=[]
             self.setModer()
+            self.setHandler()
+
+    def setHandler(
+            self, 
+            handler=utils.Handler):
+
+        c=self.config.get('Handler', {})
+        self.handler=handler(
+                app=self, config=c)
+
+    def open(self, *args, **kwargs):
+
+        return self.handler.handleOpen(
+                *args, **kwargs)
+
+    def setModer(self, moder=utils.Moder):
+
+        c=self.config.get('Moder', {})
+        self.moder=moder(
+                app=self, config=c)
 
     def updateArgs(self):
 
@@ -52,18 +73,12 @@ class Plug:
                 settings[n]=kw
         self.kwargs.update(settings)
 
-    def setModer(self, moder=Moder):
-
-        c=self.config.get('Moder', {})
-        self.moder=moder(
-                app=self, config=c)
-
     def setActions(self):
 
         def saveSetKeys():
 
             keys=self.config.get('Keys', {})
-            actions=setKeys(self, keys)
+            actions=utils.setKeys(self, keys)
             self.actions.update(actions)
 
         def saveOwnKeys():
@@ -84,15 +99,15 @@ class Plug:
         
         if not folder: 
             folder=f'~/{self.name.lower()}'
-        p=createFolder(folder)
+        p=utils.createFolder(folder)
         setattr(self, fname, p)
 
     def setBasePath(self):
 
-        p=os.path.abspath(
-                getfile(self.__class__))
-        self.path=os.path.dirname(
-                p).replace('\\', '/')
+        f=getfile(self.__class__)
+        a=os.path.abspath(f)
+        p=os.path.dirname(a)
+        self.path=p.replace('\\', '/')
 
     def setFiles(self):
 
@@ -109,13 +124,6 @@ class Plug:
         s=self.config.get('Settings', {})
         for n, v in s.items():
             setattr(self, n, v)
-
-    def open(self, source=None, **kwargs):
-
-        for r in self.app.handlers:
-            if not r.isCompatible(source):
-                continue
-            return r.open(source, **kwargs)
 
     def checkProp(self, prop, obj=None):
 
