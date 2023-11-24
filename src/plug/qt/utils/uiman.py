@@ -168,10 +168,10 @@ class UIMan(QtCore.QObject):
                         ui, **kwargs)
             self.viewActivated.emit(ui)
 
-    def deactivate(self, obj, ui=None):
+    def octivate(self, obj=None, ui=None):
 
         ui = ui or getattr(obj, 'ui', None)
-        if obj.isMainApp: 
+        if obj and obj.isMainApp: 
             self.appSoonQuits.emit()
             sys.exit()
         elif ui:

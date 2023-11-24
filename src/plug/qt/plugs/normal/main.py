@@ -5,6 +5,7 @@ from gizmo.utils import tag
 class Normal(Plug):
 
     name='normal'
+    isMode=True
     hasView=True
     listen_leader='@'
     cursor_visible=False
@@ -17,32 +18,14 @@ class Normal(Plug):
         self.display=self.app.display
         self.escapePressed.connect(
                 self.cleanUp)
-        self.app.uiman.appLaunched.connect(
-                self.setDefaultType)
-
-    def setDefaultType(self):
-
-        v=self.defaultView()
-        if v:
-            self.app.moder.setType(v.render())
-
-    def defaultView(self):
-        return self.display.currentView()
 
     def view(self):
-        return self.app.moder.view()
+        return self.app.handler.view()
 
     def cleanUp(self): 
 
         v=self.view()
         if v: v.cleanUp()
-
-    @tag('<c-d>')
-    def setDisplayView(self):
-
-        v=self.defaultView()
-        self.app.moder.setType(v.render())
-
 
     @tag('tc')
     def toggleCursor(self):

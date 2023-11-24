@@ -19,8 +19,6 @@ class Moder:
         self.app=app
         self.rtp=rtp
         self.prev=None
-        self.m_type=None
-        self.m_view=None
         self.plugs=plugs
         self.current=None
         self.m_config=config
@@ -126,21 +124,6 @@ class Moder:
 
     def save(self, plug, actions): 
         self.actions[plug]=actions
-
-    def type(self):
-        return self.m_type
-
-    def setType(self, pype):
-
-        v=pype.view()
-        self.m_type=pype
-        if v: self.setView(v)
-
-    def view(self):
-        return self.m_view
-
-    def setView(self, v):
-        self.m_view=v
 
     def mode(self):
         return self.current

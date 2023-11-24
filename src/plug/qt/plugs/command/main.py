@@ -3,6 +3,7 @@ from plug.qt import Plug
 class Command(Plug):
 
     client=None
+    isMode=True
     name='command'
     listen_leader='<c-,>'
     delisten_on_exec=True

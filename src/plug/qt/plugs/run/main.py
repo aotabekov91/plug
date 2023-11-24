@@ -29,8 +29,6 @@ class Run(Plug):
         super().setup()
         self.setParser()
         self.bar=self.app.ui.bar
-        self.app.earman.plugsLoaded.connect(
-                self.updateKeysSet)
         self.app.moder.plugsLoaded.connect(
                 self.setModeFunctions)
 
@@ -61,6 +59,9 @@ class Run(Plug):
                 dest='command')
 
     def updateKeysSet(self, commands):
+
+        # self.app.earman.plugsLoaded.connect(
+                # self.updateKeysSet) # todo
 
         f=self.app.earman.commands.get(
                 self, {})

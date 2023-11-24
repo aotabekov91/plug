@@ -6,7 +6,7 @@ from .widget import PowerlineWidget
 class Powerline(Plug):
 
     view=None
-    leader_keys={'command': 'P'}
+    prefix_keys={'command': 'P'}
 
     def setup(self):
 
@@ -15,21 +15,18 @@ class Powerline(Plug):
                 self.setKeys)
         self.app.moder.modeChanged.connect(
                 self.setMode)
-        self.app.moder.typeChanged.connect(
+        self.app.handler.typeChanged.connect(
                 self.updateType)
-        self.app.moder.viewChanged.connect(
+        self.app.handler.viewChanged.connect(
                 self.updateView)
         self.bar=self.app.ui.bar
         self.setupUI()
 
-    def updateType(self, t):
+    def updateType(self, v):
 
-        if t:
-            m=None
-            v=t.view()
-            self.setType(t)
-            if v: m=v.model()
-            self.setModel(m)
+        if v:
+            self.setKind(v)
+            self.setModel(v.model())
 
     def updateView(self, v):
 
@@ -73,11 +70,12 @@ class Powerline(Plug):
     def setKeys(self, keys=None):
         self.ui.setText('keys', keys)
 
-    def setType(self, pype=None):
+    def setKind(self, view=None):
 
-        if pype: 
-            pype=pype.type().title()
-        self.ui.setText('type', pype)
+        if view: 
+            k=view.kind
+            if k: view=k.title()
+        self.ui.setText('type', view)
 
     def setView(self, view=None): 
 

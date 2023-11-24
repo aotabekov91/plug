@@ -53,7 +53,7 @@ class Render(Plug):
                     **kwargs)
             v.setModel(model)
             self.app.uiman.setupUI(
-                    self, v, v.name())
+                    self, v, v.name)
             self.app.buffer.setView(model, v)
         return v
 

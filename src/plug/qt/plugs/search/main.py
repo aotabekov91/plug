@@ -5,13 +5,14 @@ from gizmo.widget import ListWidget, ItemWidget
 
 class Search(Plug):
 
-    def __init__(self, 
-                 app,
-                 name='search',
-                 listen_leader='/', 
-                 show_statusbar=True,
-                 **kwargs,
-                 ):
+    def __init__(
+            self, 
+            app,
+            name='search',
+            listen_leader='/', 
+            show_statusbar=True,
+            **kwargs
+            ):
 
         super(Search, self).__init__(
                 app=app, 

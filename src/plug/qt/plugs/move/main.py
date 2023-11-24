@@ -6,7 +6,7 @@ class Move(Plug):
     def __init__(
             self, 
             name='move',
-            leader_keys={
+            prefix_keys={
                 'command': 'm',
                 'Move': '<c-.>',
                 },

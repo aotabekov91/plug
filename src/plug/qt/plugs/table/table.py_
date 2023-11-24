@@ -62,7 +62,7 @@ class TableView(Render):
 
         if self.rendering:
             self.rendering=False
-            self.app.uiman.deactivate(
+            self.app.uiman.octivate(
                     self, self.m_view)
         else:
             self.rendering=True

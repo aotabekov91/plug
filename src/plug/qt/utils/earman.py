@@ -1,9 +1,6 @@
 import re
 from PyQt5 import QtCore 
-from inspect import signature
-from PyQt5.QtWidgets import QWidget, QTextEdit, QLineEdit
-
-# (mode, view) -> keys
+from inspect import signature, isclass
 
 class EarMan(QtCore.QObject):
 
@@ -17,6 +14,7 @@ class EarMan(QtCore.QObject):
     keysChanged=QtCore.pyqtSignal(object)
     matchIsExecuted=QtCore.pyqtSignal()
     matchIsToBeExecuted=QtCore.pyqtSignal()
+    pttr=r'(?P<m>([^[]*))(\[(?P<s>([^]]*))\])*'
 
     mapping={
             '@': 'At',
@@ -37,271 +35,146 @@ class EarMan(QtCore.QObject):
     def __init__(self, app):
 
         self.app=app
-        self.keys={}
         self.ptext=''
+        self.keys={}
         self.pkeys=[]
-        self.names={}
+        self.modes={}
         self.obj=None
-        self.kwargs={}
-        self.all_keys={}
-        self.key_leaders={}
+        self.prefix_keys={}
         self.listen_leaders={}
-        self.commands={}
         super().__init__(app)
+        self.app.qapp.installEventFilter(self)
         self.app.moder.plugsLoaded.connect(
-                self.setPlugs)
-        self.app.qapp.installEventFilter(
-                self)
+                self.plugsLoaded)
+        self.app.moder.modeAdded.connect(
+                self.addMode)
+        self.app.handler.viewAdded.connect(
+                self.addView)
         self.setKeyMap()
         self.setTimer()
-        
-    def setPlugs(self, plugs):
 
-        self.createHolders(plugs)
-        self.setPlugLeaders(plugs)
-        self.setPlugActions(plugs)
-        self.plugsLoaded.emit(plugs)
+    def addView(self, v):
+
+        self.setObjKeys(v, view=True)
+        self.updateObjKeys()
+        self.addAnyKeys()
+
+    def addMode(self, m):
+
+        self.modes[m.name]=m
+        d=(m.name, None, None, None)
+        if not d in self.keys:
+            self.keys[d]={}
+
+        self.setLeader(m)
+        self.setObjKeys(m)
+        self.updateObjKeys()
+        self.addAnyKeys()
+
+    def updateObjKeys(self):
+
+        for s, d in self.keys.items():
+            data={}
+            ms=[None, None, None, None]
+            for i in range(3):
+                ms[i]=s[i]
+                tk=self.keys.get(
+                        tuple(ms), {})
+                data.update(tk)
+            data.update(d)
+            self.keys[s]=data
+                
+    def addAnyKeys(self):
+        
+        any_mode=self.keys.get(
+                ('any', None, None, None), None)
+        if any_mode:
+            for d in self.keys.values():
+                d.update(any_mode)
+
+    def setLeader(self, o):
+
+        l=getattr(o, 'listen_leader', None)
+        if l:
+            k=self.parseKey(l)
+            self.listen_leaders[k]=o
+
+    def parseKeyMode(self, m):
+
+        s=m.split('|')
+        mode, view = None, None
+        i, j, k, l = None, None, None, None
+        if len(s)==2:
+            mode, view=s[0], s[1]
+        elif len(s)==1:
+            mode=s[0]
+        if mode:
+            r=re.match(self.pttr, mode)
+            i=r.group('m')
+            j=r.group('s')
+        if view:
+            r=re.match(self.pttr, view)
+            k=r.group('m')
+            l=r.group('s')
+        if i:
+            yield (i, j, k, l)
+        else:
+            for m in self.modes:
+                yield (m, j, k, l)
+
+    def setPrefixKeys(self, o):
+
+        if not o in self.prefix_keys:
+            self.prefix_keys[o]={}
+        l=getattr(o, 'prefix_keys', {})
+        for n, k in l.items():
+            for r in self.parseKeyMode(n):
+                self.prefix_keys[o][r]=k
+
+    def setObjKeys(self, o, view=False):
+
+        self.setPrefixKeys(o)
+        p=self.prefix_keys[o]
+        pn=[]
+        for i in o.__class__.__mro__[::-1]:
+            pn+=[i.__name__]
+        for f in o.__dir__():
+            func=getattr(o, f)
+            k=getattr(func, 'key', '')
+            m=getattr(func, 'modes', None)
+            m = m or [o.name]
+            if not k and type(m)!=list: 
+                continue
+            for i in m: 
+                for r in self.parseKeyMode(i):
+                    s=None
+                    if r[2] in pn and view:
+                        s=list(r)
+                        s[2]=o.name
+                        s=tuple(s)
+                        if not s in self.keys:
+                            self.keys[s]={}
+                    if not r in self.keys:
+                        self.keys[r]={}
+                    pref=p.get(r, '')
+                    parsedk=self.parseKey(k, pref)
+                    for pk in parsedk: 
+                        self.keys[r][(o, pk)]=func
+                        if not s: continue
+                        self.keys[s][(o, pk)]=func
 
     def setTimer(self):
 
         self.timer=QtCore.QTimer()
-        f=lambda: self.executeMatch([], [], 0)
+        f=lambda: self.execute([], [], 0)
         self.timer.timeout.connect(f)
         self.timer.setSingleShot(True)
 
     def listen(self, obj):
-
         self.obj=obj
-        self.clearKeys()
 
     def delisten(self, obj):
-
         self.obj=None
-        self.clearKeys()
-
-    def isListening(self, obj):
-        return self.obj==obj
-
-    def setPlugLeaders(self, plugs):
-
-        for p in plugs.values():
-            l=getattr(p, 'listen_leader', None)
-            if l:
-                k=self.parseKey(l)
-                self.listen_leaders[k]=p
-            l=getattr(p, 'leader_keys', None)
-            if l:
-                for n, k in l.items():
-                    nn=n.split('|')
-                    d=(p.name, n, None)
-                    if len(nn)==2:
-                        d=(p.name, nn[0], nn[1])
-                    self.key_leaders[d]=k
-
-    def setPlugActions(self, plugs):
-
-        def getModes(m, s):
-
-            if len(m)==0:
-                yield (s, s)
-                yield (s, None)
-                for n in self.names.keys():
-                    yield (n, s)
-            else:
-                for i in m:
-                    j=i.split('|')
-                    if len(j)==1:
-                        yield (i, i)
-                        yield (i, None)
-                        for n in self.names.keys():
-                            yield (n, i)
-                    else:
-                        for r in j[1].split(':'):
-                            yield (j[0], r)
-
-        d={}
-
-        for s in self.app.uiman.m_widgets:
-            for f in s.__dir__():
-                m=getattr(s, f)
-                if hasattr(m, 'modes'):
-                    name=s.__class__.__name__
-                    if hasattr(s, 'name'):
-                        name=s.name()
-                    for j in getModes(m.modes, name):
-                        if not j in d: d[j]={}
-                        t=[name]+list(j)
-                        t=tuple(t)
-                        pref=self.key_leaders.get(t, '')
-                        k=self.parseKey(m.key, pref)
-                        for i in k: d[j][i]=(s, m)
-
-        # for v in self.app.handlers:
-        #     s=v.view_class()
-        #     if not v: continue
-        #     for f in dir(s):
-        #         m=getattr(s, f)
-        #         if hasattr(m, 'modes') and hasattr(m, 'key'):
-        #             name=s.__class__.__name__
-        #             if hasattr(s, 'name'):
-        #                 name=s.name()
-        #             for j in getModes(m.modes, name):
-        #                 if not j in d: d[j]={}
-        #                 t=[name]+list(j)
-        #                 t=tuple(t)
-        #                 pref=self.key_leaders.get(t, '')
-        #                 k=self.parseKey(m.key, pref)
-        #                 for i in k: d[j][i]=(s, m)
-
-        acs=self.app.moder.actions
-        for p, c in acs.items():
-            for n, a in c.items():
-                for j in getModes(a.modes, p.name):
-                    if not j in d: d[j]={}
-                    t=[p.name]+list(j)
-                    t=tuple(t)
-                    pref=self.key_leaders.get(t, '')
-                    k=self.parseKey(a.key, pref)
-                    for i in k:
-                        d[j][i]=(p, a)
-
-        self.all_keys=d
-
-        for n, p in plugs.items():
-            self.setActions(p)
-            self.setupUIActions(p)
-
-    # def setPlugActions(self, plugs):
-    #     for n, p in plugs.items():
-    #         self.setActions(p)
-    #         self.setupUIActions(p)
-
-    def setupUIActions(self, p):
-
-        k=self.keys[p]
-        c=self.commands[p]
-
-        def getAncestorActions(w):
-
-            p=w.parent()
-            f=any([p==ui, p in k, p in c])
-            if f or p is None:
-                key=k.get(p, {})
-                command=c.get(p, {})
-                return key, command
-            return getAncestorActions(p)
-
-        def setWidgetActions(w, upcursive=False):
-
-            key, command={}, {}
-            if upcursive:
-                key, command=getAncestorActions(w)
-
-            for f in w.__dir__():
-                a=getattr(w, f)
-                if not hasattr(a, 'tagged'):
-                    continue
-                if len(a.modes)==0:
-                    if a.key:
-                        wk=self.parseKey(a.key)
-                        key[wk]=a
-                    command[a.name]=a
-                else:
-                    for m in a.modes:
-                        t=self.parseMode(m)
-                        if not t: continue
-                        tt, ts=t[0], t[1]
-                        plug=self.names[tt]
-                        pkeys=self.keys[plug]
-                        pcoms=self.commands[plug]
-                        for j in ts:
-                            if not j in pkeys: pkeys[j]={}
-                            if not j in pcoms: pcoms[j]={}
-                            pcoms[j][a.name]=a
-                            if a.key:
-                                wk=self.parseKey(a.key)
-                                pkeys[j][wk]=a
-
-            if key: k[w]=key
-            if command: c[w]=command
-
-        ui=getattr(p, 'ui', None)
-        if ui:
-            setWidgetActions(ui)
-            ch=ui.findChildren(QWidget)
-            for i in ch: 
-                setWidgetActions(i, upcursive=True)
-
-    def createHolders(self, plugs):
-
-        for n, p in plugs.items():
-            if p.name in self.commands:
-                continue
-            self.names[p.name]=p
-            self.keys[p]={'default': {}}
-            self.commands[p]={'default': {}}
-
-    def setActions(self, obj):
-
-        def check(modes, o, obj):
-
-            for i in modes:
-                t=i.split('|', 1)
-                if len(t)<2: continue
-                m, a = t[0], t[1] 
-                if obj.name!=m: continue
-                ps=a.split(':')
-                d=[]
-                for p in ps:
-                    d+=[(p, (obj.name, p))]
-                return d
-
-        def checkMode(m, o, obj):
-
-            if 'any' in m:
-                return [('default', (obj.name,))]
-            elif obj.name in m:
-                return [('defaut', (obj.name,))]
-            elif o==obj and len(m)==0:
-                return [('default', (obj.name,))]
-            return check(m, o, obj)
-
-        def getPrefix(obj, s, ls):
-
-            n=obj.name
-            if s!='default': n=f'{n}|{s}'
-            return ls.get(n, '') 
-
-        k=self.keys[obj]
-        c=self.commands[obj]
-        acs=self.app.moder.actions
-        for o, a in acs.items():
-            for (pn, n), m in a.items():
-                modes=getattr(m, 'modes', [])
-                ss=checkMode(modes, o, obj)
-                if not ss: continue
-                kl=getattr(m, 'key', [])
-                # ls=getattr(o, 'leader_keys', {})
-                for s, d in ss:
-                    if not s in k: k[s]={}
-                    if not s in c: c[s]={}
-
-                    pref=self.key_leaders.get(o.name, {})
-                    pr=pref.get(d, '')
-                    # if pr: print(obj, s, f'{pr}{kl}')
-                    # pr=getPrefix(obj, s, ls)
-                    # key=self.setKey(obj, o, m, n)
-                    key=self.parseKey(kl, pr)
-                    if key: k[s][key]=m
-                    c[s][n]=m
-
-
-    # def setKey(self, obj, o, m, n):
-        # k=getattr(m, 'key', [])
-        # if not k: return
-        # l=getattr(o, 'leader_keys', {})
-        # p=l.get(obj.name, '')
-        # return self.parseKey(k, prefix=p)
 
     def parseKey(self, key, prefix=''):
 
@@ -353,10 +226,10 @@ class EarMan(QtCore.QObject):
                     parsed+=[tuple(unit)]
             return tuple(parsed) 
 
-        p=[]
         if not key: return () 
         if type(key)==str: 
             key=[key]
+        p=[]
         for k in key: 
             p+=[parse(f"{prefix}{k}")]
         return tuple(p)
@@ -379,11 +252,8 @@ class EarMan(QtCore.QObject):
             if r:
                 e.accept()
                 return True
-            self.clearKeys()
-            return False
-        else:
-            self.clearKeys()
-            return False
+        self.clearKeys()
+        return False
 
     def registerKey(self, e):
 
@@ -437,14 +307,13 @@ class EarMan(QtCore.QObject):
 
         self.timer.stop()
         if e.key() in self.delisten_key:
-            self.clearKeys()
             self.obj.deactivate()
             return True
         elif self.pressed:
             m, p = [], []
             k, d = self.getKeys()
             m, p=self.getMatches(k, d, e)
-            self.runMatches(m, p, k, d)
+            self.run(m, p, k, d)
             return m or p
 
     def getKeys(self):
@@ -463,121 +332,45 @@ class EarMan(QtCore.QObject):
             digit=None
         return tuple(key), digit
 
+    def getStateKeys(self, state):
+
+        if state in self.keys:
+            return self.keys[state]
+        ms=list(state)
+        for i in range(3, -1, -1):
+            ms[i]=None
+            k=self.keys.get(
+                    tuple(ms), None)
+            if k: return k
+        return {}
+
     def getMatches(self, k, d, e):
 
-        # def getWKeys(w):
-
-        #     if w==self.obj.ui or w in keys:
-        #         return keys.get(w, {})
-        #     return getWKeys(w.parent())
-
-        # def getWidgetKeys():
-
-        #     l={}
-        #     ui=getattr(self.obj, 'ui', None)
-        #     if ui:
-        #         w=self.app.qapp.focusWidget()
-        #         edits=[QTextEdit, QLineEdit]
-        #         mdfs=e.modifiers()
-        #         c1=not type(w) in edits
-        #         c2=mdfs & QtCore.Qt.ControlModifier
-        #         if c1 or c2: 
-        #             ch=ui.findChildren(QWidget)
-        #             ch.append(ui)
-        #             if w in ch: 
-        #                 l.update(getWKeys(w))
-        #     return l
-
-        # def getTypeKeys(k):
-
-        #     l={}
-        #     t=self.app.moder.type()
-        #     v=self.app.moder.view()
-        #     for s in [v, t]:
-        #         sclass=s.__class__
-        #         for c in sclass.__mro__[::-1]:
-        #             n=c.__name__
-        #             if n in k:
-        #                 l.update(k.get(n))
-        #     r=None
-        #     if v: r=v.render()
-        #     if r and r.name in k:
-        #         l.update(k.get(r.name))
-        #     return l
-
-        # m, p, l, i = [], [], [], {}
-        # keys=self.keys.get(self.obj, {})
-        # wkeys=getWidgetKeys()
-        # skeys=getTypeKeys(keys)
-        # dkeys=keys.get('default', {})
-
-        mm=self.app.moder.mode()
-        vv=self.app.moder.view()
-        dd=(mm.name, vv.name())
-
-        # search and update
-
-        # k = {}
-        # k = (mode, None, None)
-        # k = (mode, view, None)
-        # k = (mode, view, type)
-        # k = (any, None, None)
-
-
-        sdd={}
-        for i in [vv.name(), 'any', None][::-1]:
-            dd=(mm.name, i)
-            pp=self.all_keys.get(dd, {})
-            sdd.update(pp)
-
         m, p = [], []
-        for c, (o, d) in sdd.items():
-            # print(c, k)
+        mode=self.app.moder.mode()
+        view=self.app.handler.view()
+        type_=self.app.handler.type()
+        sm=getattr(mode, 'subMode', None)
+        d=(mode.name, sm, view.name, type_.kind)
+        state=self.getStateKeys(d)
+        for (o, c), d in state.items():
             if k!=c[:len(k)]: continue
-            # if not d is None:
-            #     t=getattr(d, '__wrapped__', d)
-            #     c1='digit' in signature(t).parameters
-            #     if not c1: continue
             if k==c: 
                 m+=[d]
             elif k==c[:len(k)]: 
                 p+=[d]
         return m, p
 
-        # if wkeys: l.append(wkeys)
-        # if dkeys: l.append(dkeys)
-        # if skeys: l.append(skeys)
-        # for v in l: i.update(v)
-        # for v, f in i.items():
-        #     for c in v:
-        #         if k!=c[:len(k)]: continue
-        #         if not d is None:
-        #             t=getattr(f, '__wrapped__', f)
-        #             c1='digit' in signature(t).parameters
-        #             if not c1: continue
-        #         if k==c: 
-        #             m+=[f]
-        #         elif k==c[:len(k)]: 
-        #             p+=[f]
-        # return m, p
+    def run(self, m, p, k, d):
 
-    def runMatches(
-            self, 
-            matches, 
-            partial, 
-            key, 
-            digit
-            ):
-
-        self.timer.timeout.disconnect()
-        self.timer.timeout.connect(
-                lambda: self.executeMatch(
-                    matches, partial, digit))
-        if len(matches)==1 and not partial:
-            self.timer.start(self.wait_run)
-        else:
-            if self.wait_time: 
-                self.timer.start(self.wait_time)
+        t=self.timer
+        t.timeout.disconnect()
+        f=lambda: self.execute(m, p, d)
+        t.timeout.connect(f)
+        wt=self.wait_time
+        if len(m)==1 and not p:
+            wt=self.wait_run
+        t.start(wt)
 
     def getText(self, pressed):
 
@@ -607,33 +400,29 @@ class EarMan(QtCore.QObject):
                     n=n.replace('Key_', '').lower()
                 self.key_map[v]=n
 
-    def executeMatch(
+    def execute(
             self, 
             matches, 
             partial, 
             digit
             ):
 
-        if not partial:
-            if len(matches)<2: 
-                self.clearKeys()
-            if len(matches)==1:
-                m=matches[0]
-                self.runBeforeExecute()
-                f=getattr(m, '__wrapped__', m)
-                c1='digit' in signature(f).parameters
-                if digit is not None and c1: 
-                    m(digit=digit)
-                else:
-                    m()
-                self.runAfterExecute()
+        if not partial and len(matches)==1:
+            m=matches[0]
+            self.runBefore()
+            f=getattr(m, '__wrapped__', m)
+            c1='digit' in signature(f).parameters
+            if digit is not None and c1: 
+                m(digit=digit)
+            else:
+                m()
+            self.runAfter()
 
-    def runAfterExecute(self): 
+    def runAfter(self): 
         self.matchIsExecuted.emit()
 
-    def runBeforeExecute(self): 
+    def runBefore(self): 
 
-        self.clearKeys()
         self.matchIsToBeExecuted.emit()
         d=getattr(
                 self.obj, 
@@ -646,11 +435,3 @@ class EarMan(QtCore.QObject):
         if d: 
             self.obj.deactivate()
             self.app.moder.modeWanted.emit(w)
-
-    def parseMode(self, mode):
-
-        t=mode.split('|')
-        if len(t)==1:
-            return t[0], ['default']
-        elif len(t)==2:
-            return t[0], t[1].split(':')

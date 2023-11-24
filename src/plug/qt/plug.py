@@ -63,5 +63,5 @@ class Plug(plug.Plug, QtCore.QObject):
     def deactivate(self):
 
         self.activated=False
-        self.app.uiman.deactivate(self)
+        self.app.uiman.octivate(self)
         self.app.moder.delistenWanted.emit()

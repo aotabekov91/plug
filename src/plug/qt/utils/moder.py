@@ -5,11 +5,8 @@ class Moder(utils.Moder, QObject):
 
     delistenWanted=pyqtSignal()
     plugAdded=pyqtSignal(object)
+    modeAdded=pyqtSignal(object)
     modeWanted=pyqtSignal(object)
-    typeWanted=pyqtSignal(object)
-    typeChanged=pyqtSignal(object)
-    viewWanted=pyqtSignal(object)
-    viewChanged=pyqtSignal(object)
     modeChanged=pyqtSignal(object)
     plugsLoaded=pyqtSignal(object)
     modeIsToBeSet=pyqtSignal(object)
@@ -20,39 +17,10 @@ class Moder(utils.Moder, QObject):
         super().setup()
         self.modeWanted.connect(
                 self.setMode)
-        self.typeWanted.connect(
-                self.setType)
-        # self.viewWanted.connect(
-        #         self.setView)
         self.delistenWanted.connect(
                 self.setMode)
         self.app.uiman.appLaunched.connect(
                 self.launch)
-        self.app.uiman.viewActivated.connect(
-                self.setView)
-        self.app.uiman.viewOctivated.connect(
-                self.setDefaultView)
-
-    def setDefaultView(self):
-
-        v=None
-        t=self.m_type
-        if t: v=t.view()
-        m=self.current
-        dv=getattr(m, 'defaultView', None)
-        if dv: v=dv()
-        self.setView(v)
-
-    def setView(self, v):
-
-        super().setView(v)
-        if v: v.setFocus()
-        self.viewChanged.emit(v)
-
-    def setType(self, t):
-
-        super().setType(t)
-        self.typeChanged.emit(t)
 
     def launch(self):
 
@@ -63,10 +31,12 @@ class Moder(utils.Moder, QObject):
     def reset(self):
         self.setMode(self.current)
 
-    def add(self, plug):
+    def add(self, p):
 
-        super().add(plug)
-        self.plugAdded.emit(plug)
+        super().add(p)
+        self.plugAdded.emit(p)
+        if p.isMode: 
+            self.modeAdded.emit(p)
 
     def load(self, *args, **kwargs):
 

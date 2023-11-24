@@ -8,7 +8,7 @@ class TableRender(Render):
     kind=None
     table=None
     widget_map={}
-    leader_keys={}
+    prefix_keys={}
     view_prop='canLocate'
     locator_kind='position'
     model_class=WTableModel
@@ -84,7 +84,7 @@ class TableRender(Render):
 
         if self.rendering:
             self.rendering=False
-            self.app.uiman.deactivate(
+            self.app.uiman.octivate(
                     self, self.m_view)
         else:
             self.rendering=True
