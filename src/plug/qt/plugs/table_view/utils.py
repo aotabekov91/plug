@@ -1,20 +1,8 @@
-import tables
 from gizmo.utils import tag
 from gizmo.vimo.model import WTableModel
 from gizmo.vimo.view import ListWidgetView
 
 class TView(ListWidgetView):
-
-    def __init__(
-            self, 
-            *args, 
-            setup={}, 
-            **kwargs
-            ):
-
-        for k, v in setup.items():
-            setattr(self, k, v)
-        super().__init__(*args, **kwargs)
 
     @classmethod
     def isCompatible(cls, m, **kwargs):
@@ -47,26 +35,12 @@ class TModel(WTableModel):
 
     wantUniqView=True
 
-    def __init__(
-            self, 
-            *args, 
-            setup={},
-            **kwargs,
-            ):
-
-        for k, v in setup.items():
-            setattr(self, k, v)
-            if k=='table':
-                self.name=v
-                self.table=getattr(tables, v)()
-        super().__init__(*args, **kwargs)
-
     def __eq__(self, m):
 
-        if m:
-            c1=m.name==self.name
-            c2=m.source()==self.source()
-            return c1 and c2
+        if not m: return False
+        c1=m.name==self.name
+        c2=m.source()==self.source()
+        return c1 and c2
 
     @classmethod
     def isCompatible(cls, s, **kwargs):

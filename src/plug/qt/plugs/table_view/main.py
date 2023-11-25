@@ -1,3 +1,4 @@
+import tables
 from plug.qt import Plug
 
 from .utils import TView, TModel
@@ -8,7 +9,7 @@ class TableView(Plug):
 
         super().setup()
         self.setClasses()
-        self.updateSetup()
+        self.updateConfs()
         self.app.handler.viewChanged.connect(
                 self.updateView)
 
@@ -19,24 +20,29 @@ class TableView(Plug):
         self.app.handler.addViewer(TView)
         self.app.handler.addModeller(TModel)
 
-    def updateSetup(self):
+    def updateConfs(self):
 
         g=self.config.get('General', {})
         for k, y in self.config.items():
             if k!='General':
                 c=g.copy()
                 c.update(y)
+                tn=c.get('table', '')
+                tc=getattr(tables, tn, None)
+                if tc: 
+                    c['name']=tn
+                    c['table']=tc()
                 self.config[k]=c
 
     def updateView(self, v):
 
         if not v: return
         if not v.model().isType: return
-        for k, d in self.config.items():
+        for k, c in self.config.items():
             exc = ['General', 'Settings']
             if k in exc: continue
             self.app.handler.handleInitiate(
-                    setup=d, 
-                    name=d.get('table'),
+                    config=c, 
+                    name=c.get('name'),
                     source=self.pattern, 
                     index=v.getUniqLocator())

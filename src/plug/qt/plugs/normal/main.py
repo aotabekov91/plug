@@ -22,6 +22,9 @@ class Normal(Plug):
     def view(self):
         return self.app.handler.view()
 
+    def getDefaultView(self):
+        return self.app.display.currentView()
+
     def cleanUp(self): 
 
         v=self.view()
@@ -279,6 +282,10 @@ class Normal(Plug):
     @tag('<c-q>', modes=['any'])
     def quit(self):
         self.app.deactivate()
+
+    @tag('<c-p>', modes=['any'])
+    def setDefaultView(self):
+        self.app.handler.setDefaultView()
 
     @tag('fi')
     def incrementFold(self): 

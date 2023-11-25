@@ -8,6 +8,7 @@ class Handler(QtCore.QObject):
     viewWanted=QtCore.pyqtSignal(object)
     modelAdded=QtCore.pyqtSignal(object)
     typeWanted=QtCore.pyqtSignal(object)
+    modeChanged=QtCore.pyqtSignal(object)
     viewChanged=QtCore.pyqtSignal(object)
     typeChanged=QtCore.pyqtSignal(object)
     viewerAdded=QtCore.pyqtSignal(object)
@@ -17,6 +18,7 @@ class Handler(QtCore.QObject):
 
         super().__init__(app)
         self.app=app
+        self.m_mode=None
         self.m_type=None
         self.m_view=None
         self.m_typers=[]
@@ -34,10 +36,15 @@ class Handler(QtCore.QObject):
                 self.setType)
         self.viewWanted.connect(
                 self.setView)
+        self.app.moder.modeChanged.connect(
+                self.setMode)
 
-    def setDefault(self):
+    def setDefaultView(self):
 
+        m=self.mode()
         v=self.app.display.currentView()
+        df=getattr(m, 'getDefaultView', None)
+        if df: v=df()
         self.setView(v)
 
     def setView(self, v):
@@ -50,6 +57,11 @@ class Handler(QtCore.QObject):
             self.setType(v) 
         self.viewChanged.emit(v)
 
+    def setMode(self, m):
+
+        self.m_mode=m
+        self.modeChanged.emit(m)
+
     def setType(self, v):
 
         self.m_type=v
@@ -60,6 +72,9 @@ class Handler(QtCore.QObject):
 
     def view(self):
         return self.m_view
+
+    def mode(self):
+        return self.m_mode
 
     def setSettings(self):
 
@@ -101,8 +116,11 @@ class Handler(QtCore.QObject):
                 n=k.getSourceName(s, **kwargs)
                 m=self.buffer.getModel(n)
                 if not m:
-                    c=self.getConfig(k)
-                    m=k(source=s, config=c, **kwargs)
+                    sc=self.getConfig(k)
+                    gc=kwargs.get('config', {})
+                    gc.update(sc)
+                    kwargs['config']=gc
+                    m=k(source=s, **kwargs)
                     self.buffer.setModel(n, m)
                     m.load()
                 return m
@@ -113,8 +131,11 @@ class Handler(QtCore.QObject):
             if k.isCompatible(m):
                 v=self.buffer.getView(m)
                 if not v or not m.wantUniqView:
-                    c=self.getConfig(k)
-                    v=k(config=c, app=self.app, **kwargs)
+                    sc=self.getConfig(k)
+                    gc=kwargs.get('config', {})
+                    gc.update(sc)
+                    kwargs['config']=gc
+                    v=k(app=self.app, **kwargs)
                     v.setModel(model=m)
                     self.buffer.setView(m, v)
                     self.uiman.setupUI(
@@ -135,7 +156,7 @@ class Handler(QtCore.QObject):
 
     def octivateView(self, v, **kwargs):
 
-        self.setDefault()
+        self.setDefaultView()
         self.uiman.octivate(ui=v, **kwargs)
 
     def handleInitiate(self, source, **kwargs):
