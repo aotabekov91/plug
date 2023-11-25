@@ -1,6 +1,6 @@
 import re
 from PyQt5 import QtCore 
-from inspect import signature, isclass
+from inspect import signature
 
 class EarMan(QtCore.QObject):
 
@@ -8,11 +8,10 @@ class EarMan(QtCore.QObject):
     wait_time=200
     mode_on_exit='normal'
     delisten_on_exec=False
-    delisten_key=[QtCore.Qt.Key_Escape]
     delisten_key_=['<escape>', '<c-['] # Todo
-    plugsLoaded=QtCore.pyqtSignal(object)
-    keysChanged=QtCore.pyqtSignal(object)
+    delisten_key=[QtCore.Qt.Key_Escape]
     matchIsExecuted=QtCore.pyqtSignal()
+    keysChanged=QtCore.pyqtSignal(object)
     matchIsToBeExecuted=QtCore.pyqtSignal()
     pttr=r'(?P<m>([^[]*))(\[(?P<s>([^]]*))\])*'
 
@@ -34,28 +33,29 @@ class EarMan(QtCore.QObject):
 
     def __init__(self, app):
 
+        super().__init__(app)
         self.app=app
         self.ptext=''
         self.keys={}
         self.pkeys=[]
         self.modes={}
         self.obj=None
+        self.setTimer()
+        self.setKeyMap()
         self.prefix_keys={}
         self.listen_leaders={}
-        super().__init__(app)
-        self.app.qapp.installEventFilter(self)
-        self.app.moder.plugsLoaded.connect(
-                self.plugsLoaded)
+        self.app.qapp.installEventFilter(
+                self)
         self.app.moder.modeAdded.connect(
                 self.addMode)
         self.app.handler.viewAdded.connect(
                 self.addView)
-        self.setKeyMap()
-        self.setTimer()
 
-    def addView(self, v):
+    def addView(self, view):
 
-        self.setObjKeys(v, view=True)
+        self.setLeader(view)
+        self.setObjKeys(
+                view, view=True)
         self.updateObjKeys()
         self.addAnyKeys()
 
@@ -130,22 +130,24 @@ class EarMan(QtCore.QObject):
         for n, k in l.items():
             for r in self.parseKeyMode(n):
                 self.prefix_keys[o][r]=k
+        return (o, l)
 
     def setObjKeys(self, o, view=False):
 
+        pn=[]
         self.setPrefixKeys(o)
         p=self.prefix_keys[o]
-        pn=[]
         for i in o.__class__.__mro__[::-1]:
             pn+=[i.__name__]
         for f in o.__dir__():
             func=getattr(o, f)
             k=getattr(func, 'key', '')
             m=getattr(func, 'modes', None)
+            if not k: continue
+            if m is None: continue
             m = m or [o.name]
-            if not k and type(m)!=list: 
-                continue
             for i in m: 
+                i=i.replace('^own', o.name)
                 for r in self.parseKeyMode(i):
                     s=None
                     if r[2] in pn and view:
@@ -162,7 +164,7 @@ class EarMan(QtCore.QObject):
                         self.keys[r][(o, pk)]=func
                         if not s: continue
                         self.keys[s][(o, pk)]=func
-
+        
     def setTimer(self):
 
         self.timer=QtCore.QTimer()
@@ -253,6 +255,7 @@ class EarMan(QtCore.QObject):
                 e.accept()
                 return True
         self.clearKeys()
+        self.keysChanged.emit('')
         return False
 
     def registerKey(self, e):
@@ -286,7 +289,6 @@ class EarMan(QtCore.QObject):
         self.ptext=''
         self.pkeys=[]
         self.pressed=None
-        self.keysChanged.emit('')
 
     def checkLeader(self, e):
 
@@ -367,10 +369,10 @@ class EarMan(QtCore.QObject):
         t.timeout.disconnect()
         f=lambda: self.execute(m, p, d)
         t.timeout.connect(f)
-        wt=self.wait_time
+        w=self.wait_time
         if len(m)==1 and not p:
-            wt=self.wait_run
-        t.start(wt)
+            w=self.wait_run
+        t.start(w)
 
     def getText(self, pressed):
 
@@ -419,6 +421,8 @@ class EarMan(QtCore.QObject):
             self.runAfter()
 
     def runAfter(self): 
+
+        self.clearKeys()
         self.matchIsExecuted.emit()
 
     def runBefore(self): 

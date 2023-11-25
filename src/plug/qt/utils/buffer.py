@@ -18,23 +18,23 @@ class Buffer(QtCore.QObject):
     def getModel(self, idx):
         return self.m_models.get(idx, None)
 
-    def setModel(self, idx, model):
+    def setModel(self, idx, m):
 
-        if model: 
-            c, p = model, self.m_pmodel
-            self.m_cmodel, self.m_pmodel=c, p
-            self.m_models[idx]=model
-            self.modelCreated.emit(model)
+        if not m: return
+        c, p = m, self.m_pmodel
+        self.m_cmodel, self.m_pmodel=c, p
+        self.m_models[idx]=m
+        self.modelCreated.emit(m)
 
     def getCurrentModel(self):
 
         return self.m_models.get(
                 self.m_cmodel, None)
 
-    def getView(self, model):
+    def getView(self, m):
 
         for v in self.m_view:
-            if id(v.model())==id(model):
+            if v.model()==m:
                 return v
 
     def setView(self, model, view):

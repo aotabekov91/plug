@@ -1,17 +1,17 @@
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5 import QtCore
 
-class Handler(QObject):
+class Handler(QtCore.QObject):
 
-    viewAdded=pyqtSignal(object)
-    typeAdded=pyqtSignal(object)
-    typerAdded=pyqtSignal(object)
-    viewWanted=pyqtSignal(object)
-    modelAdded=pyqtSignal(object)
-    typeWanted=pyqtSignal(object)
-    viewChanged=pyqtSignal(object)
-    typeChanged=pyqtSignal(object)
-    viewerAdded=pyqtSignal(object)
-    modellerAdded=pyqtSignal(object)
+    viewAdded=QtCore.pyqtSignal(object)
+    typeAdded=QtCore.pyqtSignal(object)
+    typerAdded=QtCore.pyqtSignal(object)
+    viewWanted=QtCore.pyqtSignal(object)
+    modelAdded=QtCore.pyqtSignal(object)
+    typeWanted=QtCore.pyqtSignal(object)
+    viewChanged=QtCore.pyqtSignal(object)
+    typeChanged=QtCore.pyqtSignal(object)
+    viewerAdded=QtCore.pyqtSignal(object)
+    modellerAdded=QtCore.pyqtSignal(object)
 
     def __init__(self, app, config):
 
@@ -35,11 +35,6 @@ class Handler(QObject):
         self.viewWanted.connect(
                 self.setView)
 
-        # self.app.uiman.viewActivated.connect(
-        #         self.setView)
-        # self.app.uiman.viewOctivated.connect(
-        #         self.setDefaultView)
-
     def setDefault(self):
 
         v=self.app.display.currentView()
@@ -48,11 +43,11 @@ class Handler(QObject):
     def setView(self, v):
 
         self.m_view=v
-        if v:
-            m=v.model()
-            if v: v.setFocus()
-            if m and m.isType: 
-                self.setType(v) 
+        if not v: return
+        m=v.model()
+        if v: v.setFocus()
+        if m and m.isType: 
+            self.setType(v) 
         self.viewChanged.emit(v)
 
     def setType(self, v):
@@ -99,29 +94,27 @@ class Handler(QObject):
     def typers(self):
         return self.m_typers
 
-    def getModel(self, source, **kwargs):
+    def getModel(self, s, **kwargs):
 
-        for klass in self.m_modellers:
-            if klass.isCompatible(source):
-                n=klass.getSourceName(source)
+        for k in self.m_modellers:
+            if k.isCompatible(s):
+                n=k.getSourceName(s, **kwargs)
                 m=self.buffer.getModel(n)
                 if not m:
-                    config=self.getConfig(klass)
-                    m=klass(source=source, 
-                        config=config,
-                        **kwargs)
+                    c=self.getConfig(k)
+                    m=k(source=s, config=c, **kwargs)
                     self.buffer.setModel(n, m)
                     m.load()
                 return m
 
     def getView(self, m, **kwargs):
 
-        for klass in self.m_viewers:
-            if klass.isCompatible(m):
+        for k in self.m_viewers:
+            if k.isCompatible(m):
                 v=self.buffer.getView(m)
                 if not v or not m.wantUniqView:
-                    config=self.getConfig(klass)
-                    v=klass(config=config, **kwargs)
+                    c=self.getConfig(k)
+                    v=k(config=c, app=self.app, **kwargs)
                     v.setModel(model=m)
                     self.buffer.setView(m, v)
                     self.uiman.setupUI(
