@@ -44,12 +44,19 @@ class EarMan(QtCore.QObject):
         self.setKeyMap()
         self.prefix_keys={}
         self.listen_leaders={}
+        self.m_passive=False
         self.app.qapp.installEventFilter(
                 self)
         self.app.moder.modeAdded.connect(
                 self.addMode)
         self.app.handler.viewAdded.connect(
                 self.addView)
+
+    def setPassive(self, cond=False):
+
+        self.m_passive=cond
+        self.clearKeys()
+        self.keysChanged.emit('')
 
     def addView(self, view):
 
@@ -242,6 +249,7 @@ class EarMan(QtCore.QObject):
             return False
         if e.type()!=QtCore.QEvent.KeyPress:
             return False
+
         self.registerKey(e)
         if self.checkLeader(e):
             e.accept()
@@ -293,6 +301,8 @@ class EarMan(QtCore.QObject):
     def checkLeader(self, e):
 
         for l, p in self.listen_leaders.items():
+            if self.m_passive and p!=self.obj:
+                continue
             if (self.pressed,) in l:
                 f=getattr(p, 'checkLeader', None)
                 if f:
@@ -308,7 +318,9 @@ class EarMan(QtCore.QObject):
     def addKeys(self, e):
 
         self.timer.stop()
-        if e.key() in self.delisten_key:
+        c1 = not self.m_passive
+        c2 = e.key() in self.delisten_key
+        if c1 and c2: 
             self.obj.octivate()
             return True
         elif self.pressed:
@@ -346,21 +358,37 @@ class EarMan(QtCore.QObject):
             if k: return k
         return {}
 
-    def getMatches(self, k, d, e):
+    def getState(self):
+
+        m=self.app.handler.mode()
+        v=self.app.handler.view()
+        f=self.app.handler.type()
+        sm=self.app.handler.submode()
+
+        mn=None
+        if m: mn=m.name
+        sn=None
+        if sm and hasattr(sm, 'name'):
+            sn=sm.name
+        elif sm and type(sm)==str:
+            sn=sm.name
+        vn=None
+        if v: vn=v.name
+        fn=None
+        if f: fn=f.kind
+        return (mn, sn, vn, fn)
+
+    def getMatches(self, k, s, e):
 
         m, p = [], []
-        mode=self.app.moder.mode()
-        view=self.app.handler.view()
-        type_=self.app.handler.type()
-        sm=getattr(mode, 'subMode', None)
-        d=(mode.name, sm, view.name, type_.kind)
-        state=self.getStateKeys(d)
-        for (o, c), d in state.items():
+        s=self.getState()
+        state=self.getStateKeys(s)
+        for (o, c), s in state.items():
             if k!=c[:len(k)]: continue
             if k==c: 
-                m+=[d]
+                m+=[s]
             elif k==c[:len(k)]: 
-                p+=[d]
+                p+=[s]
         return m, p
 
     def run(self, m, p, k, d):

@@ -13,6 +13,7 @@ class Handler(QtCore.QObject):
     typeChanged=QtCore.pyqtSignal(object)
     viewerAdded=QtCore.pyqtSignal(object)
     modellerAdded=QtCore.pyqtSignal(object)
+    submodeChanged=QtCore.pyqtSignal(object)
 
     def __init__(self, app, config):
 
@@ -24,6 +25,7 @@ class Handler(QtCore.QObject):
         self.m_typers=[]
         self.m_viewers=[]
         self.m_modellers=[]
+        self.m_submode=None
         self.m_config=config
         self.uiman=self.app.uiman
         self.buffer=self.app.buffer
@@ -38,6 +40,8 @@ class Handler(QtCore.QObject):
                 self.setView)
         self.app.moder.modeChanged.connect(
                 self.setMode)
+        self.app.moder.submodeChanged.connect(
+                self.setSubmode)
 
     def setDefaultView(self):
 
@@ -62,6 +66,11 @@ class Handler(QtCore.QObject):
         self.m_mode=m
         self.modeChanged.emit(m)
 
+    def setSubmode(self, s):
+
+        self.m_submode=s
+        self.submodeChanged.emit(s)
+
     def setType(self, v):
 
         self.m_type=v
@@ -75,6 +84,9 @@ class Handler(QtCore.QObject):
 
     def mode(self):
         return self.m_mode
+
+    def submode(self):
+        return self.m_submode
 
     def setSettings(self):
 

@@ -13,8 +13,10 @@ class Powerline(Plug):
         super().setup()
         self.app.earman.keysChanged.connect(
                 self.setKeys)
-        self.app.moder.modeChanged.connect(
+        self.app.handler.modeChanged.connect(
                 self.setMode)
+        self.app.handler.submodeChanged.connect(
+                self.setSubmode)
         self.app.handler.typeChanged.connect(
                 self.updateType)
         self.app.handler.viewChanged.connect(
@@ -50,11 +52,15 @@ class Powerline(Plug):
         self.bar.clayout.insertWidget(0, self.ui)
         self.bar.show()
 
-    def setMode(self, mode=None):
+    def setMode(self, m=None):
 
-        if mode: 
-            mode=mode.name.title()
-        self.ui.setText('mode', mode) 
+        if m: m=m.name.title()
+        self.ui.setText('mode', m) 
+
+    def setSubmode(self, s=None):
+
+        if s: s=s.name.title()
+        self.ui.setText('submode', s) 
 
     def setModel(self, model=None): 
 

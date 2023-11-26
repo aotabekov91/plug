@@ -21,6 +21,7 @@ class Moder:
         self.prev=None
         self.plugs=plugs
         self.current=None
+        self.m_submode=None
         self.m_config=config
         self.actions=actions
         self.default=default
@@ -116,6 +117,9 @@ class Moder:
             self.setState(m)
             m.listen()
             return m 
+
+    def setSubmode(self, submode=None):
+        self.m_submode=submode
 
     def setState(self, mode):
 

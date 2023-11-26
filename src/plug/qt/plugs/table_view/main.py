@@ -27,7 +27,7 @@ class TableView(Plug):
             if k!='General':
                 c=g.copy()
                 c.update(y)
-                tn=c.get('table', '')
+                tn=c.get('table_name', '')
                 tc=getattr(tables, tn, None)
                 if tc: 
                     c['name']=tn

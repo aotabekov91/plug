@@ -10,6 +10,7 @@ class Moder(utils.Moder, QObject):
     modeChanged=pyqtSignal(object)
     plugsLoaded=pyqtSignal(object)
     modeIsToBeSet=pyqtSignal(object)
+    submodeChanged=pyqtSignal(object)
     actionsRegistered=pyqtSignal(object, object)
 
     def setup(self):
@@ -50,6 +51,11 @@ class Moder(utils.Moder, QObject):
         m=super().setMode(m)
         if m: self.modeChanged.emit(m)
         return m
+
+    def setSubmode(self, submode=None):
+
+        super().setSubmode(submode)
+        self.submodeChanged.emit(submode)
 
     def save(self, plug, actions):
 

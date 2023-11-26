@@ -12,6 +12,8 @@ class PowerlineWidget(QtWidgets.QWidget):
 
         self.mode=QtWidgets.QLabel(
                 objectName='Mode')
+        self.submode=QtWidgets.QLabel(
+                objectName='Submode')
         self.info=QtWidgets.QLabel(
                 objectName='Info')
         self.detail=QtWidgets.QLabel(
@@ -27,6 +29,9 @@ class PowerlineWidget(QtWidgets.QWidget):
         self.index=QtWidgets.QLabel(
                 objectName='Index')
         self.mode.setAlignment(
+                QtCore.Qt.AlignCenter|
+                QtCore.Qt.AlignVCenter)
+        self.submode.setAlignment(
                 QtCore.Qt.AlignCenter|
                 QtCore.Qt.AlignVCenter)
         self.type.setAlignment(
@@ -51,6 +56,7 @@ class PowerlineWidget(QtWidgets.QWidget):
         l.setSpacing(0)
         l.setContentsMargins(0,0,0,0)
         l.addWidget(self.mode)
+        l.addWidget(self.submode)
         l.addWidget(self.type)
         l.addStretch(1)
         l.addWidget(self.info)
@@ -65,19 +71,19 @@ class PowerlineWidget(QtWidgets.QWidget):
         self.setLayout(l)
         self.mode.hide()
         self.info.hide()
-        self.detail.hide()
         self.view.hide()
         self.keys.hide()
         self.type.hide()
         self.model.hide()
         self.index.hide()
+        self.detail.hide()
+        self.submode.hide()
 
     def setText(self, kind, text):
 
-        field=getattr(self, kind, None)
-        if not field: return
-        field.setText(str(text))
-        if text is None:
-            field.hide()
-        else:
-            field.show()
+        f=getattr(self, kind, None)
+        if f:
+            f.setText(str(text))
+            if text is None:
+                return f.hide()
+            return f.show()
