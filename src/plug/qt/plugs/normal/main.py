@@ -281,7 +281,7 @@ class Normal(Plug):
 
     @tag('<c-q>', modes=['any'])
     def quit(self):
-        self.app.deactivate()
+        self.app.octivate()
 
     @tag('<c-p>', modes=['any'])
     def setDefaultView(self):

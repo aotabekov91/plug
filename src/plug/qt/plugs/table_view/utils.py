@@ -12,6 +12,10 @@ class TView(ListWidgetView):
     def toggle(self):
         super().toggle()
 
+    @tag('f', modes=['command'])
+    def activate(self):
+        super().activate()
+
     @tag('o', modes=['|^own'])
     def open(self):
 

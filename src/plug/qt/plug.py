@@ -47,7 +47,7 @@ class Plug(plug.Plug, QtCore.QObject):
 
         if not self.activated:
             return self.activate()
-        return self.deactivate()
+        return self.octivate()
 
     def setFocus(self):
 
@@ -60,7 +60,7 @@ class Plug(plug.Plug, QtCore.QObject):
         self.app.uiman.activate(self)
         self.app.moder.modeWanted.emit(self)
 
-    def deactivate(self):
+    def octivate(self):
 
         self.activated=False
         self.app.uiman.octivate(self)

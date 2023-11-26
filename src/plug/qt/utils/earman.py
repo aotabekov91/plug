@@ -309,7 +309,7 @@ class EarMan(QtCore.QObject):
 
         self.timer.stop()
         if e.key() in self.delisten_key:
-            self.obj.deactivate()
+            self.obj.octivate()
             return True
         elif self.pressed:
             m, p = [], []
@@ -437,5 +437,5 @@ class EarMan(QtCore.QObject):
                 'mode_on_exit',
                 self.mode_on_exit)
         if d: 
-            self.obj.deactivate()
+            self.obj.octivate()
             self.app.moder.modeWanted.emit(w)
