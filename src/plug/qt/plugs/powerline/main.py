@@ -59,7 +59,8 @@ class Powerline(Plug):
 
     def setSubmode(self, s=None):
 
-        if s: s=s.name.title()
+        if s and type(s)!=str:
+            s=s.name.title()
         self.ui.setText('submode', s) 
 
     def setModel(self, model=None): 

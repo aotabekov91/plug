@@ -35,15 +35,15 @@ class EarMan(QtCore.QObject):
 
         super().__init__(app)
         self.app=app
-        self.ptext=''
-        self.keys={}
-        self.pkeys=[]
-        self.modes={}
-        self.obj=None
+        self.m_ptext=''
+        self.m_keys={}
+        self.m_modes={}
+        self.m_pkeys=[]
+        self.m_obj=None
         self.setTimer()
         self.setKeyMap()
-        self.prefix_keys={}
-        self.listen_leaders={}
+        self.m_leaders={}
+        self.m_prefixes={}
         self.m_passive=False
         self.app.qapp.installEventFilter(
                 self)
@@ -51,6 +51,9 @@ class EarMan(QtCore.QObject):
                 self.addMode)
         self.app.handler.viewAdded.connect(
                 self.addView)
+
+    def obj(self):
+        return self.m_obj
 
     def setPassive(self, cond=False):
 
@@ -68,10 +71,10 @@ class EarMan(QtCore.QObject):
 
     def addMode(self, m):
 
-        self.modes[m.name]=m
+        self.m_modes[m.name]=m
         d=(m.name, None, None, None)
-        if not d in self.keys:
-            self.keys[d]={}
+        if not d in self.m_keys:
+            self.m_keys[d]={}
 
         self.setLeader(m)
         self.setObjKeys(m)
@@ -80,23 +83,23 @@ class EarMan(QtCore.QObject):
 
     def updateObjKeys(self):
 
-        for s, d in self.keys.items():
+        for s, d in self.m_keys.items():
             data={}
             ms=[None, None, None, None]
             for i in range(3):
                 ms[i]=s[i]
-                tk=self.keys.get(
+                tk=self.m_keys.get(
                         tuple(ms), {})
                 data.update(tk)
             data.update(d)
-            self.keys[s]=data
+            self.m_keys[s]=data
                 
     def addAnyKeys(self):
         
-        any_mode=self.keys.get(
+        any_mode=self.m_keys.get(
                 ('any', None, None, None), None)
         if any_mode:
-            for d in self.keys.values():
+            for d in self.m_keys.values():
                 d.update(any_mode)
 
     def setLeader(self, o):
@@ -104,7 +107,7 @@ class EarMan(QtCore.QObject):
         l=getattr(o, 'listen_leader', None)
         if l:
             k=self.parseKey(l)
-            self.listen_leaders[k]=o
+            self.m_leaders[k]=o
 
     def parseKeyMode(self, m):
 
@@ -126,24 +129,24 @@ class EarMan(QtCore.QObject):
         if i:
             yield (i, j, k, l)
         else:
-            for m in self.modes:
+            for m in self.m_modes:
                 yield (m, j, k, l)
 
     def setPrefixKeys(self, o):
 
-        if not o in self.prefix_keys:
-            self.prefix_keys[o]={}
+        if not o in self.m_prefixes:
+            self.m_prefixes[o]={}
         l=getattr(o, 'prefix_keys', {})
         for n, k in l.items():
             for r in self.parseKeyMode(n):
-                self.prefix_keys[o][r]=k
+                self.m_prefixes[o][r]=k
         return (o, l)
 
     def setObjKeys(self, o, view=False):
 
         pn=[]
         self.setPrefixKeys(o)
-        p=self.prefix_keys[o]
+        p=self.m_prefixes[o]
         for i in o.__class__.__mro__[::-1]:
             pn+=[i.__name__]
         for f in o.__dir__():
@@ -161,16 +164,16 @@ class EarMan(QtCore.QObject):
                         s=list(r)
                         s[2]=o.name
                         s=tuple(s)
-                        if not s in self.keys:
-                            self.keys[s]={}
-                    if not r in self.keys:
-                        self.keys[r]={}
+                        if not s in self.m_keys:
+                            self.m_keys[s]={}
+                    if not r in self.m_keys:
+                        self.m_keys[r]={}
                     pref=p.get(r, '')
                     parsedk=self.parseKey(k, pref)
                     for pk in parsedk: 
-                        self.keys[r][(o, pk)]=func
+                        self.m_keys[r][(o, pk)]=func
                         if not s: continue
-                        self.keys[s][(o, pk)]=func
+                        self.m_keys[s][(o, pk)]=func
         
     def setTimer(self):
 
@@ -180,10 +183,10 @@ class EarMan(QtCore.QObject):
         self.timer.setSingleShot(True)
 
     def listen(self, obj):
-        self.obj=obj
+        self.m_obj=obj
 
     def delisten(self, obj):
-        self.obj=None
+        self.m_obj=None
 
     def parseKey(self, key, prefix=''):
 
@@ -245,7 +248,7 @@ class EarMan(QtCore.QObject):
 
     def eventFilter(self, w, e):
 
-        if not self.obj:
+        if not self.m_obj:
             return False
         if e.type()!=QtCore.QEvent.KeyPress:
             return False
@@ -256,8 +259,8 @@ class EarMan(QtCore.QObject):
         if self.addKeys(e):
             e.accept()
             return True
-        elif hasattr(self.obj, 'event_functor'):
-            r=self.obj.event_functor(e, self)
+        elif hasattr(self.m_obj, 'event_functor'):
+            r=self.m_obj.event_functor(e, self)
             if r:
                 e.accept()
                 return True
@@ -270,9 +273,9 @@ class EarMan(QtCore.QObject):
         self.pressed=self.getPressed(e)
         if self.pressed and e.text():
             t=self.getText(self.pressed)
-            self.ptext+=t
-            self.pkeys.append(self.pressed)
-            self.keysChanged.emit(self.ptext)
+            self.m_ptext+=t
+            self.m_pkeys.append(self.pressed)
+            self.keysChanged.emit(self.m_ptext)
 
     def getPressed(self, e):
 
@@ -293,14 +296,14 @@ class EarMan(QtCore.QObject):
     def clearKeys(self):
 
         self.timer.stop()
-        self.ptext=''
-        self.pkeys=[]
+        self.m_ptext=''
+        self.m_pkeys=[]
         self.pressed=None
 
     def checkLeader(self, e):
 
-        for l, p in self.listen_leaders.items():
-            if self.m_passive and p!=self.obj:
+        for l, p in self.m_leaders.items():
+            if self.m_passive and p!=self.m_obj:
                 continue
             if (self.pressed,) in l:
                 f=getattr(p, 'checkLeader', None)
@@ -320,7 +323,7 @@ class EarMan(QtCore.QObject):
         c1 = not self.m_passive
         c2 = e.key() in self.delisten_key
         if c1 and c2: 
-            self.obj.octivate()
+            self.m_obj.octivate()
             return True
         elif self.pressed:
             m, p = [], []
@@ -332,12 +335,12 @@ class EarMan(QtCore.QObject):
     def getKeys(self):
 
         key, digit = [], ''
-        for i, k in enumerate(self.pkeys):
+        for i, k in enumerate(self.m_pkeys):
             p=self.key_map[k[0]]
             if p.isnumeric():
                 digit+=p
             else:
-                key=self.pkeys[i:]
+                key=self.m_pkeys[i:]
                 break
         if digit: 
             digit=int(digit)
@@ -347,12 +350,12 @@ class EarMan(QtCore.QObject):
 
     def getStateKeys(self, state):
 
-        if state in self.keys:
-            return self.keys[state]
+        if state in self.m_keys:
+            return self.m_keys[state]
         ms=list(state)
         for i in range(3, -1, -1):
             ms[i]=None
-            k=self.keys.get(
+            k=self.m_keys.get(
                     tuple(ms), None)
             if k: return k
         return {}
@@ -370,7 +373,7 @@ class EarMan(QtCore.QObject):
         if sm and hasattr(sm, 'name'):
             sn=sm.name
         elif sm and type(sm)==str:
-            sn=sm.name
+            sn=sm
         vn=None
         if v: vn=v.name
         fn=None
@@ -461,13 +464,13 @@ class EarMan(QtCore.QObject):
 
         self.matchIsToBeExecuted.emit()
         d=getattr(
-                self.obj, 
+                self.m_obj, 
                 'delisten_on_exec', 
                 self.delisten_on_exec)
         w=getattr(
-                self.obj,
+                self.m_obj,
                 'mode_on_exit',
                 self.mode_on_exit)
         if d: 
-            self.obj.octivate()
+            self.m_obj.octivate()
             self.app.moder.modeWanted.emit(w)

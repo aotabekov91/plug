@@ -2,37 +2,15 @@ from plug.qt import Plug
 
 class Visual(Plug):
 
-    def __init__(self, 
-                 *args,
-                 name='visual',
-                 show_statusbar=True,
-                 listen_leader='<c-V>',
-                 **kwargs,
-                 ):
+    isMode=True 
+    name='visual' 
+    listen_leader='v'
 
-        self.hints=None
-        self.hinting=False
+    def checkLeader(self, e, p):
 
-        super().__init__(
-                *args,
-                name=name, 
-                listen_leader=listen_leader, 
-                show_statusbar=show_statusbar, 
-                **kwargs
-                )
-
-    def delisten(self):
-
-        super().delisten()
-        self.hints=False
-        if self.hinting:
-            self.app.display.view.update()
-        self.hinting=False
-
-    def listen(self):
-
-        super().listen()
-        self.app.ui.main.setFocus()
-
-    def getView(self):
-        return self.app.display.currentView()
+        v=self.app.handler.view()
+        m=self.app.handler.mode()
+        c=m.name in ['normal', 'visual']
+        if c and self.checkProp('canSelect', v):
+            self.view=v
+            return True
