@@ -1,7 +1,7 @@
 import tables
 from plug.qt import Plug
 
-from .utils import TView, TModel
+from .utils import TView, TModel, RModel
 
 class TableView(Plug):
 
@@ -17,8 +17,10 @@ class TableView(Plug):
 
         TView.pattern=self.pattern
         TModel.pattern=self.pattern
+        RModel.pattern=self.pattern
         self.app.handler.addViewer(TView)
         self.app.handler.addModeller(TModel)
+        self.app.handler.addModeller(RModel)
 
     def updateConfs(self):
 

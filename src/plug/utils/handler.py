@@ -124,7 +124,7 @@ class Handler(QtCore.QObject):
     def getModel(self, s, **kwargs):
 
         for k in self.m_modellers:
-            if k.isCompatible(s):
+            if k.isCompatible(s, **kwargs):
                 n=k.getSourceName(s, **kwargs)
                 m=self.buffer.getModel(n)
                 if not m:
@@ -140,7 +140,7 @@ class Handler(QtCore.QObject):
     def getView(self, m, **kwargs):
 
         for k in self.m_viewers:
-            if k.isCompatible(m):
+            if k.isCompatible(m, **kwargs):
                 v=self.buffer.getView(m)
                 if not v or not m.wantUniqView:
                     sc=self.getConfig(k)

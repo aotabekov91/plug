@@ -1,8 +1,8 @@
 from gizmo.utils import tag
-from gizmo.vimo.model import WTableModel
 from gizmo.vimo.view import ListWidgetView
+from gizmo.vimo.model import WTableModel, RTableModel
 
-class TView(ListWidgetView):
+class View:
 
     @classmethod
     def isCompatible(cls, m, **kwargs):
@@ -35,9 +35,7 @@ class TView(ListWidgetView):
             e=i.element()
             m.removeElement(e)
 
-class TModel(WTableModel):
-
-    wantUniqView=True
+class Model:
 
     def __eq__(self, m):
 
@@ -45,10 +43,6 @@ class TModel(WTableModel):
         c1=m.name==self.name
         c2=m.source()==self.source()
         return c1 and c2
-
-    @classmethod
-    def isCompatible(cls, s, **kwargs):
-        return s and s==cls.pattern
 
     @classmethod
     def getSourceName(
@@ -59,3 +53,12 @@ class TModel(WTableModel):
             **kwargs):
 
         return (index, name, source)
+
+class TModel(Model, WTableModel):
+    pass
+
+class RModel(Model, RTableModel):
+    pass
+
+class TView(View, ListWidgetView):
+    pass

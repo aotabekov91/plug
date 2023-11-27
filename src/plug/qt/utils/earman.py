@@ -249,7 +249,6 @@ class EarMan(QtCore.QObject):
             return False
         if e.type()!=QtCore.QEvent.KeyPress:
             return False
-
         self.registerKey(e)
         if self.checkLeader(e):
             e.accept()
@@ -378,17 +377,22 @@ class EarMan(QtCore.QObject):
         if f: fn=f.kind
         return (mn, sn, vn, fn)
 
-    def getMatches(self, k, s, e):
+    def getMatches(self, k, d, e):
 
         m, p = [], []
         s=self.getState()
-        state=self.getStateKeys(s)
-        for (o, c), s in state.items():
-            if k!=c[:len(k)]: continue
-            if k==c: 
-                m+=[s]
-            elif k==c[:len(k)]: 
-                p+=[s]
+        if self.m_passive:
+            s=('any', None, None, None)
+        skeys=self.getStateKeys(s)
+        for (so, sk), sf in skeys.items():
+            if d is not None:
+                c='digit' in signature(sf).parameters
+                if not c: continue
+            if k!=sk[:len(k)]: continue
+            if k==sk: 
+                m+=[sf]
+            elif k==sk[:len(k)]: 
+                p+=[sf]
         return m, p
 
     def run(self, m, p, k, d):
