@@ -17,7 +17,7 @@ class UIMan(QtCore.QObject):
     def __init__(self):
 
         self.app=None
-        self.m_widgets=[]
+        # self.m_widgets=[]
         self.launch_wait=10
         super().__init__()
         self.setTimer()
@@ -79,7 +79,7 @@ class UIMan(QtCore.QObject):
         d=display_class(app=obj, window=w)
         w.main.m_layout.addWidget(d)
         obj.buffer, obj.ui, obj.display=b, w, d
-        self.m_widgets+=[obj.ui, obj.display]
+        # self.m_widgets+=[obj.ui, obj.display]
 
     def setupUI(
             self, 
@@ -89,7 +89,10 @@ class UIMan(QtCore.QObject):
             **kwargs): 
 
         ui.hide()
-        self.m_widgets+=[ui]
+        # self.m_widgets+=[ui]
+        # if not obj: return
+        ui = ui or getattr(obj, name, None)
+        # if not ui: return
         self.locate(obj, ui, name)
         if not obj: return
         ui.setObjectName(obj.name.title())
@@ -153,10 +156,12 @@ class UIMan(QtCore.QObject):
             ui.show()
             self.timer.start(self.launch_wait)
             sys.exit(obj.qapp.exec_())
-        elif ui:
+        elif not ui is None:
             p=getattr(ui, 'pos', None)
             if p=='overlay':
                 ui.show(**kwargs)
+                up=getattr(ui, 'updatePosition', None)
+                if up: up()
             elif p=='window':
                 self.app.ui.show(
                         ui, **kwargs)

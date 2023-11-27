@@ -24,7 +24,7 @@ class View:
         if i and v:
             k=self.locator_kind
             d=i.element().data()
-            v.openLocator(d, k)
+            v.openLocator(d, k, view=v)
 
     @tag('d', modes=['|^own'])
     def delete(self):
