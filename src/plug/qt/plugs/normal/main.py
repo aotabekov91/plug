@@ -4,9 +4,9 @@ from gizmo.utils import tag
 
 class Normal(Plug):
 
-    name='normal'
     isMode=True
     hasView=True
+    name='normal'
     listen_leader='@'
     cursor_visible=False
     delisten_on_exec=False
@@ -17,6 +17,9 @@ class Normal(Plug):
         super().setup()
         self.escapePressed.connect(
                 self.cleanUp)
+
+    def getDefaultView(self):
+        return self.app.display.currentView()
 
     def cleanUp(self): 
 
@@ -91,31 +94,27 @@ class Normal(Plug):
 
     @tag('zi')
     def zoomIn(self, digit=1): 
-        
-        v=self.app.handler.view()
-        if v and v.check('canScale'): 
-            v.scale('zoomIn', digit=digit)
+
+        self.app.uiman.scale(
+                kind='in', digit=digit)
 
     @tag('zo')
     def zoomOut(self, digit=1): 
         
-        v=self.app.handler.view()
-        if v and v.check('canScale'): 
-            v.scale('zoomOut', digit=digit)
+        self.app.uiman.scale(
+                kind='out', digit=digit)
 
-    @tag('w')
-    def fitToWidth(self): 
+    @tag('zw')
+    def zoomToWidth(self): 
+        
+        self.app.uiman.scale(
+                kind='width')
 
-        v=self.app.handler.view()
-        if v and hasattr(v, 'canScale'): 
-            v.scale('fitToWidth')
+    @tag('zh')
+    def zoomToHeight(self): 
 
-    @tag('s')
-    def fitToHeight(self): 
-
-        v=self.app.handler.view()
-        if v and hasattr(v, 'canScale'): 
-            v.scale('fitToHeight')
+        self.app.uiman.scale(
+                kind='height')
 
     @tag('K')
     def screenUp(self, digit=1): 
@@ -154,128 +153,88 @@ class Normal(Plug):
 
     @tag('<c-w>v')
     def splitVertically(self): 
-
-        v=self.app.handler.view()
-        if not v: return
-        p=v.parent()
-        if p and self.checkProp('canSplit', p):
-            p.split(v, kind='vertical')
+        self.app.uiman.split(kind='vertical')
 
     @tag('<c-w>s') 
     def splitHorizontally(self):
+        self.app.uiman.split(kind='horizontal')
 
-        v=self.app.handler.view()
-        if not v: return
-        p=v.parent()
-        if p and self.checkProp('canSplit', p):
-            p.split(v, kind='horizontal')
+    @tag('<c-w>K')
+    def moveViewUp(self): 
+        self.app.uiman.move(kind='up')
+
+    @tag('<c-w>J')
+    def moveViewDown(self): 
+        self.app.uiman.move(kind='down')
+
+    @tag('<c-w>H')
+    def moveViewLeft(self): 
+        self.app.uiman.move(kind='left')
+
+    @tag('<c-w>L')
+    def moveViewRight(self): 
+        self.app.uiman.move(kind='right')
+
+    @tag('<c-w>k')
+    def upView(self): 
+        self.app.uiman.goto(kind='up')
+
+    @tag('<c-w>j')
+    def downView(self): 
+        self.app.uiman.goto(kind='down')
+
+    @tag('<c-w>l')
+    def rightView(self): 
+        self.app.uiman.goto(kind='right')
+
+    @tag('<c-w>h')
+    def leftView(self): 
+        self.app.uiman.goto(kind='left')
+
+    @tag('<c-w>gg')
+    def gotoFirstView(self): 
+        self.app.uiman.goto(kind='first')
+
+    @tag('<c-w>G')
+    def gotoView(self, digit=None): 
+
+        self.app.uiman.goto(
+                kind='last', digit=digit)
+
+    @tag('<c-w>n')
+    def gotoNextView(self, digit=1): 
+
+        self.app.uiman.goto(
+                kind='next', digit=digit)
+
+    @tag('<c-w>p')
+    def gotoPrevView(self, digit=1): 
+
+        self.app.uiman.goto(
+                kind='prev', digit=digit)
+
+    @tag('<c-d>H')
+    def hideAllDocks(self): 
+        self.app.ui.docks.hideAll()
+
+    @tag('f')
+    def toggleFullscreen(self): 
+
+        self.app.uiman.toggleFullscreen(
+                kind='app')
+
+    @tag('<c-w>f')
+    def toggleFullscreenView(self): 
+        raise
+        self.app.uiman.toggleFullscreen()
 
     @tag('yy')
     def yank(self):
 
+        raise
         v=self.app.handler.view()
         if v and v.check('canYank'):
             v.yank()
-
-    @tag('<c-w>K')
-    def displayMoveUp(self): 
-        self.display.move('up')
-
-    @tag('<c-w>J')
-    def displayMoveDown(self): 
-        self.display.move('down')
-
-    @tag('<c-w>H')
-    def displayMoveLeft(self): 
-        self.display.move('left')
-
-    @tag('<c-w>L')
-    def displayMoveRight(self): 
-        self.display.move('right')
-
-    @tag('<c-w>k')
-    def displayUp(self): 
-        self.display.goto('up')
-
-    @tag('<c-w>j')
-    def displayDown(self): 
-        self.display.goto('down')
-
-    @tag('<c-w>l')
-    def displayRight(self): 
-        self.display.goto('right')
-
-    @tag('<c-w>h')
-    def displayLeft(self): 
-        self.display.goto('left')
-
-    @tag('<c-w>gg')
-    def displayGotoFirst(self): 
-        self.display.goto('first')
-
-    @tag('<c-w>G')
-    def displayGoto(self, digit=None): 
-        self.display.goto('last', digit)
-
-    @tag('<c-w>n')
-    def displayNext(self): 
-        self.display.goto('next')
-
-    @tag('<c-w>p')
-    def displayPrev(self): 
-        self.display.goto('prev')
-
-    @tag('<c-w>f')
-    def displayToggleFullscreen(self): 
-        self.display.toggleFullscreen()
-
-    @tag('<c-d>f', modes=['command'])
-    def dockToggleFullscreen(self): 
-        self.app.ui.docks.toggleFullscreen()
-
-    @tag('<c-d>zi', modes=['command'])
-    def dockZoomIn(self, digit=1): 
-        self.app.ui.docks.zoomIn(digit)
-        
-    @tag('<c-d>zo', modes=['command'])
-    def dockZoomOut(self, digit=1): 
-        self.app.ui.docks.zoomOut(digit)
-
-    @tag('<c-d>k', modes=['command'])
-    def dockUp(self): 
-        self.app.ui.docks.goto('up')
-
-    @tag('<c-d>j', modes=['command'])
-    def dockDown(self): 
-        self.app.ui.docks.goto('down')
-
-    @tag('<c-d>h', modes=['command'])
-    def dockLeft(self): 
-        self.app.ui.docks.goto('left')
-
-    @tag('<c-d>l', modes=['command'])
-    def dockRight(self): 
-        self.app.ui.docks.goto('right')
-
-    @tag('<c-d>K', modes=['command'])
-    def dockMoveUp(self): 
-        self.app.ui.docks.move('up')
-
-    @tag('<c-d>J', modes=['command'])
-    def dockMoveDown(self): 
-        self.app.ui.docks.move('down')
-
-    @tag('<c-d>H', modes=['command'])
-    def dockMoveLeft(self): 
-        self.app.ui.docks.move('left')
-
-    @tag('<c-d>L', modes=['command'])
-    def dockMoveRight(self): 
-        self.app.ui.docks.move('right')
-
-    @tag('<c-d>d', modes=['command'])
-    def dockHideAll(self): 
-        self.app.ui.docks.hideAll()
 
     @tag('<c-q>', modes=['any'])
     def quit(self):
@@ -284,6 +243,3 @@ class Normal(Plug):
     @tag('<c-p>', modes=['any'])
     def setDefaultView(self):
         self.app.handler.setDefaultView()
-
-    def getDefaultView(self):
-        return self.app.display.currentView()

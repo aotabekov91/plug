@@ -34,10 +34,8 @@ class Handler(QtCore.QObject):
     def setup(self):
 
         self.setSettings()
-        self.typeWanted.connect(
-                self.setType)
-        self.viewWanted.connect(
-                self.setView)
+        self.typeWanted.connect(self.setType)
+        self.viewWanted.connect(self.setView)
         self.app.moder.modeChanged.connect(
                 self.setMode)
         self.app.moder.submodeChanged.connect(
@@ -49,14 +47,13 @@ class Handler(QtCore.QObject):
         v=self.app.display.currentView()
         df=getattr(m, 'getDefaultView', None)
         if df: v=df()
-        self.setView(v)
+        if v: v.setFocus()
 
     def setView(self, v):
 
         self.m_view=v
         if not v: return
         m=v.model()
-        if v: v.setFocus()
         if m and m.isType: 
             self.setType(v) 
         self.viewChanged.emit(v)
@@ -159,6 +156,9 @@ class Handler(QtCore.QObject):
                             self.activateView)
                     v.octivateWanted.connect(
                             self.octivateView)
+                    if hasattr(v, 'focusGained'):
+                        v.focusGained.connect(
+                                self.setView)
                 return v
 
     def activateView(self, v, **kwargs):

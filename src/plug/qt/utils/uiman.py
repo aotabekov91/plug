@@ -2,7 +2,6 @@ import sys
 from gizmo.ui import Display
 from plug.utils import setKeys
 from PyQt5 import QtCore, QtWidgets
-from gizmo.widget import StackedWidget
 from plug.qt.utils.buffer import Buffer
 
 from .stack_window import StackWindow
@@ -174,6 +173,7 @@ class UIMan(QtCore.QObject):
             elif hasattr(ui, 'dock'):
                 ui.dock.activate(
                         ui, **kwargs)
+            ui.setFocus()
             self.m_active[id(ui)]=ui
             self.viewActivated.emit(ui)
 
@@ -206,3 +206,75 @@ class UIMan(QtCore.QObject):
 
     def defocus(self, obj):
         self.app.ui.setFocus()
+
+    def split(
+            self, 
+            view=None, 
+            kind=None, 
+            **kwargs):
+
+        v, p = self.getParent(view)
+        if p and hasattr(p, 'canSplit'): 
+            p.split(view=v, **kwargs)
+
+    def move(
+            self,
+            view=None,
+            **kwargs
+            ):
+
+        v, p = self.getParent(view)
+        if p and hasattr(p, 'canMove'): 
+            p.move(view=v, **kwargs)
+
+    def goto(
+            self,
+            view=None,
+            **kwargs
+            ):
+        
+        v, p = self.getParent(view)
+        if p and hasattr(p, 'canGo'): 
+            p.goto(view=v, **kwargs)
+
+    def scale(
+            self,
+            view=None,
+            **kwargs,
+            ):
+
+        v, p = self.getParent(view)
+        if p and hasattr(p, 'canScale'): 
+            p.scale(view=v, **kwargs)
+
+    def toggleFullscreen(
+            self,
+            view=None,
+            kind=None,
+            **kwargs,
+            ):
+
+        if kind=='app':
+            self.toggleAppFullscreen()
+        else:
+            v, p = self.getParent(view)
+            if p and hasattr(p, 'canFullscreen'): 
+                p.toggleFullscreen(view=v, **kwargs)
+
+    def toggleAppFullscreen(self): 
+
+        s=self.app.ui.windowState()
+        if (s & QtCore.Qt.WindowFullScreen):
+            s=QtCore.Qt.WindowNoState
+        else:
+            s=QtCore.Qt.WindowFullScreen
+        self.app.ui.setWindowState(s)
+
+    def getParent(self, view=None):
+
+        v = view or self.app.handler.view()
+        if v and hasattr(v, 'isDockView'):
+            return v, self.app.ui.docks
+        elif v and hasattr(v, 'isDisplayView'):
+            return v, self.app.display
+        return v, None
