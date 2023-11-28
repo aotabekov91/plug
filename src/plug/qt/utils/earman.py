@@ -252,8 +252,9 @@ class EarMan(QtCore.QObject):
             return False
         if e.type()!=QtCore.QEvent.KeyPress:
             return False
+        no_partial=len(self.m_pkeys)==0
         self.registerKey(e)
-        if self.checkLeader(e):
+        if no_partial and self.checkLeader(e) :
             e.accept()
             return True
         if self.addKeys(e):

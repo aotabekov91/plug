@@ -196,7 +196,7 @@ class UIMan(QtCore.QObject):
             elif pos=='window':
                 self.app.ui.show()
             self.viewOctivated.emit()
-            self.m_active.pip(id(ui), None)
+            self.m_active.pop(id(ui), None)
 
     def focus(self, obj):
 

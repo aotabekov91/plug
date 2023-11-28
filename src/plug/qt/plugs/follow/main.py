@@ -1,22 +1,22 @@
 from plug.qt import Plug
 from PyQt5 import QtWidgets, QtCore
 
-class Hint(Plug):
+class Follow(Plug):
 
     labels={}
     name='hint'
     isMode=True
     style='color: green'
-    listen_leader='<c-h>'
+    listen_leader='<c-f>'
 
     def event_functor(self, e, ear):
 
         n=e.text()
         d=self.labels.get(n, None)
+        self.octivate()
         if d: 
             v, l = d
             self.app.handler.activateView(v)
-        self.octivate()
 
     def activate(self):
 
@@ -55,7 +55,7 @@ class Hint(Plug):
             x, y = c.x()-1, c.y()-1
             w, h = r.width(), r.height() 
             l.setGeometry(x, y, w, h)
-            s=f'{self.style}; font-size: {w}px'
+            s=f'{self.style}; font-size: {min(w, h)}px'
             l.setStyleSheet(s)
             l.show()
 

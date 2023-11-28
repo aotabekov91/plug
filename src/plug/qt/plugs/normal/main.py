@@ -15,19 +15,12 @@ class Normal(Plug):
     def setup(self):
 
         super().setup()
-        self.display=self.app.display
         self.escapePressed.connect(
                 self.cleanUp)
 
-    def view(self):
-        return self.app.handler.view()
-
-    def getDefaultView(self):
-        return self.app.display.currentView()
-
     def cleanUp(self): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v: v.cleanUp()
 
     @tag('tc')
@@ -38,146 +31,151 @@ class Normal(Plug):
 
     @tag('tb')
     def toggleStatusbar(self):
-
-        bar=self.app.ui.bar
-        if bar.isVisible():
-            bar.hide()
-        else:
-            bar.show()
+        self.app.ui.bar.toggle()
 
     @tag('gg')
-    def viewGotoFirst(self):
+    def gotoFirst(self):
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canGo'):
             v.go('first')
             
     @tag('G')
-    def viewGoto(self, digit=None):
+    def goto(self, digit=None):
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canGo'): 
             v.go(digit or 'last')
 
     @tag('n')
-    def viewNextItem(self, digit=1): 
+    def gotoNext(self, digit=1): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canGo'): 
             v.go('next', digit=digit)
     
     @tag('p')
-    def viewPrevItem(self, digit=1): 
+    def gotoPrev(self, digit=1): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canGo'): 
             v.go('prev', digit=digit)
 
     @tag('k')
-    def viewUp(self, digit=1): 
+    def up(self, digit=1): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canMove'): 
             v.move('up', digit)
 
     @tag('j')
-    def viewDown(self, digit=1): 
+    def down(self, digit=1): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canMove'):
             v.move('down', digit)
 
     @tag('h')
-    def viewLeft(self, digit=1): 
+    def left(self, digit=1): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canMove'): 
             v.move('left', digit)
 
     @tag('l')
-    def viewRight(self, digit=1): 
+    def right(self, digit=1): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canMove'): 
             v.move('right', digit)
 
     @tag('zi')
-    def viewZoomIn(self, digit=1): 
+    def zoomIn(self, digit=1): 
         
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canScale'): 
             v.scale('zoomIn', digit=digit)
 
     @tag('zo')
-    def viewZoomOut(self, digit=1): 
+    def zoomOut(self, digit=1): 
         
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canScale'): 
             v.scale('zoomOut', digit=digit)
 
     @tag('w')
     def fitToWidth(self): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and hasattr(v, 'canScale'): 
             v.scale('fitToWidth')
 
     @tag('s')
     def fitToHeight(self): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and hasattr(v, 'canScale'): 
             v.scale('fitToHeight')
 
     @tag('K')
-    def viewScreenUp(self, digit=1): 
+    def screenUp(self, digit=1): 
 
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canMove'): 
             v.move('screenUp', digit)
-        
-    @tag('H')
-    def viewScreenLeft(self, digit=1): 
-
-        v=self.view()
-        if v and v.check('canMove'): 
-            v.move('screenLeft', digit)
 
     @tag('J')
-    def viewScreenDown(self, digit=1): 
+    def screenDown(self, digit=1): 
         
-        v=self.view()
+        v=self.app.handler.view()
         if v and v.check('canMove'): 
             v.move('screenDown', digit)
         
-    @tag('L')
-    def viewScreenRight(self, digit=1): 
+    @tag('H')
+    def screenLeft(self, digit=1): 
 
-        v=self.view()
+        v=self.app.handler.view()
+        if v and v.check('canMove'): 
+            v.move('screenLeft', digit)
+
+    @tag('L')
+    def screenRight(self, digit=1): 
+
+        v=self.app.handler.view()
         if v and v.check('canMove'): 
             v.move('screenRight', digit)
 
     @tag('<c-w>c')
     def toggleContinuousMode(self): 
 
-        v=self.view()
-        if v: v.toggleContinuousMode()
-
-    @tag('<c-w>d')
-    def viewCloseCurrent(self): 
-        self.display.closeView()
+        v=self.app.handler.view()
+        if v and v.check('canFlow'): 
+            v.toggleContinuousMode()
 
     @tag('<c-w>v')
-    def displaySplitVertical(self): 
+    def splitVertically(self): 
 
-        if self.view():
-            self.display.split(True)
+        v=self.app.handler.view()
+        if not v: return
+        p=v.parent()
+        if p and self.checkProp('canSplit', p):
+            p.split(v, kind='vertical')
 
     @tag('<c-w>s') 
-    def displaySplitHorizontal(self):
+    def splitHorizontally(self):
 
-        if self.view():
-            self.display.split(False)
+        v=self.app.handler.view()
+        if not v: return
+        p=v.parent()
+        if p and self.checkProp('canSplit', p):
+            p.split(v, kind='horizontal')
+
+    @tag('yy')
+    def yank(self):
+
+        v=self.app.handler.view()
+        if v and v.check('canYank'):
+            v.yank()
 
     @tag('<c-w>K')
     def displayMoveUp(self): 
@@ -287,17 +285,5 @@ class Normal(Plug):
     def setDefaultView(self):
         self.app.handler.setDefaultView()
 
-    @tag('fi')
-    def incrementFold(self): 
-        self.display.incrementFold()
-
-    @tag('fd')
-    def decrementFold(self): 
-        self.display.decrementFold()
-
-    @tag('yy')
-    def yank(self):
-
-        v=self.view()
-        if v and v.check('canYank'):
-            v.yank()
+    def getDefaultView(self):
+        return self.app.display.currentView()
