@@ -20,8 +20,8 @@ class Run(Plug):
                QtCore.Qt.Key_Return, 
               ]
         if e.key() in enter:
-            self.on_returnPressed()
-            self.deactivate()
+            self.execute()
+            self.octivate()
             return True
 
     def setup(self):
@@ -85,7 +85,7 @@ class Run(Plug):
     def on_tabPressed(self): 
         pass
 
-    def on_returnPressed(self): 
+    def execute(self): 
 
         # try:
 
