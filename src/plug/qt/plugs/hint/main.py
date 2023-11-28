@@ -1,70 +1,66 @@
 from plug.qt import Plug
-from gizmo.widget import HintLabel
+from PyQt5 import QtWidgets, QtCore
 
 class Hint(Plug):
 
-    def __init__(self, 
-                 app, 
-                 name='hint',
-                 listen_leader='<c-h>',
-                 **kwargs,
-                 ):
+    labels={}
+    name='hint'
+    isMode=True
+    style='color: green'
+    listen_leader='<c-h>'
 
-        super(Hint, self).__init__(
-                app=app, 
-                name=name, 
-                listen_leader=listen_leader,
-                **kwargs,
-                )
+    def event_functor(self, e, ear):
 
-        self.ear.keyPressed.connect(
-                self.on_keysPressed)
+        n=e.text()
+        d=self.labels.get(n, None)
+        if d: 
+            v, l = d
+            self.app.handler.activateView(v)
+        self.octivate()
 
-    def listen(self):
+    def activate(self):
 
-        super().listen()
+        super().activate()
         self.hint()
 
-    def delisten(self):
+    def octivate(self):
 
-        super().delisten()
+        super().octivate()
         self.dehint()
+
+    def mapToUI(self, c, ui):
+
+        p=ui.parent()
+        if not p: return c
+        c=ui.mapToParent(c)
+        return self.mapToUI(c, p)
 
     def hint(self):
 
-        def getNodes(node, coor):
-
-            if node.widget:
-                coor+=[node]
-            for leaf in node.leaves:
-                getNodes(leaf, coor)
-            return coor
-
-        display=self.app.display
-        root=display.m_layout.root
-        nodes=getNodes(root, [])
-
         self.labels={}
+        a=self.app.uiman.active()
 
-        for i, n in enumerate(nodes):
-            self.labels[i+1]=n
-            l=HintLabel(str(i+1), parent=display)
-            l.setGeometry(n.x, n.y, n.w, n.h)
-            l.setStyleSheet('color: green;')
-            n.label=l
+        for i, (idx, n) in enumerate(a.items()):
+            l=QtWidgets.QLabel(
+                    str(i+1), 
+                    parent=self.app.ui,
+                    objectName='HintLabel',
+                    )
+            idx=str(i+1)
+            self.labels[idx]=(n, l)
+            l.setAlignment(QtCore.Qt.AlignCenter)
+            c=QtCore.QPoint(1, 1)
+            c=self.mapToUI(c, n)
+            r=n.rect()
+            x, y = c.x()-1, c.y()-1
+            w, h = r.width(), r.height() 
+            l.setGeometry(x, y, w, h)
+            s=f'{self.style}; font-size: {w}px'
+            l.setStyleSheet(s)
             l.show()
 
     def dehint(self):
 
-        for i, n in self.labels.items():
-            n.label.hide()
-            n.label.setParent(None)
-            n.label=None
-
-    def on_keysPressed(self, digit, key):
-
-        node=self.labels.get(digit, None)
-        if node:
-            self.app.display.focusView(
-                    node.widget)
-        self.delistenWanted.emit()
+        for i, (n, l) in self.labels.items():
+            l.hide()
+            l.setParent(None)

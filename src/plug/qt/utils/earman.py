@@ -47,8 +47,8 @@ class EarMan(QtCore.QObject):
         self.m_passive=False
         self.app.qapp.installEventFilter(
                 self)
-        self.app.moder.modeAdded.connect(
-                self.addMode)
+        self.app.moder.plugAdded.connect(
+                self.addPlug)
         self.app.handler.viewAdded.connect(
                 self.addView)
 
@@ -69,7 +69,7 @@ class EarMan(QtCore.QObject):
         self.updateObjKeys()
         self.addAnyKeys()
 
-    def addMode(self, m):
+    def addPlug(self, m):
 
         self.m_modes[m.name]=m
         d=(m.name, None, None, None)
@@ -328,7 +328,7 @@ class EarMan(QtCore.QObject):
         elif self.pressed:
             m, p = [], []
             k, d = self.getKeys()
-            m, p=self.getMatches(k, d, e)
+            m, p = self.match(k, d, e)
             self.run(m, p, k, d)
             return m or p
 
@@ -362,11 +362,12 @@ class EarMan(QtCore.QObject):
 
     def getState(self):
 
+        if self.m_passive:
+            return ('any', None, None, None)
         m=self.app.handler.mode()
         v=self.app.handler.view()
         f=self.app.handler.type()
         sm=self.app.handler.submode()
-
         mn=None
         if m: mn=m.name
         sn=None
@@ -380,12 +381,10 @@ class EarMan(QtCore.QObject):
         if f: fn=f.kind
         return (mn, sn, vn, fn)
 
-    def getMatches(self, k, d, e):
+    def match(self, k, d, e):
 
         m, p = [], []
         s=self.getState()
-        if self.m_passive:
-            s=('any', None, None, None)
         skeys=self.getStateKeys(s)
         for (so, sk), sf in skeys.items():
             if d is not None:

@@ -17,8 +17,8 @@ class UIMan(QtCore.QObject):
     def __init__(self):
 
         self.app=None
-        # self.m_widgets=[]
-        self.launch_wait=10
+        self.m_wait=10
+        self.m_active={}
         super().__init__()
         self.setTimer()
 
@@ -57,6 +57,9 @@ class UIMan(QtCore.QObject):
         ui_keys=keys.get('UI', {})
         if ui and ui_keys:
             setWidgetKeys(ui_keys, ui)
+
+    def active(self):
+        return self.m_active
 
     def setApp(self, obj):
 
@@ -154,7 +157,7 @@ class UIMan(QtCore.QObject):
         ui = ui or getattr(obj, 'ui', None)
         if obj and obj.isMainApp:
             ui.show()
-            self.timer.start(self.launch_wait)
+            self.timer.start(self.m_wait)
             sys.exit(obj.qapp.exec_())
         elif not ui is None:
             p=getattr(ui, 'pos', None)
@@ -171,9 +174,14 @@ class UIMan(QtCore.QObject):
             elif hasattr(ui, 'dock'):
                 ui.dock.activate(
                         ui, **kwargs)
+            self.m_active[id(ui)]=ui
             self.viewActivated.emit(ui)
 
-    def octivate(self, obj=None, ui=None):
+    def octivate(
+            self, 
+            obj=None, 
+            ui=None,
+            **kwargs):
 
         ui = ui or getattr(obj, 'ui', None)
         if obj and obj.isMainApp: 
@@ -188,6 +196,7 @@ class UIMan(QtCore.QObject):
             elif pos=='window':
                 self.app.ui.show()
             self.viewOctivated.emit()
+            self.m_active.pip(id(ui), None)
 
     def focus(self, obj):
 
