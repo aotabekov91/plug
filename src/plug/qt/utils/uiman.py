@@ -207,41 +207,25 @@ class UIMan(QtCore.QObject):
     def defocus(self, obj):
         self.app.ui.setFocus()
 
-    def split(
-            self, 
-            view=None, 
-            kind=None, 
-            **kwargs):
+    def split(self, view=None, **kwargs):
 
         v, p = self.getParent(view)
         if p and hasattr(p, 'canSplit'): 
             p.split(view=v, **kwargs)
 
-    def move(
-            self,
-            view=None,
-            **kwargs
-            ):
+    def move(self, view=None, **kwargs):
 
         v, p = self.getParent(view)
         if p and hasattr(p, 'canMove'): 
             p.move(view=v, **kwargs)
 
-    def goto(
-            self,
-            view=None,
-            **kwargs
-            ):
+    def goto(self, view=None, **kwargs):
         
         v, p = self.getParent(view)
         if p and hasattr(p, 'canGo'): 
             p.goto(view=v, **kwargs)
 
-    def scale(
-            self,
-            view=None,
-            **kwargs,
-            ):
+    def scale(self, view=None, **kwargs):
 
         v, p = self.getParent(view)
         if p and hasattr(p, 'canScale'): 
@@ -250,11 +234,10 @@ class UIMan(QtCore.QObject):
     def toggleFullscreen(
             self,
             view=None,
-            kind=None,
             **kwargs,
             ):
 
-        if kind=='app':
+        if kwargs.get('kind', None)=='app':
             self.toggleAppFullscreen()
         else:
             v, p = self.getParent(view)
