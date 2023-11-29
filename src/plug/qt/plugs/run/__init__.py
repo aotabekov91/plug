@@ -1,4 +1,4 @@
-from .main import Run
+from .main import Exec
 
 def get_plug_class(): 
-    return Run
+    return Exec

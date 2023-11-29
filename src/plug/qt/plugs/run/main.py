@@ -6,7 +6,7 @@ from inspect import signature, Parameter
 from plug.qt import Plug
 from .parser import ArgumentParser
 
-class Run(Plug):
+class Exec(Plug):
 
     name='run'
     commands={}
@@ -35,17 +35,25 @@ class Run(Plug):
     def setModeFunctions(self, plugs):
         self.functions.update(self.commands)
 
-    def delisten(self):
+    def activate(self):
 
-        super().delisten()
+        super().activate()
+        self.activateBar()
+
+    def octivate(self):
+
+        super().octivate()
+        self.octivateBar()
+
+    def octivateBar(self):
+
         self.bar.bottom.hide()
         self.bar.edit.textChanged.disconnect(
                 self.textChanged)
         self.bar.edit.clear()
 
-    def listen(self):
+    def activateBar(self):
 
-        super().listen()
         self.bar.bottom.show()
         self.bar.show()
         self.bar.edit.setFocus()
@@ -137,8 +145,7 @@ class Run(Plug):
         a=vars(a)
         n=a.pop('command', None)
         m=self.commands.get(n, None)
-        if m: 
-            return (n, m, a, u)
+        if m: return (n, m, a, u)
 
     def getMethods(self, raise_error=True):
 
