@@ -1,4 +1,4 @@
-from .run import Run
+from .run import Exec
 from .picky import Picky
 from .input import Input
 from .styler import Styler
