@@ -5,7 +5,7 @@ from gizmo.utils import tag
 from .filler import Filler
 from .widget import RunListWidget
 
-class RunList(Plug):
+class ExecList(Plug):
 
     args={}
     filler=Filler()
@@ -35,13 +35,13 @@ class RunList(Plug):
 
     def setRunPlug(self, plugs):
 
-        self.run=plugs.get('run', None)
-        if self.run:
-            self.run.textChanged.connect(
+        self.exec=plugs.get('exec', None)
+        if self.exec:
+            self.exec.textChanged.connect(
                     self.updateText)
-            self.run.startedListening.connect(
+            self.exec.startedListening.connect(
                     self.start)
-            self.run.endedListening.connect(
+            self.exec.endedListening.connect(
                     self.stop)
 
     def start(self):
@@ -54,7 +54,7 @@ class RunList(Plug):
         self.ui.model.clear()
         self.ui.hide()
 
-    @tag(['<c-l>', '<tab>'], modes=['run'])
+    @tag(['<c-l>', '<tab>'], modes=['exec'])
     def select(self): 
 
         idx=self.ui.list.currentIndex()
@@ -66,11 +66,11 @@ class RunList(Plug):
         self.setEditText(new)
         self.updateWidgetPosition()
 
-    @tag('<c-k>', modes=['run'])
+    @tag('<c-k>', modes=['exec'])
     def moveUp(self): 
         self.move('up')
 
-    @tag('<c-j>', modes=['run'])
+    @tag('<c-j>', modes=['exec'])
     def moveDown(self): 
         self.move('down')
 
@@ -90,28 +90,28 @@ class RunList(Plug):
 
     def setEditText(self, text):
 
-        self.run.textChanged.disconnect(
+        self.exec.textChanged.disconnect(
                 self.updateText)
         self.bar.edit.setText(text)
-        self.run.textChanged.connect(
+        self.exec.textChanged.connect(
                 self.updateText)
 
     def updateText(self): 
 
         clist=[]
-        text, t, last = self.run.getEditText()
+        text, t, last = self.exec.getEditText()
         self.current_data = text, t
 
         if len(t)==1:
-            alist=self.run.commands
-            clist=self.run.getSimilar(t[0], alist)
+            alist=self.exec.commands
+            clist=self.exec.getSimilar(t[0], alist)
         else:
 
             try:
-                col = self.run.getMethods() 
+                col = self.exec.getMethods() 
                 if not col:
-                    alist=self.run.commands
-                    clist=self.run.getSimilar('', alist)
+                    alist=self.exec.commands
+                    clist=self.exec.getSimilar('', alist)
                 else:
                     n, m, args, unk = col
                     found=None
@@ -144,7 +144,7 @@ class RunList(Plug):
     def getSimilar(self, name, alist):
 
         if name: 
-            alist=self.run.getSimilar(name, alist) 
+            alist=self.exec.getSimilar(name, alist) 
         return alist
 
     def setList(self, clist):

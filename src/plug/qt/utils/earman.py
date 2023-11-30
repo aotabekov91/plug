@@ -11,6 +11,7 @@ class EarMan(QtCore.QObject):
     delisten_key_=['<escape>', '<c-['] # Todo
     delisten_key=[QtCore.Qt.Key_Escape]
     matchIsExecuted=QtCore.pyqtSignal()
+    objectAdded=QtCore.pyqtSignal(object)
     keysChanged=QtCore.pyqtSignal(object)
     matchIsToBeExecuted=QtCore.pyqtSignal()
     pttr=r'(?P<m>([^[]*))(\[(?P<s>([^]]*))\])*'
@@ -42,6 +43,7 @@ class EarMan(QtCore.QObject):
         self.m_obj=None
         self.setTimer()
         self.setKeyMap()
+        self.m_methods={}
         self.m_leaders={}
         self.m_prefixes={}
         self.m_passive=False
@@ -68,18 +70,20 @@ class EarMan(QtCore.QObject):
                 view, view=True)
         self.updateObjKeys()
         self.addAnyKeys()
+        self.objectAdded.emit(view)
 
-    def addPlug(self, m):
+    def addPlug(self, plug):
 
-        self.m_modes[m.name]=m
-        d=(m.name, None, None, None)
+        self.m_modes[plug.name]=plug
+        d=(plug.name, None, None, None)
         if not d in self.m_keys:
             self.m_keys[d]={}
 
-        self.setLeader(m)
-        self.setObjKeys(m)
+        self.setLeader(plug)
+        self.setObjKeys(plug)
         self.updateObjKeys()
         self.addAnyKeys()
+        self.objectAdded.emit(plug)
 
     def updateObjKeys(self):
 
@@ -151,13 +155,20 @@ class EarMan(QtCore.QObject):
             pn+=[i.__name__]
         for f in o.__dir__():
             func=getattr(o, f)
+            # k=getattr(func, 'key', '') # quickfix
+            t=getattr(func, 'isTagged', None)
+            if not t: continue
             k=getattr(func, 'key', '')
-            m=getattr(func, 'modes', None)
-            if not k: continue
-            if m is None: continue
+            m=getattr(func, 'modes', [])
+            # if not k: continue
+            # if m is None: continue
+            # if k is None: continue
             m = m or [o.name]
             for i in m: 
                 i=i.replace('^own', o.name)
+                if not i in self.m_methods:
+                    self.m_methods[i]=[]
+                self.m_methods[i]+=[func]
                 for r in self.parseKeyMode(i):
                     s=None
                     if r[2] in pn and view:

@@ -6,54 +6,61 @@ from inspect import signature, Parameter
 from plug.qt import Plug
 from .parser import ArgumentParser
 
-class Exec(Plug):
+class Run(Plug):
 
-    name='run'
-    commands={}
-    listen_leader='<c-r>'
+    special=[
+            'return', 
+            'tab', 
+            'carriage', 
+            'escape', 
+            'escape_bracket'
+            ]
     textChanged=QtCore.pyqtSignal()
 
-    def event_functor(self, e, ear):
+    def __init__(
+            self, 
+            special=special, 
+            listen_leader='<c-r>', 
+            **kwargs
+            ):
 
-        enter=[
-               QtCore.Qt.Key_Enter,
-               QtCore.Qt.Key_Return, 
-              ]
-        if e.key() in enter:
-            self.execute()
-            self.octivate()
-            return True
+        self.commands={}
+        super().__init__(
+                name='run',
+                special=special,
+                listen_leader=listen_leader, 
+                **kwargs)
+        self.ear.returnPressed.connect(
+                self.on_returnPressed)
+        self.ear.carriageReturnPressed.connect(
+                self.on_returnPressed)
+        self.ear.tabPressed.connect(
+                self.on_tabPressed)
+        self.ear.keysSet.connect(
+                self.updateKeysSet)
 
     def setup(self):
 
         super().setup()
         self.setParser()
-        self.bar=self.app.ui.bar
+        self.bar=self.app.window.bar
         self.app.moder.plugsLoaded.connect(
                 self.setModeFunctions)
 
     def setModeFunctions(self, plugs):
         self.functions.update(self.commands)
 
-    def activate(self):
+    def delisten(self):
 
-        super().activate()
-        self.activateBar()
-
-    def octivate(self):
-
-        super().octivate()
-        self.octivateBar()
-
-    def octivateBar(self):
-
+        super().delisten()
         self.bar.bottom.hide()
         self.bar.edit.textChanged.disconnect(
                 self.textChanged)
         self.bar.edit.clear()
 
-    def activateBar(self):
+    def listen(self):
 
+        super().listen()
         self.bar.bottom.show()
         self.bar.show()
         self.bar.edit.setFocus()
@@ -68,13 +75,7 @@ class Exec(Plug):
 
     def updateKeysSet(self, commands):
 
-        # self.app.earman.plugsLoaded.connect(
-                # self.updateKeysSet) # todo
-
-        f=self.app.earman.commands.get(
-                self, {})
-        default=f.get('default', {})
-        for c, m in default.items():
+        for c, m in self.ear.methods.items():
             if c in self.commands: 
                 continue
             self.commands[c]=m
@@ -93,7 +94,7 @@ class Exec(Plug):
     def on_tabPressed(self): 
         pass
 
-    def execute(self): 
+    def on_returnPressed(self): 
 
         # try:
 
@@ -107,9 +108,11 @@ class Exec(Plug):
         # except:
         #     pass
 
+        self.delistenWanted.emit()
+
     def getEditText(self):
 
-        text=self.app.ui.bar.edit.text()
+        text=self.app.window.bar.edit.text()
         t=re.split('( )', text)
         self.current_data=text, t
         return text, t, t[-1]
@@ -145,7 +148,8 @@ class Exec(Plug):
         a=vars(a)
         n=a.pop('command', None)
         m=self.commands.get(n, None)
-        if m: return (n, m, a, u)
+        if m: 
+            return (n, m, a, u)
 
     def getMethods(self, raise_error=True):
 
