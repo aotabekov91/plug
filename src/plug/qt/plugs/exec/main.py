@@ -1,10 +1,9 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QStandardItem
 from inspect import signature, Parameter
 
-from gizmo import vimo
 from plug.qt import Plug
 from gizmo.utils import tag
+from gizmo.vimo.model import SModel
 from plug.plugs.parser import Parser
 
 from .filler import Filler
@@ -29,6 +28,20 @@ class Exec(Plug):
         self.bar=self.app.ui.bar
         self.app.earman.objectAdded.connect(
                 self.saveFuncs)
+        
+    @tag('<tab>', modes=['exec|ExecList'])
+    def fill(self):
+
+        item=self.ui.currentItem()
+        if item:
+            text=item.itemData
+            self.app.ui.bar.edit.setText(text)
+
+    @tag('<c-m>', modes=['exec|ExecList'])
+    def fillex(self):
+
+        self.fill()
+        self.execute()
 
     @tag(['<return>', '<enter>'], modes=['exec|ExecList'])
     def execute(self): 
@@ -45,19 +58,11 @@ class Exec(Plug):
             f(**args)
         self.octivate()
 
-    @tag('<tab>', modes=['exec|ExecList'])
-    def fill(self):
-
-        item=self.ui.currentItem()
-        if item:
-            text=item.itemData
-            self.app.ui.bar.edit.setText(text)
-
     def setupUI(self):
 
         self.ui=ExecList()
+        self.model=SModel()
         self.ui.bar=self.app.ui.bar
-        self.model=vimo.model.SModel()
         self.ui.setModel(self.model)
         self.app.uiman.setupUI(
                 self, self.ui)
