@@ -39,10 +39,7 @@ class Normal(Plug):
 
         v=self.app.handler.view()
         if v and v.check('canGo'): 
-            if digit is None:
-                v.go('last')
-            else:
-                v.go(digit=digit)
+            v.go(digit=digit)
 
     @tag('n')
     def gotoNext(self, digit=1): 
