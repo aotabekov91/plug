@@ -132,6 +132,7 @@ class Handler(QtCore.QObject):
                     m=k(source=s, **kwargs)
                     self.buffer.setModel(n, m)
                     m.load()
+                m.resetConfigure(source=s, **kwargs)
                 return m
 
     def getView(self, m, **kwargs):
@@ -159,6 +160,7 @@ class Handler(QtCore.QObject):
                     if hasattr(v, 'focusGained'):
                         v.focusGained.connect(
                                 self.setView)
+                v.resetConfigure(model=m, **kwargs)
                 return v
 
     def activateView(self, v, **kwargs):

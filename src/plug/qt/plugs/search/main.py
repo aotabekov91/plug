@@ -5,28 +5,18 @@ from gizmo.widget import ListWidget, ItemWidget
 
 class Search(Plug):
 
-    def __init__(
-            self, 
-            app,
-            name='search',
-            listen_leader='/', 
-            show_statusbar=True,
-            **kwargs
-            ):
+    name='search'
+    listen_leader='/'
 
-        super(Search, self).__init__(
-                app=app, 
-                name=name,
-                listen_leader=listen_leader, 
-                show_statusbar=show_statusbar, 
-                **kwargs)
+    def setup(self):
 
+        super().setup()
         self.index=-1
-        self.matches=[]
         self.match=None
+        self.matches=[]
+        self.bar=self.app.ui.bar
+        self.display=self.app.ui.display
         self.setupUI()
-        self.bar=app.ui.bar
-        self.display=app.ui.display
 
     def setupUI(self):
 

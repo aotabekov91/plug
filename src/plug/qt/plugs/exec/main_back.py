@@ -48,7 +48,7 @@ class Run(Plug):
                 self.setModeFunctions)
 
     def setModeFunctions(self, plugs):
-        self.functions.update(self.commands)
+        self.funcs.update(self.commands)
 
     def delisten(self):
 

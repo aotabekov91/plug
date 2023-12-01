@@ -335,6 +335,7 @@ class EarMan(QtCore.QObject):
         c1 = not self.m_passive
         c2 = e.key() in self.delisten_key
         if c1 and c2: 
+            self.clearKeys()
             self.m_obj.octivate()
             return True
         elif self.pressed:

@@ -65,8 +65,7 @@ class Powerline(Plug):
 
     def setModel(self, model=None): 
 
-        if model: 
-            model=model.id()
+        if model: model=model.id()
         self.ui.setText('model', model)
 
     def setDetail(self, name):

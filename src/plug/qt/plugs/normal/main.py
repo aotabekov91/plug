@@ -1,30 +1,21 @@
-from PyQt5 import QtCore
 from plug.qt import Plug
 from gizmo.utils import tag
 
 class Normal(Plug):
 
     isMode=True
-    hasView=True
     name='normal'
-    listen_leader='@'
     cursor_visible=False
     delisten_on_exec=False
-    escapePressed=QtCore.pyqtSignal()
 
-    def setup(self):
+    def octivate(self):
 
-        super().setup()
-        self.escapePressed.connect(
-                self.cleanUp)
+        super().octivate()
+        v=self.app.handler.view()
+        if v: v.cleanUp()
 
     def getDefaultView(self):
         return self.app.display.currentView()
-
-    def cleanUp(self): 
-
-        v=self.app.handler.view()
-        if v: v.cleanUp()
 
     @tag('tc')
     def toggleCursor(self):
@@ -48,7 +39,10 @@ class Normal(Plug):
 
         v=self.app.handler.view()
         if v and v.check('canGo'): 
-            v.go(digit or 'last')
+            if digit is None:
+                v.go('last')
+            else:
+                v.go(digit=digit)
 
     @tag('n')
     def gotoNext(self, digit=1): 
@@ -68,29 +62,29 @@ class Normal(Plug):
     def up(self, digit=1): 
 
         v=self.app.handler.view()
-        if v and v.check('canMove'): 
-            v.move('up', digit)
+        if v and v.check('canGo'): 
+            v.go('up', digit)
 
     @tag('j')
     def down(self, digit=1): 
 
         v=self.app.handler.view()
-        if v and v.check('canMove'):
-            v.move('down', digit)
+        if v and v.check('canGo'):
+            v.go('down', digit)
 
     @tag('h')
     def left(self, digit=1): 
 
         v=self.app.handler.view()
-        if v and v.check('canMove'): 
-            v.move('left', digit)
+        if v and v.check('canGo'): 
+            v.go('left', digit)
 
     @tag('l')
     def right(self, digit=1): 
 
         v=self.app.handler.view()
-        if v and v.check('canMove'): 
-            v.move('right', digit)
+        if v and v.check('canGo'): 
+            v.go('right', digit)
 
     @tag('zi')
     def zoomIn(self, digit=1): 
@@ -120,29 +114,29 @@ class Normal(Plug):
     def screenUp(self, digit=1): 
 
         v=self.app.handler.view()
-        if v and v.check('canMove'): 
-            v.move('screenUp', digit)
+        if v and v.check('canGo'): 
+            v.go('screenUp', digit)
 
     @tag('J')
     def screenDown(self, digit=1): 
         
         v=self.app.handler.view()
-        if v and v.check('canMove'): 
-            v.move('screenDown', digit)
+        if v and v.check('canGo'): 
+            v.go('screenDown', digit)
         
     @tag('H')
     def screenLeft(self, digit=1): 
 
         v=self.app.handler.view()
-        if v and v.check('canMove'): 
-            v.move('screenLeft', digit)
+        if v and v.check('canGo'): 
+            v.go('screenLeft', digit)
 
     @tag('L')
     def screenRight(self, digit=1): 
 
         v=self.app.handler.view()
-        if v and v.check('canMove'): 
-            v.move('screenRight', digit)
+        if v and v.check('canGo'): 
+            v.go('screenRight', digit)
 
     @tag('<c-w>c')
     def toggleContinuousMode(self): 
@@ -225,6 +219,7 @@ class Normal(Plug):
 
     @tag('<c-w>f')
     def toggleFullscreenView(self): 
+
         raise
         self.app.uiman.toggleFullscreen()
 
