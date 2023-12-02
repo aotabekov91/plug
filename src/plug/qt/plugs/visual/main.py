@@ -6,14 +6,8 @@ class Visual(Plug):
 
     isMode=True 
     name='visual' 
+    default='select'
     listen_leader='v'
-    hintSelected=QtCore.pyqtSignal(object)
-    hintFinished=QtCore.pyqtSignal(object)
-
-    def setup(self):
-
-        self.key=''
-        super().setup()
 
     def event_functor(self, e, ear):
 
@@ -25,25 +19,38 @@ class Visual(Plug):
             v.updateHint(self.key)
             return True
 
-    def starthinting(self):
+    def selectHint(self, sel):
 
         v=self.app.handler.view()
-        v.hintSelected.connect(self.hintSelected)
-        v.hintFinished.connect(self.finishHinting)
+        if self.checkProp('canHint', v):
+            v.selectHint(sel, self.submode()) 
+            self.setSubmode(self.default)
+            self.app.earman.clearKeys()
+            self.key=''
 
-    def finishHinting(self):
+    def startHint(self, submode):
 
-        self.setSubmode('select')
         v=self.app.handler.view()
-        self.hintFinished.emit(v)
-        self.app.earman.clearKeys()
-        v.hintSelected.disconnect(self.hintSelected)
-        v.hintFinished.disconnect(self.finishHinting)
+        if self.checkProp('canHint', v):
+            v.hintSelected.connect(self.selectHint)
+            v.hintFinished.connect(self.finishHint)
+            self.setSubmode(submode)
+            v.startHint()
+            self.key=''
+
+    def finishHint(self):
+
+        v=self.app.handler.view()
+        if self.checkProp('canHint', v):
+            self.app.earman.clearKeys()
+            v.hintFinished.disconnect(self.finishHint)
+            self.setSubmode(self.default)
+            self.key=''
 
     def activate(self):
 
         super().activate()
-        self.setSubmode('select')
+        self.setSubmode(self.default)
 
     def octivate(self):
 
@@ -56,23 +63,13 @@ class Visual(Plug):
         if self.checkProp('hasBlocks', v):
             v.go(*args, mode='visual', **kwargs)
 
-            # for i in range(digit):
-            #     s=self.view.selection()
-            #     if not s: return
-            #     i=s['item']
-            #     e=i.element()
-            #     e.updateBlock(kind, s)
-            #     i.update()
-
     @tag('<c-j>', modes=['visual']) 
     def setJumpSubmode(self):
-        self.setSubmode('jump')
+        self.startHint('jump')
 
     @tag('<c-h>', modes=['visual']) 
     def setHintSubmode(self):
-
-        self.starthinting()
-        self.setSubmode('hint')
+        self.startHint('hint')
 
     @tag('<c-s>', modes=['visual']) 
     def setSelectSubmode(self):
