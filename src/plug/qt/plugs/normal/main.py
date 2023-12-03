@@ -11,7 +11,7 @@ class Normal(Plug):
     def setup(self):
 
         super().setup()
-        self.m_ui=self.app.uiman
+        self.m_uiman=self.app.uiman
 
     def octivate(self):
 
@@ -36,7 +36,7 @@ class Normal(Plug):
 
     @tag('tb')
     def toggleStatusbar(self):
-        self.app.m_ui.bar.toggle()
+        self.app.m_uiman.bar.toggle()
 
     @tag('gg')
     def gotoFirst(self):
@@ -72,19 +72,19 @@ class Normal(Plug):
 
     @tag('zi')
     def zoomIn(self, digit=1): 
-        self.m_ui.scale(kind='in', digit=digit)
+        self.m_uiman.scale(kind='in', digit=digit)
 
     @tag('zo')
     def zoomOut(self, digit=1): 
-        self.m_ui.scale(kind='out', digit=digit)
+        self.m_uiman.scale(kind='out', digit=digit)
 
     @tag('zw')
     def zoomToWidth(self): 
-        self.m_ui.scale(kind='width')
+        self.m_uiman.scale(kind='width')
 
     @tag('zh')
     def zoomToHeight(self): 
-        self.m_ui.scale(kind='height')
+        self.m_uiman.scale(kind='height')
 
     @tag('K')
     def screenUp(self, digit=1): 
@@ -111,73 +111,73 @@ class Normal(Plug):
 
     @tag('<c-w>v')
     def splitVertically(self): 
-        self.m_ui.split(kind='vertical')
+        self.m_uiman.split(kind='vertical')
 
     @tag('<c-w>s') 
     def splitHorizontally(self):
-        self.m_ui.split(kind='horizontal')
+        self.m_uiman.split(kind='horizontal')
 
     @tag('<c-w>K')
     def moveViewUp(self): 
-        self.m_ui.move(kind='up')
+        self.m_uiman.move(kind='up')
 
     @tag('<c-w>J')
     def moveViewDown(self): 
-        self.m_ui.move(kind='down')
+        self.m_uiman.move(kind='down')
 
     @tag('<c-w>H')
     def moveViewLeft(self): 
-        self.m_ui.move(kind='left')
+        self.m_uiman.move(kind='left')
 
     @tag('<c-w>L')
     def moveViewRight(self): 
-        self.m_ui.move(kind='right')
+        self.m_uiman.move(kind='right')
 
     @tag('<c-w>k')
     def upView(self): 
-        self.m_ui.goto(kind='up')
+        self.m_uiman.goto(kind='up')
 
     @tag('<c-w>j')
     def downView(self): 
-        self.m_ui.goto(kind='down')
+        self.m_uiman.goto(kind='down')
 
     @tag('<c-w>l')
     def rightView(self): 
-        self.m_ui.goto(kind='right')
+        self.m_uiman.goto(kind='right')
 
     @tag('<c-w>h')
     def leftView(self): 
-        self.m_ui.goto(kind='left')
+        self.m_uiman.goto(kind='left')
 
     @tag('<c-w>gg')
     def gotoFirstView(self): 
-        self.m_ui.goto(kind='first')
+        self.m_uiman.goto(kind='first')
 
     @tag('<c-w>G')
     def gotoView(self, digit=None): 
-        self.m_ui.goto(kind='last', digit=digit)
+        self.m_uiman.goto(kind='last', digit=digit)
 
     @tag('<c-w>n')
     def gotoNextView(self, digit=1): 
-        self.m_ui.goto(kind='next', digit=digit)
+        self.m_uiman.goto(kind='next', digit=digit)
 
     @tag('<c-w>p')
     def gotoPrevView(self, digit=1): 
-        self.m_ui.goto(kind='prev', digit=digit)
+        self.m_uiman.goto(kind='prev', digit=digit)
 
     @tag('<c-d>H')
     def hideAllDocks(self): 
-        self.app.m_ui.docks.hideAll()
+        self.app.m_uiman.docks.hideAll()
 
     @tag('f')
     def toggleFullscreen(self): 
-        self.m_ui.toggleFullscreen(kind='app')
+        self.m_uiman.toggleFullscreen(kind='app')
 
     @tag('<c-w>f')
     def toggleFullscreenView(self): 
 
         raise
-        self.m_ui.toggleFullscreen()
+        self.m_uiman.toggleFullscreen()
 
     @tag('yy')
     def yank(self):
