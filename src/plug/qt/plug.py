@@ -62,6 +62,7 @@ class Plug(plug.Plug, QtCore.QObject):
 
     def octivate(self):
 
+        self.setSubmode()
         self.activated=False
         self.app.uiman.octivate(self)
         self.app.moder.delistenWanted.emit()

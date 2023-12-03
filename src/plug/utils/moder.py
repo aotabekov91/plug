@@ -132,6 +132,9 @@ class Moder:
     def mode(self):
         return self.current
 
+    def submode(self):
+        return self.m_submode
+
     def on_plugsLoaded(self, plugs): 
         pass
 

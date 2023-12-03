@@ -120,6 +120,8 @@ class Exec(Plug):
         self.bar.edit.textChanged.connect(
                 self.updateUI)
         self.activateBar()
+        self.app.earman.setPassive(
+                True, ['exec'])
         self.updateUI()
 
     def octivate(self):
@@ -128,6 +130,7 @@ class Exec(Plug):
         self.octivateBar()
         self.bar.edit.textChanged.disconnect(
                 self.updateUI)
+        self.app.earman.setPassive()
 
     def octivateBar(self):
 

@@ -47,6 +47,7 @@ class EarMan(QtCore.QObject):
         self.m_leaders={}
         self.m_prefixes={}
         self.m_passive=False
+        self.m_passive_modes=[]
         self.app.qapp.installEventFilter(
                 self)
         self.app.moder.plugAdded.connect(
@@ -57,9 +58,11 @@ class EarMan(QtCore.QObject):
     def obj(self):
         return self.m_obj
 
-    def setPassive(self, cond=False):
+    def setPassive(self, cond=False, modes=[]):
 
+        modes.append('any')
         self.m_passive=cond
+        self.m_passive_modes=modes
         self.clearKeys()
         self.keysChanged.emit('')
 
@@ -375,8 +378,6 @@ class EarMan(QtCore.QObject):
 
     def getState(self):
 
-        if self.m_passive:
-            return ('any', None, None, None)
         m=self.app.handler.mode()
         v=self.app.handler.view()
         f=self.app.handler.type()
@@ -392,6 +393,9 @@ class EarMan(QtCore.QObject):
         if v: vn=v.name
         fn=None
         if f: fn=f.kind
+        if self.m_passive:
+            if not mn in self.m_passive_modes:
+                return ('any', None, None, None)
         return (mn, sn, vn, fn)
 
     def match(self, k, d, e):
