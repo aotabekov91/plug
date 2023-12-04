@@ -81,6 +81,11 @@ QTreeView::item:selected {
 	qproperty-alignment: AlignCenter;
 }
 
+QLabel#test{
+	color: white;
+	background-color: green;
+}
+
 #Powerline QLabel#Mode{
 	color: white;
 	background-color: green;

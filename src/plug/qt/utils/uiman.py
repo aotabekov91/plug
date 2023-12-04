@@ -1,8 +1,9 @@
 import sys
-from gizmo.ui import Display
+# from gizmo.ui import Display
 from plug.utils import setKeys
 from PyQt5 import QtCore, QtWidgets
 from plug.qt.utils.buffer import Buffer
+from gizmo.ui import TabbedTileDisplay as Display
 
 from .stack_window import StackWindow
 
@@ -210,6 +211,7 @@ class UIMan(QtCore.QObject):
     def split(self, view=None, **kwargs):
 
         v, p = self.getParent(view)
+        print(v, p)
         if p and hasattr(p, 'canSplit'): 
             p.split(view=v, **kwargs)
 
@@ -259,5 +261,5 @@ class UIMan(QtCore.QObject):
         if v and hasattr(v, 'isDockView'):
             return v, self.app.ui.docks
         elif v and hasattr(v, 'isDisplayView'):
-            return v, self.app.display
+            return v, v.parent() 
         return v, None

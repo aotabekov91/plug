@@ -149,7 +149,7 @@ class Handler(QtCore.QObject):
                     v.setModel(model=m)
                     self.buffer.setView(m, v)
                     self.uiman.setupUI(
-                        ui=v, name=v.name)
+                            ui=v, name=v.name)
                     self.viewAdded.emit(v)
                     if m.isType:
                         self.typeAdded.emit(v)
@@ -165,7 +165,7 @@ class Handler(QtCore.QObject):
 
     def activateView(self, v, **kwargs):
 
-        self.setView(v)
+        # self.setView(v)
         self.uiman.activate(ui=v, **kwargs)
 
     def octivateView(self, v, **kwargs):

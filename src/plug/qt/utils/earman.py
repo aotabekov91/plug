@@ -48,6 +48,7 @@ class EarMan(QtCore.QObject):
         self.m_prefixes={}
         self.m_passive=False
         self.m_passive_modes=[]
+        self.addView(self.app.display)
         self.app.qapp.installEventFilter(
                 self)
         self.app.moder.plugAdded.connect(

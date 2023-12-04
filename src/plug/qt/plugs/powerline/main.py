@@ -1,7 +1,8 @@
 from plug.qt import Plug
 from gizmo.utils import tag
 
-from .widget import PowerlineWidget
+from .tab import TabWidget
+from .status import StatusWidget
 
 class Powerline(Plug):
 
@@ -35,6 +36,7 @@ class Powerline(Plug):
         self.reconnect()
         self.view=v
         self.setView(v)
+        self.tab.setTabs(v)
         self.reconnect('connect')
 
     def reconnect(self, kind='disconnect'):
@@ -48,41 +50,43 @@ class Powerline(Plug):
 
     def setupUI(self):
 
-        self.ui=PowerlineWidget()
-        self.bar.clayout.insertWidget(0, self.ui)
+        self.tab=TabWidget()
+        self.status=StatusWidget()
+        self.bar.clayout.insertWidget(0, self.status)
+        self.bar.clayout.insertWidget(0, self.tab)
         self.bar.show()
 
     def setMode(self, m=None):
 
         if m: m=m.name.title()
-        self.ui.setText('mode', m) 
+        self.status.setText('mode', m) 
 
     def setSubmode(self, s=None):
 
         if s:
             if type(s)!=str: s=s.name
             s=s.title()
-        self.ui.setText('submode', s) 
+        self.status.setText('submode', s) 
 
     def setModel(self, model=None): 
 
         if model: model=model.id()
-        self.ui.setText('model', model)
+        self.status.setText('model', model)
 
     def setDetail(self, name):
 
         if name: name=name.title()
-        self.ui.setText('detail', name) 
+        self.status.setText('detail', name) 
 
     def setKeys(self, keys=None):
-        self.ui.setText('keys', keys)
+        self.status.setText('keys', keys)
 
     def setKind(self, view=None):
 
         if view: 
             k=view.kind
             if k: view=k.title()
-        self.ui.setText('type', view)
+        self.status.setText('type', view)
 
     def setView(self, view=None): 
 
@@ -93,10 +97,10 @@ class Powerline(Plug):
                 if type(c)==int: idx=c
             self.setIndex(idx)
             view=view.name
-        self.ui.setText('view', view)
+        self.status.setText('view', view)
 
     def setIndex(self, idx=None): 
 
         if idx and hasattr(self.view, 'count'):
             idx=f'{idx}/{self.view.count()}'
-        self.ui.setText('index', idx)
+        self.status.setText('index', idx)

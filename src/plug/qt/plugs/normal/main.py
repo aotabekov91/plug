@@ -173,6 +173,22 @@ class Normal(Plug):
     def toggleFullscreen(self): 
         self.m_uiman.toggleFullscreen(kind='app')
 
+    @tag('<c-n>')
+    def createNewTab(self):
+
+        view=self.app.handler.view()
+        if self.checkProp('hasTabber', view):
+            tabber=view.m_tabber
+            tabber.newTab()
+
+    @tag('gt')
+    def tabGoTo(self, digit=1):
+
+        view=self.app.handler.view()
+        if self.checkProp('hasTabber', view):
+            tabber=view.m_tabber
+            tabber.goTo(digit=digit)
+
     @tag('<c-w>f')
     def toggleFullscreenView(self): 
 

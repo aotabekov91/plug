@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtWidgets
 
-class PowerlineWidget(QtWidgets.QWidget):
+class StatusWidget(QtWidgets.QWidget):
 
     def __init__(self):
 
