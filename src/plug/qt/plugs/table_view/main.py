@@ -1,5 +1,6 @@
 import tables
 from plug.qt import Plug
+from gizmo.utils import tag
 
 from .utils import TView, TModel, RModel
 
@@ -38,13 +39,14 @@ class TableView(Plug):
 
     def updateView(self, v):
 
-        if not v: return
-        if not v.model().isType: return
+        if not v.check('canLocate'): return
         for k, c in self.config.items():
             exc = ['General', 'Settings']
             if k in exc: continue
-            self.app.handler.handleInitiate(
-                    config=c, 
-                    name=c.get('name'),
-                    source=self.pattern, 
-                    index=v.getUniqLocator())
+            f=self.app.handler.handleInitiate
+            f(
+             config=c, 
+             name=c.get('name'),
+             source=self.pattern, 
+             index=v.getUniqLocator()
+             )

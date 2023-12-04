@@ -16,7 +16,7 @@ class Follow(Plug):
         self.octivate()
         if d: 
             v, l = d
-            self.app.handler.activateView(v)
+            v.setFocus()
 
     def activate(self):
 

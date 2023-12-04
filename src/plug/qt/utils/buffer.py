@@ -8,7 +8,7 @@ class Buffer(QtCore.QObject):
 
     def __init__(self):
 
-        self.m_view=[]
+        self.m_views=[]
         self.m_models={}
         self.m_cview=None
         self.m_pview=None
@@ -36,7 +36,7 @@ class Buffer(QtCore.QObject):
 
     def getView(self, m):
 
-        for v in self.m_view:
+        for v in self.m_views:
             if v.model()==m:
                 return v
 
@@ -45,10 +45,10 @@ class Buffer(QtCore.QObject):
         if view: 
             c, p = model, self.m_pview
             self.m_cview, self.m_pview=c, p
-            self.m_view+=[view]
+            self.m_views+=[view]
             self.viewCreated.emit(view)
 
     def getCurrentView(self):
 
-        return self.m_view.get(
+        return self.m_views.get(
                 self.m_cview, None)

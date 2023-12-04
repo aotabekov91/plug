@@ -39,19 +39,19 @@ class Normal(Plug):
         self.app.m_uiman.bar.toggle()
 
     @tag('gg')
-    def gotoFirst(self):
+    def goToFirst(self):
         self.go(kind='first')
 
     @tag('G')
-    def goto(self, digit=None):
+    def goTo(self, digit=None):
         self.go(digit=digit)
 
     @tag('n')
-    def gotoNext(self, digit=1): 
+    def goToNext(self, digit=1): 
         self.go(kind='next', digit=digit)
 
     @tag('p')
-    def gotoPrev(self, digit=1): 
+    def goToPrev(self, digit=1): 
         self.go(kind='prev', digit=digit)
 
     @tag('k')
@@ -135,35 +135,35 @@ class Normal(Plug):
 
     @tag('<c-w>k')
     def upView(self): 
-        self.m_uiman.goto(kind='up')
+        self.m_uiman.goTo(kind='up')
 
     @tag('<c-w>j')
     def downView(self): 
-        self.m_uiman.goto(kind='down')
+        self.m_uiman.goTo(kind='down')
 
     @tag('<c-w>l')
     def rightView(self): 
-        self.m_uiman.goto(kind='right')
+        self.m_uiman.goTo(kind='right')
 
     @tag('<c-w>h')
     def leftView(self): 
-        self.m_uiman.goto(kind='left')
+        self.m_uiman.goTo(kind='left')
 
     @tag('<c-w>gg')
-    def gotoFirstView(self): 
-        self.m_uiman.goto(kind='first')
+    def goToFirstView(self): 
+        self.m_uiman.goTo(kind='first')
 
     @tag('<c-w>G')
-    def gotoView(self, digit=None): 
-        self.m_uiman.goto(kind='last', digit=digit)
+    def goToView(self, digit=None): 
+        self.m_uiman.goTo(kind='last', digit=digit)
 
     @tag('<c-w>n')
-    def gotoNextView(self, digit=1): 
-        self.m_uiman.goto(kind='next', digit=digit)
+    def goToNextView(self, digit=1): 
+        self.m_uiman.goTo(kind='next', digit=digit)
 
     @tag('<c-w>p')
-    def gotoPrevView(self, digit=1): 
-        self.m_uiman.goto(kind='prev', digit=digit)
+    def goToPrevView(self, digit=1): 
+        self.m_uiman.goTo(kind='prev', digit=digit)
 
     @tag('<c-d>H')
     def hideAllDocks(self): 

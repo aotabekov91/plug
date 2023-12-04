@@ -219,11 +219,11 @@ class UIMan(QtCore.QObject):
         if p and hasattr(p, 'canMove'): 
             p.move(view=v, **kwargs)
 
-    def goto(self, view=None, **kwargs):
+    def goTo(self, view=None, **kwargs):
         
         v, p = self.getParent(view)
         if p and hasattr(p, 'canGo'): 
-            p.goto(view=v, **kwargs)
+            p.goTo(view=v, **kwargs)
 
     def scale(self, view=None, **kwargs):
 

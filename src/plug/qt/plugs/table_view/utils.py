@@ -26,6 +26,9 @@ class View:
             d=i.element().data()
             v.openLocator(d, k, view=v)
 
+    def resetConfigure(self, model=None, **kwargs):
+        self.setModel(model)
+
     @tag('d', modes=['|^own'])
     def delete(self):
 
