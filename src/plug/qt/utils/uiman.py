@@ -277,13 +277,16 @@ class UIMan(QtCore.QObject):
     def toggleFullscreen(
             self,
             view=None,
+            vkind=None,
             **kwargs,
             ):
 
-        if kwargs.get('kind', None)=='app':
+        if vkind=='app':
             self.toggleAppFullscreen()
         else:
             v, p = self.getParent(view)
+            if p and not hasattr(p, 'canFullscreen'): 
+                p=self.getTabber(v)
             if p and hasattr(p, 'canFullscreen'): 
                 p.toggleFullscreen(view=v, **kwargs)
 
@@ -306,7 +309,7 @@ class UIMan(QtCore.QObject):
             return v, self.app.ui.docks
         elif v and hasattr(v, 'isDisplayView'):
             return v, v.parent() 
-        return v, None
+        return v, self.getTabber(view)
 
     def getTabber(self, view=None):
 

@@ -228,12 +228,10 @@ class Normal(Plug):
 
     @tag('f')
     def toggleFullscreen(self): 
-        self.m_uiman.toggleFullscreen(kind='app')
+        self.m_uiman.toggleFullscreen(vkind='app')
 
     @tag('<c-w>f')
     def toggleFullscreenView(self): 
-
-        raise
         self.m_uiman.toggleFullscreen()
 
     @tag('yy')
