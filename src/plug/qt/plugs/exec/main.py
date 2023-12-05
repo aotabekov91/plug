@@ -117,6 +117,8 @@ class Exec(Plug):
         super().activate()
         self.app.handler.activateView(
                 self.ui)
+        self.app.handler.setView(self.ui)
+        self.ui.setFocus()
         self.bar.edit.textChanged.connect(
                 self.updateUI)
         self.activateBar()

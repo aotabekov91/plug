@@ -76,6 +76,11 @@ class Tabline(Plug):
             l.setSpacing(0)
             w.setLayout(l)
             self.tabs[t]=w
+            t.currentChanged.connect(
+                    self.updateIndex)
+
+    def updateIndex(self, idx):
+        self.updateTabLine(t=self.current)
 
     def setTabLine(self):
 
@@ -100,6 +105,8 @@ class Tabline(Plug):
 
     def updateTabLine(self, v=None, t=None):
 
+        if hasattr(v, 'hasTabs'):
+            t=v
         if not t:
             t=getattr(v, 'm_tabber', None)
         self.current=t

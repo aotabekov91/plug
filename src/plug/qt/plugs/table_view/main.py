@@ -39,6 +39,7 @@ class TableView(Plug):
 
     def updateView(self, v):
 
+        if not v: return
         if not v.check('canLocate'): return
         for k, c in self.config.items():
             exc = ['General', 'Settings']

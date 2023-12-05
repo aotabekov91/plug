@@ -18,17 +18,18 @@ class Powerline(Plug):
         self.app.handler.submodeChanged.connect(
                 self.setSubmode)
         self.app.handler.typeChanged.connect(
-                self.updateType)
+                self.setType)
         self.app.handler.viewChanged.connect(
                 self.updateView)
         self.bar=self.app.ui.bar
         self.setupUI()
 
-    def updateType(self, v):
+    def setType(self, v):
 
-        if v:
-            self.setKind(v)
-            self.setModel(v.model())
+        m=None
+        self.setKind(v)
+        if v: m=v.model()
+        self.setModel(m)
 
     def updateView(self, v):
 
@@ -85,15 +86,14 @@ class Powerline(Plug):
             if k: view=k.title()
         self.status.setText('type', view)
 
-    def setView(self, view=None): 
+    def setView(self, view=None, idx=None): 
 
         if view:
-            idx=None
             if hasattr(view, 'currentIndex'):
                 c=view.currentIndex()
                 if type(c)==int: idx=c
-            self.setIndex(idx)
             view=view.name
+        self.setIndex(idx)
         self.status.setText('view', view)
 
     def setIndex(self, idx=None): 

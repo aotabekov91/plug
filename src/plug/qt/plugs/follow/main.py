@@ -37,10 +37,18 @@ class Follow(Plug):
 
     def hint(self):
 
+        def pos_sort(v):
+
+            c=QtCore.QPoint(1, 1)
+            c=self.mapToUI(c, v)
+            return (c.x(), c.y())
+
         self.labels={}
         a=self.app.uiman.active()
+        slist=sorted(a.values(), key=pos_sort)
 
-        for i, (idx, n) in enumerate(a.items()):
+        for i, n in enumerate(slist):
+            if not n.isVisible(): continue
             l=QtWidgets.QLabel(
                     str(i+1), 
                     parent=self.app.ui,

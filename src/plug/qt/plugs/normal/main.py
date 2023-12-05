@@ -165,35 +165,39 @@ class Normal(Plug):
     def goToPrevView(self, digit=1): 
         self.m_uiman.goTo(kind='prev', digit=digit)
 
+    @tag('<c-w>x')
+    def closeView(self): 
+        self.m_uiman.close(vkind='view')
+
     @tag('<c-d>H')
     def hideAllDocks(self): 
-        self.app.m_uiman.docks.hideAll()
+        self.m_uiman.docks.hideAll()
 
     @tag('f')
     def toggleFullscreen(self): 
         self.m_uiman.toggleFullscreen(kind='app')
-
-    @tag('<c-n>')
-    def createNewTab(self):
-
-        view=self.app.handler.view()
-        if self.checkProp('hasTabber', view):
-            tabber=view.m_tabber
-            tabber.newTab()
-
-    @tag('gt')
-    def tabGoTo(self, digit=1):
-
-        view=self.app.handler.view()
-        if self.checkProp('hasTabber', view):
-            tabber=view.m_tabber
-            tabber.goTo(digit=digit)
 
     @tag('<c-w>f')
     def toggleFullscreenView(self): 
 
         raise
         self.m_uiman.toggleFullscreen()
+
+    @tag('<c-t>N')
+    def addCopyTab(self):
+        self.m_uiman.add(vkind='tab', copy=True)
+
+    @tag('<c-t>n')
+    def addTab(self):
+        self.m_uiman.add(vkind='tab')
+
+    @tag('<c-t>x')
+    def closeTab(self):
+        self.m_uiman.close(vkind='tab')
+
+    @tag(['gt', '<c-t>g'])
+    def goToTab(self, digit=1):
+        self.m_uiman.goTo(vkind='tab', digit=digit)
 
     @tag('yy')
     def yank(self):

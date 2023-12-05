@@ -47,6 +47,10 @@ class ExecList(ListView):
             w=self.width()
             h=self.height()
             if x is None: x=0
-            y=p.height()-self.height()
-            y-=25*bar.clayout.count()+2
+            y=p.height()-self.height()-2
+            c=bar.clayout.count()
+            for i in range(c):
+                i=bar.clayout.itemAt(i)
+                iw=i.widget()
+                if iw.isVisible(): y-=25
             self.setGeometry(x, y, w, h)

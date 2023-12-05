@@ -8,6 +8,7 @@ class Handler(QtCore.QObject):
     viewWanted=QtCore.pyqtSignal(object)
     modelAdded=QtCore.pyqtSignal(object)
     typeWanted=QtCore.pyqtSignal(object)
+    viewClosed=QtCore.pyqtSignal(object)
     modeChanged=QtCore.pyqtSignal(object)
     viewChanged=QtCore.pyqtSignal(object)
     typeChanged=QtCore.pyqtSignal(object)
@@ -55,11 +56,11 @@ class Handler(QtCore.QObject):
     def setView(self, v):
 
         self.m_view=v
+        self.viewChanged.emit(v)
         if not v: return
         m=v.model()
         if m and m.isType: 
             self.setType(v) 
-        self.viewChanged.emit(v)
 
     def setMode(self, m):
 
@@ -156,23 +157,22 @@ class Handler(QtCore.QObject):
                     self.buffer.setView(m, v)
                     self.uiman.setupUI(
                             ui=v, name=v.name)
-                    self.viewAdded.emit(v)
                     if m.isType:
                         self.typeAdded.emit(v)
-                    v.activateWanted.connect(
-                            self.activateView)
-                    v.octivateWanted.connect(
-                            self.octivateView)
-                    if hasattr(v, 'focusGained'):
-                        v.focusGained.connect(
-                                self.setView)
+                    self.connectView(v)
                 v.resetConfigure(model=m, **kwargs)
                 self.viewCreated.emit(v)
                 return v
 
-    def activateView(self, v, **kwargs):
+    def connectView(self, v):
 
-        # self.setView(v)
+        self.viewAdded.emit(v)
+        v.activateWanted.connect(self.activateView)
+        v.octivateWanted.connect(self.octivateView)
+        if not hasattr(v, 'focusGained'): return
+        v.focusGained.connect(self.setView)
+
+    def activateView(self, v, **kwargs):
         self.uiman.activate(ui=v, **kwargs)
 
     def octivateView(self, v, **kwargs):

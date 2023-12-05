@@ -130,6 +130,7 @@ class UIMan(QtCore.QObject):
             if loc[0]=='dock':
                 ds=['up', 'down', 'left', 'right']
                 if loc[1] in ds: 
+                    ui.isDockView=True
                     w.docks.setTab(ui, loc[1])
 
     def delocate(self, obj, name='ui'):
@@ -171,8 +172,7 @@ class UIMan(QtCore.QObject):
                 self.app.display.setupView(
                         ui, **kwargs)
             elif hasattr(ui, 'dock'):
-                ui.dock.activate(
-                        ui, **kwargs)
+                ui.dock.activate(ui, **kwargs)
             ui.setFocus()
             self.m_active[id(ui)]=ui
             self.viewActivated.emit(ui)
@@ -210,7 +210,6 @@ class UIMan(QtCore.QObject):
     def split(self, view=None, **kwargs):
 
         v, p = self.getParent(view)
-        print(v, p)
         if p and hasattr(p, 'canSplit'): 
             p.split(view=v, **kwargs)
 
@@ -220,11 +219,44 @@ class UIMan(QtCore.QObject):
         if p and hasattr(p, 'canMove'): 
             p.move(view=v, **kwargs)
 
-    def goTo(self, view=None, **kwargs):
+    def goTo(
+            self, 
+            view=None, 
+            vkind='view', 
+            **kwargs):
         
-        v, p = self.getParent(view)
-        if p and hasattr(p, 'canGo'): 
-            p.goTo(view=v, **kwargs)
+        if vkind=='view':
+            v, p = self.getParent(view)
+            if p and hasattr(p, 'canGo'): 
+                p.goTo(view=v, **kwargs)
+        elif vkind=='tab':
+            t=self.getTabber()
+            if t: t.tabGoTo(**kwargs)
+
+    def add(
+            self, 
+            view=None, 
+            vkind='view', 
+            **kwargs):
+
+        if vkind=='tab':
+            t=self.getTabber()
+            if t: t.tabAddNew(**kwargs)
+            
+    def close(
+            self, 
+            view=None, 
+            vkind='view', 
+            **kwargs):
+
+        if vkind=='view': 
+            v=self.app.display.currentView()
+            if v: 
+                p=v.parent()
+                p.closeView(view=v)
+        elif vkind=='tab':
+            t=self.getTabber()
+            if t: t.tabClose(**kwargs)
 
     def scale(self, view=None, **kwargs):
 
@@ -257,8 +289,19 @@ class UIMan(QtCore.QObject):
     def getParent(self, view=None):
 
         v = view or self.app.handler.view()
+        p = v.parent()
         if v and hasattr(v, 'isDockView'):
+            return v, self.app.ui.docks
+        elif v and hasattr(p, 'isDockView'):
             return v, self.app.ui.docks
         elif v and hasattr(v, 'isDisplayView'):
             return v, v.parent() 
         return v, None
+
+    def getTabber(self, view=None):
+
+        v= view or self.app.handler.view()
+        if v and v.check('hasTabs'):
+            return v
+        if v and v.check('hasTabber'):
+            return v.m_tabber
