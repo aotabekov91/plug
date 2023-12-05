@@ -6,11 +6,13 @@ from .status import StatusWidget
 class Powerline(Plug):
 
     view=None
+    type=None
     prefix_keys={'command': 'P'}
 
     def setup(self):
 
         super().setup()
+        self.bar=self.app.ui.bar
         self.app.earman.keysChanged.connect(
                 self.setKeys)
         self.app.handler.modeChanged.connect(
@@ -21,7 +23,6 @@ class Powerline(Plug):
                 self.setType)
         self.app.handler.viewChanged.connect(
                 self.updateView)
-        self.bar=self.app.ui.bar
         self.setupUI()
 
     def setType(self, v):
@@ -29,7 +30,11 @@ class Powerline(Plug):
         m=None
         self.setKind(v)
         if v: m=v.model()
+
+        self.reconnectModel()
+        self.type=v
         self.setModel(m)
+        self.reconnectModel('connect')
 
     def updateView(self, v):
 
@@ -37,6 +42,15 @@ class Powerline(Plug):
         self.view=v
         self.setView(v)
         self.reconnect('connect')
+
+    def reconnectModel(self, kind='disconnect'):
+
+        if self.type:
+            for f in ['modelChanged',]:
+                s=getattr(self.type, f, None)
+                if s:
+                    s=getattr(s, kind)
+                    s(getattr(self, 'setModel'))
 
     def reconnect(self, kind='disconnect'):
 
