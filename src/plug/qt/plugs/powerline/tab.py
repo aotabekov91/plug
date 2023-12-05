@@ -1,63 +1,60 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 
-class TabWidget(QtWidgets.QWidget):
+class Tabber(QtCore.QObject):
 
     def __init__(
             self, 
-            *args, 
+            toolbar=None,
             objectName='TabWidget',
             **kwargs
             ):
 
         super().__init__(
-                *args,
+                parent=toolbar,
                 objectName=objectName,
                 **kwargs)
-        self.setup()
-
-    def setup(self):
-
-        self.m_layout=QtWidgets.QHBoxLayout()
-        self.m_layout.setContentsMargins(0,0,0,0)
-        self.m_layout.setSpacing(5)
-        self.setLayout(self.m_layout)
+            
+        self.toolbar=toolbar
 
     def clear(self):
 
-        item=self.m_layout.takeAt(0)
-        while not item is None:
-            w=item.widget()
+        l=self.toolbar.layout()
+        i=l.takeAt(0)
+        while not i is None:
+            w=i.widget()
             if w:
                 w.setParent(None)
                 w.hide()
-            item=self.m_layout.takeAt(0)
+            i=l.takeAt(0)
 
     def setTabs(self, v):
 
         self.clear()
         if not v.check('hasTabber'):
-            self.hide()
+            self.toolbar.hide()
             return
         t=v.m_tabber
         if t.count()<2:
-            self.hide()
+            self.toolbar.hide()
             return
         cidx=t.currentIndex()
-        self.m_layout.addStretch(10)
         for i in range(t.count()):
             w=t.widget(i)
             name=w.m_tab_name
-            oname=''
+            oname='Tab'
             if name==w.m_tab_idx:
                 name=f'[{name+1}]'
             if cidx==w.m_tab_idx: 
                 name=f'{name}*'
-                oname='test'
-            # l=w.m_tab_label.setText(str(name))
+                oname='CurrentTab'
             l=QtWidgets.QLabel(str(name))
             l.setObjectName(oname)
-            self.m_layout.addWidget(l)
-        self.m_layout.addStretch(10)
-        l=QtWidgets.QLabel(str(t.name))
-        self.m_layout.addWidget(l)
-        self.show()
+            l.setSizePolicy(
+                    QtWidgets.QSizePolicy.Expanding, 
+                    QtWidgets.QSizePolicy.Maximum)
+            l.setContentsMargins(0,0,0,0)
+            l.setAlignment(
+                QtCore.Qt.AlignCenter|
+                QtCore.Qt.AlignVCenter)
+            self.toolbar.addWidget(l)
+        self.toolbar.show()

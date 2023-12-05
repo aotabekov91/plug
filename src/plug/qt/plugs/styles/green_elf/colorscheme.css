@@ -81,9 +81,19 @@ QTreeView::item:selected {
 	qproperty-alignment: AlignCenter;
 }
 
-QLabel#test{
+QLabel#CurrentTab{
 	color: white;
 	background-color: green;
+}
+
+QToolBar {
+	padding: 0 0 0 0;
+	border-width: 0px;
+}
+
+QStatusBar {
+	padding: 0 0 0 0;
+	border-width: 0px;
 }
 
 #Powerline QLabel#Mode{

@@ -1,7 +1,6 @@
 from plug.qt import Plug
 from gizmo.utils import tag
 
-from .tab import TabWidget
 from .status import StatusWidget
 
 class Powerline(Plug):
@@ -36,7 +35,6 @@ class Powerline(Plug):
         self.reconnect()
         self.view=v
         self.setView(v)
-        self.tab.setTabs(v)
         self.reconnect('connect')
 
     def reconnect(self, kind='disconnect'):
@@ -50,10 +48,9 @@ class Powerline(Plug):
 
     def setupUI(self):
 
-        self.tab=TabWidget()
         self.status=StatusWidget()
-        self.bar.clayout.insertWidget(0, self.status)
-        self.bar.clayout.insertWidget(0, self.tab)
+        self.bar.clayout.insertWidget(
+                0, self.status)
         self.bar.show()
 
     def setMode(self, m=None):

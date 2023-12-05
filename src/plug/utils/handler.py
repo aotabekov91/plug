@@ -12,6 +12,9 @@ class Handler(QtCore.QObject):
     viewChanged=QtCore.pyqtSignal(object)
     typeChanged=QtCore.pyqtSignal(object)
     viewerAdded=QtCore.pyqtSignal(object)
+    viewCreated=QtCore.pyqtSignal(object)
+    modelLoaded=QtCore.pyqtSignal(object)
+    modelCreated=QtCore.pyqtSignal(object)
     modellerAdded=QtCore.pyqtSignal(object)
     submodeChanged=QtCore.pyqtSignal(object)
 
@@ -133,6 +136,9 @@ class Handler(QtCore.QObject):
                     self.buffer.setModel(n, m)
                     m.load()
                 m.resetConfigure(source=s, **kwargs)
+                self.modelCreated.emit(m)
+                if hasattr(m, 'loaded'):
+                    m.loaded.connect(self.modelLoaded)
                 return m
 
     def getView(self, m, **kwargs):
@@ -161,6 +167,7 @@ class Handler(QtCore.QObject):
                         v.focusGained.connect(
                                 self.setView)
                 v.resetConfigure(model=m, **kwargs)
+                self.viewCreated.emit(v)
                 return v
 
     def activateView(self, v, **kwargs):

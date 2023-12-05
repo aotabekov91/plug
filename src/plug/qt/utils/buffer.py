@@ -2,10 +2,6 @@ from PyQt5 import QtCore
 
 class Buffer(QtCore.QObject):
 
-    viewCreated=QtCore.pyqtSignal(object)
-    modelLoaded=QtCore.pyqtSignal(object)
-    modelCreated=QtCore.pyqtSignal(object)
-
     def __init__(self):
 
         self.m_views=[]
@@ -25,9 +21,6 @@ class Buffer(QtCore.QObject):
         c, p = m, self.m_pmodel
         self.m_cmodel, self.m_pmodel=c, p
         self.m_models[idx]=m
-        self.modelCreated.emit(m)
-        if hasattr(m, 'loaded'):
-            m.loaded.connect(self.modelLoaded)
 
     def getCurrentModel(self):
 
@@ -46,7 +39,6 @@ class Buffer(QtCore.QObject):
             c, p = model, self.m_pview
             self.m_cview, self.m_pview=c, p
             self.m_views+=[view]
-            self.viewCreated.emit(view)
 
     def getCurrentView(self):
 
