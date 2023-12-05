@@ -213,17 +213,27 @@ class UIMan(QtCore.QObject):
         if p and hasattr(p, 'canSplit'): 
             p.split(view=v, **kwargs)
 
-    def move(self, view=None, **kwargs):
+    def move(
+            self, 
+            view=None, 
+            vkind='view', 
+            **kwargs
+            ):
 
-        v, p = self.getParent(view)
-        if p and hasattr(p, 'canMove'): 
-            p.move(view=v, **kwargs)
+        if vkind=='view':
+            v, p = self.getParent(view)
+            if p and hasattr(p, 'canMove'): 
+                p.move(view=v, **kwargs)
+        elif vkind=='tab':
+            t=self.getTabber()
+            if t: t.tabMove(**kwargs)
 
     def goTo(
             self, 
             view=None, 
             vkind='view', 
-            **kwargs):
+            **kwargs
+            ):
         
         if vkind=='view':
             v, p = self.getParent(view)

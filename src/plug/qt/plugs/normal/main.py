@@ -117,20 +117,24 @@ class Normal(Plug):
     def splitHorizontally(self):
         self.m_uiman.split(kind='horizontal')
 
+    @tag('<c-w>m')
+    def moveView(self, digit=1): 
+        self.m_uiman.move(digit=digit)
+
     @tag('<c-w>K')
-    def moveViewUp(self): 
+    def moveUpView(self): 
         self.m_uiman.move(kind='up')
 
     @tag('<c-w>J')
-    def moveViewDown(self): 
+    def moveDownView(self): 
         self.m_uiman.move(kind='down')
 
     @tag('<c-w>H')
-    def moveViewLeft(self): 
+    def moveLeftView(self): 
         self.m_uiman.move(kind='left')
 
     @tag('<c-w>L')
-    def moveViewRight(self): 
+    def moveRightView(self): 
         self.m_uiman.move(kind='right')
 
     @tag('<c-w>k')
@@ -153,7 +157,7 @@ class Normal(Plug):
     def goToFirstView(self): 
         self.m_uiman.goTo(kind='first')
 
-    @tag('<c-w>G')
+    @tag(['gw', '<c-w>G'])
     def goToView(self, digit=None): 
         self.m_uiman.goTo(kind='last', digit=digit)
 
@@ -169,6 +173,55 @@ class Normal(Plug):
     def closeView(self): 
         self.m_uiman.close(vkind='view')
 
+    @tag('<c-t>t')
+    def moveToTab(self, digit=1):
+
+        self.m_uiman.move(
+                vkind='tab', 
+                digit=digit,
+                kind='moveTo',
+                )
+        
+    @tag('<c-t>m')
+    def moveTab(self, digit=1):
+        self.m_uiman.move(vkind='tab', digit=digit)
+
+    @tag('<c-t>H')
+    def moveLeftTab(self):
+        self.m_uiman.move(vkind='tab', kind='left')
+
+    @tag('<c-t>L')
+    def moveRightTab(self):
+        self.m_uiman.move(vkind='tab', kind='right')
+
+    @tag(['<c-t>k', '<c-t>l'])
+    def goToNextTab(self): 
+        self.m_uiman.goTo(vkind='tab', kind='next')
+
+    @tag(['<c-t>j', '<c-t>h'])
+    def goToPrevTab(self): 
+        self.m_uiman.goTo(vkind='tab', kind='prev')
+
+    @tag('<c-t>gg')
+    def goToFirstTab(self):
+        self.m_uiman.goTo(vkind='tab', digit=1)
+
+    @tag(['gt', '<c-t>G'])
+    def goToTab(self, digit=None):
+        self.m_uiman.goTo(vkind='tab', digit=digit)
+
+    @tag('<c-t>c')
+    def addCopyTab(self):
+        self.m_uiman.add(vkind='tab', copy=True)
+
+    @tag('<c-t>n')
+    def addTab(self):
+        self.m_uiman.add(vkind='tab')
+
+    @tag('<c-t>x')
+    def closeTab(self):
+        self.m_uiman.close(vkind='tab')
+
     @tag('<c-d>H')
     def hideAllDocks(self): 
         self.m_uiman.docks.hideAll()
@@ -182,22 +235,6 @@ class Normal(Plug):
 
         raise
         self.m_uiman.toggleFullscreen()
-
-    @tag('<c-t>N')
-    def addCopyTab(self):
-        self.m_uiman.add(vkind='tab', copy=True)
-
-    @tag('<c-t>n')
-    def addTab(self):
-        self.m_uiman.add(vkind='tab')
-
-    @tag('<c-t>x')
-    def closeTab(self):
-        self.m_uiman.close(vkind='tab')
-
-    @tag(['gt', '<c-t>g'])
-    def goToTab(self, digit=1):
-        self.m_uiman.goTo(vkind='tab', digit=digit)
 
     @tag('yy')
     def yank(self):
