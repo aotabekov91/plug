@@ -1,43 +1,52 @@
+QMainWindow {
+	background-color: black;
+}
+
 QWidget {
+	color: white;
 	font-size: 16px; 
 }
 
-QWidget[selected=true] QTextEdit {
+QLabel {
+	color: white;
+	font-size: 16px;
+}
+
+QListWidget {
 	color: white;
 }
 
-QWidget[selected=true] QLabel {
-	color: white;
+QListView {
+	background-color: black;
 }
 
 QLineEdit {
-	color: black;
 	border-width: 0px;
 	border-radius: 0px;
-	background-color: white;
 	border-color: transparent;
 	background-color: transparent;
 }
 
-QMainWindow::separator {
-    width: 0px;
-    height: 0px;
-    margin: 0px;
-    padding: 0px;
-}
-
 QListWidget::item:selected {
-	color: white;
 	background-color: green;
 }
 
+QMainWindow::separator {
+    width: 0px;
+    margin: 0px;
+    height: 0px;
+    padding: 0 0 0 0;
+}
+
 QDockWidget QWidget {
-	border-width: 0px;
 	background-color: transparent;
 }
 
-QDockWidget QLineEdit {
-	padding: 2 5 2 5;
+QDockWidget QWidget#View {
+	padding: 0 0 0 0;
+	border-width: 2px; 
+	border-style: solid;
+	border-color: transparent;
 }
 
 QListView::item:selected {
@@ -54,27 +63,6 @@ QTreeView::item:selected {
 	background-color: green;
 }
 
-QWidget#View {
-	border-width: 4px; 
-	border-style: solid;
-	border-color: transparent;
-}
-
-QWidget#View:focus {
-	border-color: green;
-}
-
-#Input {
-	color: white;
-	border-color: green;
-	border-width: 3px;
-	border-radius: 10px;
-	border-style: solid;
-	padding: 15px 15px 15px 15px;
-	background-color: rgba(0, 0, 0, .8); 
-}
-
-
 QToolBar {
 	padding: 0 0 0 0;
 	border-width: 0px;
@@ -85,30 +73,48 @@ QStatusBar {
 	border-width: 0px;
 }
 
+QWidget#View {
+	padding: 0 0 0 0;
+	border-width: 2px; 
+	border-style: solid;
+	border-color: transparent;
+}
+
+QWidget#View:focus {
+	border-color: green;
+}
+
+#Input {
+	color: white;
+	padding: 0 0 0 0;
+	border-width: 3px;
+	border-color: green;
+	border-radius: 10px;
+	border-style: solid;
+	background-color: rgba(0, 0, 0, .8); 
+}
+
+
 #Powerline QLabel{
-	color: black;
+	color: white;
 	padding: 0 5px 0 5px;
 	background-color: transparent;
 	qproperty-alignment: AlignCenter;
 }
 
 #Powerline QLabel#ModeName{
-	color: white;
 	background-color: green;
 }
 
 #Powerline QLabel#TypeName{
-	color: green;
 	background-color: transparent;
 }
 
 #Powerline QLabel#ViewName{
-	color: green;
 	background-color: transparent;
 }
 
 #Powerline QLabel#IndexName{
-	color: white;
 	background-color: green;
 }
 

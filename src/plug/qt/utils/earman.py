@@ -376,7 +376,7 @@ class EarMan(QtCore.QObject):
             ms[i]=None
             k=self.m_keys.get(
                     tuple(ms), None)
-            if k: return k
+            if k: return k 
         return {}
 
     def getState(self):
