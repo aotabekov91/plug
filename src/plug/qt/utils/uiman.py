@@ -1,4 +1,5 @@
 import sys
+from functools import partial
 from plug.utils import setKeys
 from PyQt5 import QtCore, QtWidgets
 from gizmo.ui import TabbedTileDisplay
@@ -81,7 +82,6 @@ class UIMan(QtCore.QObject):
         d=display_class(app=obj, window=w)
         w.main.m_layout.addWidget(d)
         obj.buffer, obj.ui, obj.display=b, w, d
-        # self.m_widgets+=[obj.ui, obj.display]
 
     def setupUI(
             self, 
@@ -91,19 +91,20 @@ class UIMan(QtCore.QObject):
             **kwargs): 
 
         ui.hide()
-        # self.m_widgets+=[ui]
-        # if not obj: return
         ui = ui or getattr(obj, name, None)
-        # if not ui: return
         self.locate(obj, ui, name)
-        if not obj: return
-        ui.setObjectName(obj.name.title())
+        if obj:
+            ui.setObjectName(obj.name.title())
         if hasattr(ui, 'focusGained'):
-            f=lambda **kwargs: obj.focusGained.emit(obj) 
-            ui.focusGained.connect(f)
+            if obj:
+                f=lambda **kwargs: obj.focusGained.emit(obj) 
+                ui.focusGained.connect(f)
+            ui.focusGained.connect(
+                    partial(self.saveActiveView, view=ui))
         if hasattr(ui, 'focusLost'):
-            f=lambda **kwargs: obj.focusLost.emit(obj) 
-            ui.focusLost.connect(f)
+            if obj:
+                f=lambda **kwargs: obj.focusLost.emit(obj) 
+                ui.focusLost.connect(f)
 
     def locate(self, obj, ui, name):
 
@@ -174,8 +175,17 @@ class UIMan(QtCore.QObject):
             elif hasattr(ui, 'dock'):
                 ui.dock.activate(ui, **kwargs)
             ui.setFocus()
-            self.m_active[id(ui)]=ui
-            self.viewActivated.emit(ui)
+            # self.m_active[id(ui)]=ui
+            # self.viewActivated.emit(ui)
+
+    def saveActiveView(self, view):
+
+        self.m_active[id(view)]=view
+        self.viewActivated.emit(view)
+
+    # def waveActiveView(self, ui):
+    #     self.m_active[id(ui)]=ui
+    #     self.viewActivated.emit(ui)
 
     def octivate(
             self, 

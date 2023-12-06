@@ -45,10 +45,10 @@ class Follow(Plug):
 
         self.labels={}
         a=self.app.uiman.active()
-        slist=sorted(a.values(), key=pos_sort)
+        visible=[f for f in a.values() if f.isVisible()]
+        slist=sorted(visible, key=pos_sort)
 
         for i, n in enumerate(slist):
-            if not n.isVisible(): continue
             l=QtWidgets.QLabel(
                     str(i+1), 
                     parent=self.app.ui,
