@@ -11,23 +11,23 @@ class StatusWidget(QtWidgets.QWidget):
     def setupUI(self):
 
         self.mode=QtWidgets.QLabel(
-                objectName='Mode')
+                objectName='ModeName')
         self.submode=QtWidgets.QLabel(
-                objectName='Submode')
+                objectName='SubmodeName')
         self.info=QtWidgets.QLabel(
-                objectName='Info')
+                objectName='InfoName')
         self.detail=QtWidgets.QLabel(
-                objectName='Detail')
+                objectName='DetailName')
         self.keys=QtWidgets.QLabel(
-                objectName='Keys')
+                objectName='KeysName')
         self.type=QtWidgets.QLabel(
-                objectName='Type')
+                objectName='TypeName')
         self.model=QtWidgets.QLabel(
-                objectName='Model')
+                objectName='ModelName')
         self.view=QtWidgets.QLabel(
-                objectName='View')
+                objectName='ViewName')
         self.index=QtWidgets.QLabel(
-                objectName='Index')
+                objectName='IndexName')
         self.mode.setAlignment(
                 QtCore.Qt.AlignCenter|
                 QtCore.Qt.AlignVCenter)

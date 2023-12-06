@@ -125,8 +125,7 @@ class UIMan(QtCore.QObject):
                 w.stack.addWidget(
                         ui, obj.name) 
             elif loc[0]=='overlay':
-                ui.setParent(
-                        w.overlay)
+                ui.setParent(w.overlay)
         else:
             if loc[0]=='dock':
                 ds=['up', 'down', 'left', 'right']
@@ -269,11 +268,10 @@ class UIMan(QtCore.QObject):
             vkind='view', 
             **kwargs):
 
-        if vkind=='view': 
-            v=self.app.display.currentView()
-            if v: 
-                p=v.parent()
-                p.closeView(view=v)
+        if vkind=='view':
+            v, p = self.getParent(view)
+            if p and hasattr(p, 'canCloseView'): 
+                p.closeView(view=v, **kwargs)
         elif vkind=='tab':
             t=self.getTabber()
             if t: t.tabClose(**kwargs)

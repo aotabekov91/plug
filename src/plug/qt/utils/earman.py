@@ -309,12 +309,14 @@ class EarMan(QtCore.QObject):
         p+=[e.key()]
         return tuple(p)
 
-    def clearKeys(self):
+    def clearKeys(self, clear_text=False):
 
         self.timer.stop()
         self.m_ptext=''
         self.m_pkeys=[]
         self.pressed=None
+        if clear_text:
+            self.keysChanged.emit('')
 
     def checkLeader(self, e):
 

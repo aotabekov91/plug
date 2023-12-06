@@ -17,6 +17,7 @@ class Follow(Plug):
         if d: 
             v, l = d
             v.setFocus()
+        return True
 
     def activate(self):
 
@@ -26,6 +27,8 @@ class Follow(Plug):
     def octivate(self):
 
         super().octivate()
+        self.app.earman.clearKeys(
+                clear_text=True)
         self.dehint()
 
     def mapToUI(self, c, ui):
