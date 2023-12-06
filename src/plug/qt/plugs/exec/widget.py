@@ -17,8 +17,8 @@ class ExecList(ListView):
         super().goToFirst()
 
     @tag('<c-l>G', modes=['exec|ExecList'])
-    def goTo(self, digit=None):
-        super().goTo(digit)
+    def goToLast(self):
+        super().goTo(None)
 
     def sizeHint(self):
 

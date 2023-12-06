@@ -44,10 +44,11 @@ class TableView(Plug):
         for k, c in self.config.items():
             exc = ['General', 'Settings']
             if k in exc: continue
+            uid=v.getUniqLocator()
             f=self.app.handler.handleInitiate
             f(
              config=c, 
+             index=uid,
              name=c.get('name'),
              source=self.pattern, 
-             index=v.getUniqLocator()
              )
