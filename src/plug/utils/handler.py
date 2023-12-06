@@ -122,45 +122,45 @@ class Handler(QtCore.QObject):
     def typers(self):
         return self.m_typers
 
-    def getModel(self, s, **kwargs):
+    def getModel(self, source, **kwargs):
 
         for k in self.m_modellers:
-            if k.isCompatible(s, **kwargs):
-                n=k.getSourceName(s, **kwargs)
+            if k.isCompatible(source, **kwargs):
+                n=k.getSourceName(source, **kwargs)
                 m=self.buffer.getModel(n)
                 if not m:
                     sc=self.getConfig(k)
                     gc=kwargs.get('config', {})
                     gc.update(sc)
                     kwargs['config']=gc
-                    m=k(source=s, **kwargs)
+                    m=k(source=source, **kwargs)
                     self.buffer.setModel(n, m)
                     m.load()
-                m.resetConfigure(source=s, **kwargs)
+                m.resetConfigure(source=source, **kwargs)
                 self.modelCreated.emit(m)
                 if hasattr(m, 'loaded'):
                     m.loaded.connect(self.modelLoaded)
                 return m
 
-    def getView(self, m, **kwargs):
+    def getView(self, model, **kwargs):
 
         for k in self.m_viewers:
-            if k.isCompatible(m, **kwargs):
-                v=self.buffer.getView(m)
-                if not v or not m.wantUniqView:
+            if k.isCompatible(model, **kwargs):
+                v=self.buffer.getView(model)
+                if not v or not model.wantUniqView:
                     sc=self.getConfig(k)
                     gc=kwargs.get('config', {})
                     gc.update(sc)
                     kwargs['config']=gc
                     v=k(app=self.app, **kwargs)
-                    v.setModel(model=m)
-                    self.buffer.setView(m, v)
+                    v.setModel(model=model)
+                    self.buffer.setView(model, v)
                     self.uiman.setupUI(
                             ui=v, name=v.name)
-                    if m.isType:
+                    if model.isType:
                         self.typeAdded.emit(v)
                     self.connectView(v)
-                v.resetConfigure(model=m, **kwargs)
+                v.resetConfigure(model=model, **kwargs)
                 self.viewCreated.emit(v)
                 return v
 
