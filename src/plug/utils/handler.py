@@ -172,10 +172,10 @@ class Handler(QtCore.QObject):
     def connectView(self, v):
 
         self.viewAdded.emit(v)
-        v.activateWanted.connect(self.activateView)
-        v.octivateWanted.connect(self.octivateView)
-        if not hasattr(v, 'focusGained'): return
-        v.focusGained.connect(self.setView)
+        if hasattr(v, 'activateWanted'):
+            v.focusGained.connect(self.setView)
+            v.activateWanted.connect(self.activateView)
+            v.octivateWanted.connect(self.octivateView)
 
     def activateView(self, v, **kwargs):
         self.uiman.activate(ui=v, **kwargs)
