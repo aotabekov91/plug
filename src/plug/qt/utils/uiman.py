@@ -133,20 +133,18 @@ class UIMan(QtCore.QObject):
                     ui.isDockView=True
                     w.docks.setTab(ui, loc[1])
 
-    def delocate(self, obj, name='ui'):
+    def delocate(self, ui=None):
 
-        p=obj.position
-        ui=getattr(obj, name, None)
-        if p=='window':
+        if ui and ui.position=='window':
             self.app.ui.remove(ui)
-        elif p=='dock':
+        elif ui and ui.position=='dock':
             self.app.ui.docks.delTab(ui)
 
-    def relocate(self, obj, position):
+    def relocate(self, ui, position):
 
-        obj.position=position
-        self.delocateUI()
-        self.locate(obj)
+        self.delocate(ui=ui)
+        ui.position=position
+        self.locate(ui=ui)
 
     def activate(
             self, 
@@ -172,7 +170,7 @@ class UIMan(QtCore.QObject):
                 self.app.display.setupView(
                         ui, **kwargs)
             elif hasattr(ui, 'dock'):
-                ui.dock.activate(ui, **kwargs)
+                ui.dock.activate(ui)
             ui.setFocus()
             # self.m_active[id(ui)]=ui
             # self.viewActivated.emit(ui)
@@ -293,10 +291,13 @@ class UIMan(QtCore.QObject):
             self.toggleAppFullscreen()
         else:
             v, p = self.getParent(view)
-            if p and not hasattr(p, 'canFullscreen'): 
-                p=self.getTabber(v)
-            if p and hasattr(p, 'canFullscreen'): 
-                p.toggleFullscreen(view=v, **kwargs)
+            if v.check('canFullscreen'):
+                v.toggleFullscreen()
+
+            # if p and not hasattr(p, 'canFullscreen'): 
+            #     p=self.getTabber(v)
+            # if p and hasattr(p, 'canFullscreen'): 
+            #     p.toggleFullscreen(view=v, **kwargs)
 
     def toggleAppFullscreen(self): 
 

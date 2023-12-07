@@ -8,6 +8,8 @@ from .utils import TModel, RModel, TView
 
 class TableView(Plug):
 
+    prefix_keys={'command': 't'}
+
     def setup(self):
 
         super().setup()
@@ -15,6 +17,19 @@ class TableView(Plug):
         self.updateConfs()
         self.app.handler.viewChanged.connect(
                 self.updateView)
+
+    @tag('a', modes=['command'])
+    def toggleTable(self):
+
+        v=self.app.handler.view()
+        if not v: return
+        if not v.check('canLocate'): return
+        name='Annotation'
+        idx=v.getUniqLocator()
+        f=self.app.handler.handleOpen(
+                source=self.pattern,
+                name=name,
+                index=idx)
 
     def setClasses(self):
 
@@ -42,7 +57,6 @@ class TableView(Plug):
     def updateView(self, v):
 
         if not v: return
-        if not v.model(): return
         if not v.check('canLocate'): return
         for k, c in self.config.items():
             exc = ['General', 'Settings']
@@ -50,7 +64,7 @@ class TableView(Plug):
             uid=v.getUniqLocator()
             f=self.app.handler.handleInitiate
             name=c.get('name')
-            ff=f(
+            f(
              config=c, 
              index=uid,
              name=name, 

@@ -48,7 +48,12 @@ class Follow(Plug):
 
         self.labels={}
         a=self.app.uiman.active()
-        visible=[f for f in a.values() if f.isVisible()]
+        visible=[]
+        for f in a.values():
+            if not f.isVisible(): continue
+            if self.checkProp('canFollow', f):
+                visible+=[f]
+        if not visible: self.octivate()
         slist=sorted(visible, key=pos_sort)
 
         for i, n in enumerate(slist):

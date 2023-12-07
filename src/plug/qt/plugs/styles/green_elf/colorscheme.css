@@ -1,22 +1,6 @@
-QMainWindow {
-	background-color: black;
-}
-
 QWidget {
 	color: white;
 	font-size: 16px; 
-}
-
-QLabel {
-	color: white;
-	font-size: 16px;
-}
-
-QListWidget {
-	color: white;
-}
-
-QListView {
 	background-color: black;
 }
 
@@ -27,10 +11,6 @@ QLineEdit {
 	background-color: transparent;
 }
 
-QListWidget::item:selected {
-	background-color: green;
-}
-
 QMainWindow::separator {
     width: 0px;
     margin: 0px;
@@ -38,20 +18,23 @@ QMainWindow::separator {
     padding: 0 0 0 0;
 }
 
-QDockWidget QWidget {
-	background-color: transparent;
-}
-
 QDockWidget QWidget#View {
 	padding: 0 0 0 0;
-	border-width: 2px; 
+	border-width: 0px; 
 	border-style: solid;
 	border-color: transparent;
 }
 
+QListView::item{
+	border-width: 2px; 
+	border-style: solid;
+	border-color: transparent;
+	background-color: transparent;
+}
+
 QListView::item:selected {
-	color: white;
-	background-color: green;
+	color: red;
+	border-color: green;
 }
 
 QTreeView::branch:selected {

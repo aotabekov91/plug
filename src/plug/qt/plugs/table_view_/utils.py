@@ -1,15 +1,17 @@
 from gizmo.utils import tag
-from gizmo.vimo import view
-from gizmo.vimo import model
+from gizmo.vimo.view import ListWidgetView, Tabber
+from gizmo.vimo.model import STableModel, RTableModel
 
 from . import mixin
 
 class View(
         mixin.Copy,
-        view.mixin.TFullscreen,
-        view.WListWidgetView
+        ListWidgetView
         ):
 
+    canFollow=True
+
+    @tag('o', modes=['|^own'])
     def open(self):
 
         i=self.currentItem()
@@ -19,6 +21,7 @@ class View(
             d=i.element().data()
             v.openLocator(d, k, view=v)
 
+    @tag('d', modes=['|^own'])
     def delete(self):
 
         i=self.currentItem()
@@ -41,24 +44,13 @@ class Model:
     def isCompatible(cls, source, **kwargs):
         return source==cls.pattern
 
-    @classmethod
-    def getSourceName(
-            cls, 
-            source, 
-            name=None,
-            index=None, 
-            **kwargs):
-
-        return (index, name, source)
-
-
-class TModel(Model, model.STableModel):
+class TModel(Model, WTableModel):
     pass
 
-class RModel(Model, model.RTableModel):
+class RModel(Model, RTableModel):
     pass
 
-class TView(view.Tabber):
+class TView(Tabber):
 
     row_map={}
     widget_map={}
@@ -68,27 +60,8 @@ class TView(view.Tabber):
     def setup(self):
 
         super().setup()
-        self.tab_class.widget_map=self.widget_map
-
-    @tag('o', modes=['normal|^own'])
-    def open(self):
-        if self.current_tab:
-            self.current_tab.open()
-
-    @tag('d', modes=['normal|^own'])
-    def delete(self):
-
-        if self.current_tab:
-            self.current_tab.delete()
-
-    @tag('t', modes=['command'])
-    def toggle(self):
-
-        t=self.current_tab
-        if t and t.isVisible():
-            self.octivate()
-        else:
-            self.activate()
+        print(self.name)
+        print(self.widget_map)
 
     @classmethod
     def isCompatible(cls, m, **kwargs):
